@@ -1,5 +1,7 @@
 # Gallery
 
+figma : https://www.figma.com/design/aFQzPyVQKqF8aCgwWPCkkl/Ideathon?node-id=3-40&t=jSEdIJqwIMR9VwRh-1 
+
 ```
 │── /frontend (React Native app)
 │   ├── /src

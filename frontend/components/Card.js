@@ -1,38 +1,43 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 
-const Card = ({ title, children, imageSource }) => {
+const Card = ({ title, children, imageSource, style }) => {
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, style]}>
       <View style={styles.header}>
         {imageSource && <Image source={imageSource} style={styles.icon} />}
         <Text style={styles.cardTitle}>{title}</Text>
       </View>
-      <Text>{children}</Text>
+      <Text style={styles.cardContent}>{children}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#F7BB36',
+    flex: 1,
     padding: 20,
-    marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 20,
+    justifyContent: 'space-between',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 10,
   },
   cardTitle: {
     fontWeight: 'bold',
     fontSize: 18,
     marginLeft: 10,
+    color: '#FFFFFF',
+  },
+  cardContent: {
+    fontSize: 16,
+    color: '#FFFFFF',
   },
   icon: {
-    width: 24, // Set the width of the image
-    height: 24, // Set the height of the image
-    borderRadius: 12, // Optional: make it circular
+    width: 30,
+    height: 30,
   },
 });
 

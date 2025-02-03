@@ -4,12 +4,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import ExploreScreen from './screens/ExploreScreen';
 import AccountScreen from './screens/AccountScreen';
-
+import MarketScreen from './screens/MarketScreen';
 // Import your icons
 import ExploreIcon from './assets/home/explore.png';
-import ExploreIconOutline from './assets/home/explore.png';
+import ExploreIconOutline from './assets/home/explore.png'; // Ensure an outline version exists
 import AccountIcon from './assets/home/person_2.png';
-import AccountIconOutline from './assets/home/person_2.png';
+import AccountIconOutline from './assets/home/person_2.png'; // Ensure an outline version exists
+import MarketIcon from './assets/home/add_business.png';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +24,9 @@ const renderIcon = (routeName, focused, size) => {
       break;
     case 'Account':
       iconSource = focused ? AccountIcon : AccountIconOutline;
+      break;
+    case 'Market':
+      iconSource = MarketIcon; // Assuming Market has no outline version
       break;
     default:
       iconSource = null;
@@ -55,6 +59,11 @@ export default function App() {
           options={{ headerShown: false }} // Hide header for Explore tab
         />
         <Tab.Screen 
+          name="Market" 
+          component={MarketScreen} 
+          options={{ headerShown: false }} // Optionally hide header for Market tab
+        />
+        <Tab.Screen 
           name="Account" 
           component={AccountScreen} 
           options={{ headerShown: false }} // Optionally hide header for Account tab
@@ -73,5 +82,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-

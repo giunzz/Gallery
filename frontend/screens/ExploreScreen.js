@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { 
-    ScrollView, SafeAreaView, View, Text, TouchableOpacity, 
+import {
+    ScrollView, SafeAreaView, View, Text, TouchableOpacity,
     Image, TextInput, StyleSheet, FlatList
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons'; // Import icons for the newfeed actions
 import Card from '../components/Card';
 import Header from '../components/Header';
 
@@ -12,7 +13,7 @@ import ShopImage from '../assets/home/Shop.png';
 import GenArt from '../assets/home/Gallery Add.png';
 import UpgradeIcon from '../assets/home/Ellipse.png';
 import ProfilePic from '../assets/home/ava.png';
-import ArtImage from '../assets/home/art.png'; // Import the artwork image
+import ArtImage from '../assets/home/art.png';
 
 // User Header Component
 const UserHeader = () => {
@@ -31,28 +32,37 @@ const UserHeader = () => {
     );
 };
 
-// Newfeed Art Component (Reusable for Looping)
+// Newfeed Art Component
 const NewfeedArt = ({ imageSource, title }) => {
     return (
-        <View style={styles.card}>
+        <View style={styles.newfeedCard}>
+            {/* Artwork Image */}
             <Image source={imageSource} style={styles.cardImage} resizeMode="cover" />
+
+            {/* Artist Name */}
             <Text style={styles.artistName}>{title}</Text>
+
+            {/* Action Buttons (Like, Comment, Report) */}
             <View style={styles.cardActions}>
-                <TouchableOpacity style={styles.actionButton}>
-                    <Text style={styles.actionText}>❤️ Like</Text>
+                <TouchableOpacity style={styles.iconButton}>
+                    <Icon name="heart-outline" size={24} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton}>
-                    <Text style={styles.actionText}>Report</Text>
+
+                <TouchableOpacity style={styles.iconButton}>
+                    <Icon name="chatbubble-outline" size={24} color="black" />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.reportButton}>
+                    <Text style={styles.reportText}>Report</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 };
+
 const ExploreScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
-
-    const imageSources = [ColorImage, GenArt, ShopImage]; 
 
     const artworks = Array.from({ length: 10 }, (_, i) => ({
         id: i + 1,
@@ -67,24 +77,30 @@ const ExploreScreen = () => {
 
             {/* Scrollable Art Feed */}
             <ScrollView contentContainerStyle={{ padding: 20 }}>
-                {/* Feature Buttons */}
-                <TouchableOpacity onPress={() => navigation.navigate('NewArtScreen')}>
-                    <Card title="New Art" imageSource={ColorImage}>
-                        Let's see what can I do for you?
-                    </Card>
-                </TouchableOpacity>
+                {/* Top Card */}
+                <View style={styles.topCardContainer}>
+                    <TouchableOpacity onPress={() => navigation.navigate('NewArtScreen')}>
+                        <Card title="New Art" imageSource={ColorImage} style={styles.topCard}>
+                            <Text style={styles.cardSubtitle}>Let's see what can I do for you?</Text>
+                            <Image source={require('../assets/home/guitar.png')} style={styles.cardVisual} />
+                        </Card>
+                    </TouchableOpacity>
+                </View>
 
-                <TouchableOpacity onPress={() => navigation.navigate('GeneratePlatter')}>
-                    <Card title="Generate Platter" imageSource={GenArt}>
-                        Explore new possibilities!
-                    </Card>
-                </TouchableOpacity>
+                {/* Middle Cards */}
+                <View style={styles.middleCardContainer}>
+                    <TouchableOpacity onPress={() => navigation.navigate('GeneratePlatter')} style={styles.middleCard}>
+                        <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard}>
+                            <Image source={require('../assets/home/chat.png')} style={styles.cardVisualSmall} />
+                        </Card>
+                    </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('MarketScreen')}>
-                    <Card title="Exploring Market" imageSource={ShopImage}>
-                        Discover amazing artworks!
-                    </Card>
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('MarketScreen')} style={styles.middleCard}>
+                        <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard}>
+                            <Image source={require('../assets/home/megaphone.png')} style={styles.cardVisualSmall} />
+                        </Card>
+                    </TouchableOpacity>
+                </View>
 
                 {/* Search Bar */}
                 <View style={styles.searchContainer}>
@@ -118,7 +134,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FFFFF',
+        backgroundColor: '#FFFFFF',
     },
     greetingContainer: {
         flex: 1,
@@ -138,7 +154,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        right: 5,
     },
     buttonText: {
         color: 'white',
@@ -153,8 +168,63 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 25,
     },
+
+    // Top Card
+    topCardContainer: {
+        marginBottom: 20,
+    },
+    topCard: {
+        backgroundColor: '#F7BB36',
+        padding: 25,
+        borderRadius: 20,
+        height: 180,
+    },
+    cardSubtitle: {
+        fontSize: 16,
+        color: '#FFFFFF',
+        marginTop: 10,
+    },
+    cardVisual: {
+        width: 90,
+        height: 90,
+        position: 'absolute',
+        right: 10,
+        bottom: 10,
+    },
+
+    // Middle Cards
+    middleCardContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+    middleCard: {
+        flex: 1,
+        marginHorizontal: 5,
+    },
+    generateCard: {
+        backgroundColor: '#FF8358',
+        padding: 20,
+        borderRadius: 20,
+        height: 120,
+    },
+    marketCard: {
+        backgroundColor: '#7851A9',
+        padding: 20,
+        borderRadius: 20,
+        height: 120,
+    },
+    cardVisualSmall: {
+        width: 50,
+        height: 50,
+        position: 'absolute',
+        right: 10,
+        bottom: 10,
+    },
+
+    // Search Bar
     searchContainer: {
-        padding: 1,
+        padding: 10,
     },
     searchInput: {
         height: 40,
@@ -163,42 +233,52 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 10,
         backgroundColor: '#FFFFFF',
-        bottom: -2
     },
+
+    // Newfeed Section
     sectionTitle: {
         fontSize: 24,
         fontWeight: 'bold',
         marginVertical: 15,
     },
-    card: {
+    newfeedCard: {
         backgroundColor: '#F8F8F8',
         borderRadius: 10,
         padding: 15,
         marginBottom: 15,
-        alignItems: 'center',
     },
     cardImage: {
         width: '100%',
-        height: 150,
+        height: 200,
         borderRadius: 10,
     },
     artistName: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginVertical: 10,
+        marginTop: 10,
+        alignSelf: 'flex-start',
+        paddingLeft: 10,
     },
     cardActions: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         width: '100%',
+        paddingHorizontal: 10,
+        marginTop: 10,
     },
-    actionButton: {
+    iconButton: {
         padding: 10,
-        backgroundColor: '#79D7BE',
+    },
+    reportButton: {
+        backgroundColor: '#E57373',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
         borderRadius: 5,
     },
-    actionText: {
-        color: '#FFFFFF',
+    reportText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
 });
 

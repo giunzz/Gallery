@@ -1,44 +1,64 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import ExploreScreen from './screens/ExploreScreen';
+import AccountScreen from './screens/AccountScreen';
+
+// Import your icons
+import ExploreIcon from './assets/home/explore.png';
+import ExploreIconOutline from './assets/home/explore.png';
+import AccountIcon from './assets/home/person_2.png';
+import AccountIconOutline from './assets/home/person_2.png';
 
 const Tab = createBottomTabNavigator();
 
-function ExploreScreen() {
-  return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>New art</Text>
-        <Text>Let's see what can I do for you?</Text>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Generate Platter</Text>
-        <Text>Explore new possibilities!</Text>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Exploring Market</Text>
-        <Text>Discover amazing artworks!</Text>
-      </View>
-    </ScrollView>
-  );
-}
+// Function to render tab icons
+const renderIcon = (routeName, focused, size) => {
+  let iconSource;
 
-function AccountScreen() {
+  switch (routeName) {
+    case 'Explore':
+      iconSource = focused ? ExploreIcon : ExploreIconOutline;
+      break;
+    case 'Account':
+      iconSource = focused ? AccountIcon : AccountIconOutline;
+      break;
+    default:
+      iconSource = null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Hi, David!</Text>
-      <Button title="Upgrade" onPress={() => alert('Upgrade pressed!')} />
-    </View>
+    <Image
+      source={iconSource}
+      style={{ width: size, height: size }} // Adjust size as needed
+    />
   );
-}
+};
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Explore" component={ExploreScreen} />
-        <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, size }) => renderIcon(route.name, focused, size),
+          tabBarActiveTintColor: '#00BFFF',
+          tabBarInactiveTintColor: 'gray',
+          tabBarStyle: {
+            backgroundColor: '#E0FFFF',
+          },
+        })}
+      >
+        <Tab.Screen 
+          name="Explore" 
+          component={ExploreScreen} 
+          options={{ headerShown: false }} // Hide header for Explore tab
+        />
+        <Tab.Screen 
+          name="Account" 
+          component={AccountScreen} 
+          options={{ headerShown: false }} // Optionally hide header for Account tab
+        />
       </Tab.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
@@ -52,17 +72,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scrollContainer: {
-    padding: 20,
-  },
-  card: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 10,
-    borderRadius: 10,
-  },
-  cardTitle: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
 });
+
+

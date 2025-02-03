@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import Header from './components/Header';
+import Header from '../components/Header';
 
 const AccountScreen = () => {
     return (

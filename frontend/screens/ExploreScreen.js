@@ -15,6 +15,7 @@ import UpgradeIcon from '../assets/home/Ellipse.png';
 import ProfilePic from '../assets/home/ava.png';
 import ArtImage from '../assets/home/art.png';
 
+
 // User Header Component
 const UserHeader = () => {
     return (
@@ -168,34 +169,42 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 25,
     },
+ /// Top Card
+    CardTitle: {
+        fontSize: 16,  // Reduce from 18 to 14
+        fontWeight: 'bold',
+        marginLeft: 10,
+        color: '#FFFFFF',
+        flexShrink: 1, // Prevents text from breaking UI
+    },
 
-    // Top Card
     topCardContainer: {
         marginBottom: 20,
     },
     topCard: {
-        backgroundColor: '#F7BB36',
+        backgroundColor: "#F7BB36",
         padding: 25,
         borderRadius: 20,
         height: 180,
+        position: "relative", // Ensure children respect positioning
     },
     cardSubtitle: {
         fontSize: 16,
-        color: '#FFFFFF',
+        color: "#FFFFFF",
         marginTop: 10,
     },
     cardVisual: {
         width: 90,
         height: 90,
-        position: 'absolute',
-        right: 10,
-        bottom: 10,
+        position: "left",
+        left: 10, // Move the image to the left side
+        bottom: 10, // Align towards the bottom
     },
 
     // Middle Cards
     middleCardContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: "row",
+        justifyContent: "space-between",
         marginBottom: 20,
     },
     middleCard: {
@@ -203,25 +212,26 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     generateCard: {
-        backgroundColor: '#FF8358',
+        backgroundColor: "#FF8358",
         padding: 20,
         borderRadius: 20,
         height: 120,
+        position: "relative", // Ensures proper child positioning
     },
     marketCard: {
-        backgroundColor: '#7851A9',
+        backgroundColor: "#7851A9",
         padding: 20,
         borderRadius: 20,
         height: 120,
+        position: "relative",
     },
     cardVisualSmall: {
-        width: 50,
-        height: 50,
-        position: 'absolute',
-        right: 10,
-        bottom: 10,
+        width: 40,
+        height: 40,
+        position: "center",
+        left: 20, // Moves small visuals to the left
+        bottom: 20,
     },
-
     // Search Bar
     searchContainer: {
         padding: 10,

@@ -26,7 +26,7 @@ const renderIcon = (routeName, focused, size) => {
       iconSource = focused ? AccountIcon : AccountIconOutline;
       break;
     case 'Market':
-      iconSource = MarketIcon; // Assuming Market has no outline version
+      iconSource = MarketIcon; 
       break;
     default:
       iconSource = null;
@@ -35,7 +35,7 @@ const renderIcon = (routeName, focused, size) => {
   return (
     <Image
       source={iconSource}
-      style={{ width: size, height: size }} // Adjust size as needed
+      style={{ width: size, height: size }} 
     />
   );
 };

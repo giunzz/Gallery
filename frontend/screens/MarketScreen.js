@@ -1,15 +1,31 @@
-import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import Header from '../components/Header';
+import ProfilePic from '../assets/home/ava.png'; // Update with the correct path to your profile picture
 
-const MarketScreen = () => {
-    // Sample data for market items
-    const marketItems = [
-        { id: '1', title: 'Artwork 1', image: require('../assets/home/art.png'), price: '$100' },
-        { id: '2', title: 'Artwork 2', image: require('../assets/home/art.png'), price: '$150' },
-        { id: '3', title: 'Artwork 3', image: require('../assets/home/art.png'), price: '$200' },
-        { id: '4', title: 'Artwork 4', image: require('../assets/home/art.png'), price: '$250' },
-        // Add more items as needed
-    ];
+const UserHeader = () => {
+    return (
+        <View style={styles.userHeaderContainer}>
+            <View style={styles.greetingContainer}>
+                <Text style={styles.greetingText}>Hi, Jane!</Text>
+                <Text style={styles.subtitleText}>Explore the world</Text>
+            </View>
+            <TouchableOpacity style={styles.upgradeButton}>
+                <Text style={styles.buttonText}>Upgrade</Text>
+            </TouchableOpacity>
+            <Image source={ProfilePic} style={styles.profilePicture} />
+        </View>
+    );
+};
+
+const MarketScreen = ({ navigation }) => {
+    // Dynamically generating market items from 1 to 10
+    const marketItems = Array.from({ length: 10 }, (_, i) => ({
+        id: (i + 1).toString(),
+        title: `Artwork ${i + 1}`,
+        image: require("../assets/home/art.png"), // Ensure this image exists
+        price: `$${(i + 1) * 50}`, // Increasing price dynamically
+    }));
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card}>
@@ -20,24 +36,60 @@ const MarketScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Market</Text>
-            <FlatList
-                data={marketItems}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                numColumns={2} // Display items in a grid format
-                contentContainerStyle={styles.listContainer}
-            />
-        </View>
+        <SafeAreaView style={{ flex: 1 }}>
+            <Header navigation={navigation} />
+            <UserHeader />
+            <View style={styles.container}>
+                <FlatList
+                    data={marketItems}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    numColumns={2} // Display items in a grid format
+                    contentContainerStyle={styles.listContainer}
+                />
+            </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    userHeaderContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 16,
+        backgroundColor: '#FFFFFF',
+    },
+    greetingContainer: {
         flex: 1,
-        padding: 20,
-        backgroundColor: '#E0FFFF', // Light background color
+    },
+    greetingText: {
+        fontSize: 30,
+        fontWeight: 'bold',
+    },
+    subtitleText: {
+        fontSize: 18,
+        color: 'gray',
+    },
+    upgradeButton: {
+        backgroundColor: '#79D7BE',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        marginRight: 5,
+    },
+    icon: {
+        width: 20,
+        height: 20,
+    },
+    profilePicture: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
     },
     header: {
         fontSize: 24,

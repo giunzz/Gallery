@@ -35,7 +35,7 @@ const MarketScreen = ({ navigation }) => {
     }));
 
     const renderItem = ({ item }) => (
-        <View style={styles.card}>
+        <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Buying", { item })}>
             {/* Artwork Image */}
             <Image source={item.image} style={styles.cardImage} />
 
@@ -58,7 +58,7 @@ const MarketScreen = ({ navigation }) => {
                 {/* Price */}
                 <Text style={styles.itemPrice}>{item.price}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     return (
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFFFF',
     },
     greetingContainer: {
         flex: 1,
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        right : 5
+        right: 5,
     },
     buttonText: {
         color: 'white',
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         fontWeight: "bold",
         color: "gray",
-        right : 3
+        right: 3,
     },
     itemPrice: {
         fontSize: 14,

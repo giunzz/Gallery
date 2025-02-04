@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFFFF',
     },
     greetingContainer: {
         flex: 1,
@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
+        right: 6
     },
     buttonText: {
         color: 'white',

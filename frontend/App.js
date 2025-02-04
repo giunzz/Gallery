@@ -2,10 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import ExploreScreen from './screens/ExploreScreen';
 import AccountScreen from './screens/AccountScreen';
 import MarketScreen from './screens/MarketScreen';
-// Import your icons
+import BuyingScreen from './screens/BuyingScreen';
+
 import ExploreIcon from './assets/home/explore.png';
 import ExploreIconOutline from './assets/home/explore.png'; // Ensure an outline version exists
 import AccountIcon from './assets/home/person_2.png';
@@ -13,6 +15,19 @@ import AccountIconOutline from './assets/home/person_2.png'; // Ensure an outlin
 import MarketIcon from './assets/home/add_business.png';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const MarketStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Market" component={MarketScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Buying" component={BuyingScreen} options={{ headerShown: true, 
+                title: 'Buying', 
+                headerStyle: { backgroundColor: '#79D7BE' }, 
+                headerTintColor: 'black', 
+                headerTitleAlign: 'center' }} 
+    />
+  </Stack.Navigator>
+);
 
 // Function to render tab icons
 const renderIcon = (routeName, focused, size) => {
@@ -60,8 +75,8 @@ export default function App() {
         />
         <Tab.Screen 
           name="Market" 
-          component={MarketScreen} 
-          options={{ headerShown: false }} // Optionally hide header for Market tab
+          component={MarketStack} 
+          options={{ headerShown: false }} // Updated to use MarketStack
         />
         <Tab.Screen 
           name="Account" 

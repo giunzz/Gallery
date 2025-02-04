@@ -1,19 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 
 const BuyingScreen = ({ route, navigation }) => {
-    // ✅ Extracting item details from navigation params
-    const { item } = route.params; 
+    const { item } = route.params;
+    const [isBuyPressed, setIsBuyPressed] = useState(false);
+    const [isDrawPressed, setIsDrawPressed] = useState(false);
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Header */}
             <Text style={styles.headerText}></Text>
 
-            {/* Artwork Image */}
             <Image source={item.image} style={styles.artImage} />
 
-            {/* Title & Price */}
             <View style={styles.infoContainer}>
                 <View style={styles.userDetails}>
                     <Image source={item.userAvatar} style={styles.userAvatar} />
@@ -24,10 +22,6 @@ const BuyingScreen = ({ route, navigation }) => {
                     <Text style={styles.price}>{item.price}</Text>
                 </View>
 
-                {/* Description */}
-                {/* <Text style={styles.description}>
-                    {item.description}
-                </Text> */}
                 <Text style={styles.description}>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                     
@@ -35,12 +29,20 @@ const BuyingScreen = ({ route, navigation }) => {
                 </Text>
             </View>
 
-            {/* Buttons */}
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.buyButton}>
-                    <Text style={styles.buttonText}>Buy now</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.drawButton}>
+            <TouchableOpacity 
+                style={[styles.buyButton, isBuyPressed && styles.buttonPressed]} 
+                onPressIn={() => setIsBuyPressed(true)}
+                onPressOut={() => setIsBuyPressed(false)}
+                onPress={() => navigation.push("Checkout", { item })}  
+            >
+                <Text style={styles.buttonText}>Buy now</Text>
+            </TouchableOpacity>
+                <TouchableOpacity 
+                    style={[styles.drawButton, isDrawPressed && styles.buttonPressed]} 
+                    onPressIn={() => setIsDrawPressed(true)}
+                    onPressOut={() => setIsDrawPressed(false)}
+                >
                     <Text style={styles.buttonText}>New Draw</Text>
                 </TouchableOpacity>
             </View>
@@ -65,7 +67,6 @@ const styles = StyleSheet.create({
     artImage: {
         width: "100%",
         height: 297,
-        weight: 297,
         borderRadius: 10,
         resizeMode: "cover",
     },
@@ -134,6 +135,9 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#FFF",
         fontSize: 16,
+    },
+    buttonPressed: {
+        backgroundColor: "#555",
     },
 });
 

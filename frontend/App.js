@@ -7,11 +7,12 @@ import ExploreScreen from './screens/ExploreScreen';
 import AccountScreen from './screens/AccountScreen';
 import MarketScreen from './screens/MarketScreen';
 import BuyingScreen from './screens/BuyingScreen';
+import CheckoutScreen from './screens/CheckoutScreen'; // Ensure this import
 
 import ExploreIcon from './assets/home/explore.png';
-import ExploreIconOutline from './assets/home/explore.png'; // Ensure an outline version exists
+import ExploreIconOutline from './assets/home/explore.png'; // Use an actual outline version
 import AccountIcon from './assets/home/person_2.png';
-import AccountIconOutline from './assets/home/person_2.png'; // Ensure an outline version exists
+import AccountIconOutline from './assets/home/person_2.png'; // Use an actual outline version
 import MarketIcon from './assets/home/add_business.png';
 
 const Tab = createBottomTabNavigator();
@@ -20,11 +21,25 @@ const Stack = createStackNavigator();
 const MarketStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Market" component={MarketScreen} options={{ headerShown: false }} />
-    <Stack.Screen name="Buying" component={BuyingScreen} options={{ headerShown: true, 
-                title: 'Buying', 
-                headerStyle: { backgroundColor: '#79D7BE' }, 
-                headerTintColor: 'black', 
-                headerTitleAlign: 'center' }} 
+    <Stack.Screen 
+      name="Buying" 
+      component={BuyingScreen} 
+      options={{ 
+        title: 'Buying', 
+        headerStyle: { backgroundColor: '#79D7BE' }, 
+        headerTintColor: 'black',
+        headerTitleAlign: 'center' 
+      }} 
+    />
+    <Stack.Screen 
+      name="Checkout" 
+      component={CheckoutScreen} 
+      options={{ 
+        title: 'Checkout', 
+        headerStyle: { backgroundColor: '#79D7BE' }, 
+        headerTintColor: 'black',
+        headerTitleAlign: 'center' 
+      }} 
     />
   </Stack.Navigator>
 );
@@ -76,7 +91,7 @@ export default function App() {
         <Tab.Screen 
           name="Market" 
           component={MarketStack} 
-          options={{ headerShown: false }} // Updated to use MarketStack
+          options={{ headerShown: false }} // Use MarketStack
         />
         <Tab.Screen 
           name="Account" 

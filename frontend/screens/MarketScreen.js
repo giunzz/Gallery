@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import Header from '../components/Header';
-import ProfilePic from '../assets/home/ava.png'; // Update with the correct path to your profile picture
+import CategoryFilter from '../components/FilterButtons'; // Import the new component
+import ProfilePic from '../assets/home/ava.png';
+
+const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
 
 const UserHeader = () => {
     return (
@@ -19,32 +22,40 @@ const UserHeader = () => {
 };
 
 const MarketScreen = ({ navigation }) => {
-    // Dynamically generating market items from 1 to 10
+    const [selectedCategory, setSelectedCategory] = useState("All");
+
     const marketItems = Array.from({ length: 10 }, (_, i) => ({
         id: (i + 1).toString(),
         title: `Artwork ${i + 1}`,
-        image: require("../assets/home/art.png"), // Ensure this image exists
-        price: `$${(i + 1) * 50}`, // Increasing price dynamically
+        image: require("../assets/home/art.png"),
+        price: `$${(i + 1) * 50}`,
     }));
-
-    const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.card}>
-            <Image source={item.image} style={styles.cardImage} />
-            <Text style={styles.itemTitle}>{item.title}</Text>
-            <Text style={styles.itemPrice}>{item.price}</Text>
-        </TouchableOpacity>
-    );
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header navigation={navigation} />
             <UserHeader />
+
+            {/* Importing CategoryFilter */}
+            <CategoryFilter 
+                categories={categories} 
+                selectedCategory={selectedCategory} 
+                onSelectCategory={setSelectedCategory} 
+            />
+
+            {/* Market Items */}
             <View style={styles.container}>
                 <FlatList
                     data={marketItems}
-                    renderItem={renderItem}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={styles.card}>
+                            <Image source={item.image} style={styles.cardImage} />
+                            <Text style={styles.itemTitle}>{item.title}</Text>
+                            <Text style={styles.itemPrice}>{item.price}</Text>
+                        </TouchableOpacity>
+                    )}
                     keyExtractor={(item) => item.id}
-                    numColumns={2} // Display items in a grid format
+                    numColumns={2}
                     contentContainerStyle={styles.listContainer}
                 />
             </View>
@@ -82,22 +93,14 @@ const styles = StyleSheet.create({
         color: 'white',
         marginRight: 5,
     },
-    icon: {
-        width: 20,
-        height: 20,
-    },
     profilePicture: {
         width: 50,
         height: 50,
         borderRadius: 25,
     },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
     listContainer: {
         justifyContent: 'space-between',
+        paddingHorizontal: 16,
     },
     card: {
         flex: 1,

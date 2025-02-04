@@ -1,56 +1,68 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 
-const FilterButtons = ({ selectedFilter, setSelectedFilter }) => {
-    const filters = ["All", "Special", "Natural", "Mandalas", "Wellness"];
+const CategoryFilter = ({ categories, selectedCategory, onSelectCategory }) => {
+    const renderCategory = ({ item }) => (
+        <TouchableOpacity
+            style={[
+                styles.categoryButton,
+                selectedCategory === item && styles.selectedCategoryButton,
+            ]}
+            onPress={() => onSelectCategory(item)}
+        >
+            <Text
+                style={[
+                    styles.categoryText,
+                    selectedCategory === item && styles.selectedCategoryText,
+                ]}
+            >
+                {item}
+            </Text>
+        </TouchableOpacity>
+    );
 
     return (
-        <View style={styles.filterContainer}>
-            {filters.map((filter) => (
-                <TouchableOpacity
-                    key={filter}
-                    style={[
-                        styles.filterButton,
-                        selectedFilter === filter && styles.selectedFilterButton
-                    ]}
-                    onPress={() => setSelectedFilter(filter)}
-                >
-                    <Text style={[
-                        styles.filterButtonText,
-                        selectedFilter === filter && styles.selectedFilterButtonText
-                    ]}>
-                        {filter}
-                    </Text>
-                </TouchableOpacity>
-            ))}
+        <View style={styles.categoryContainer}>
+            <FlatList
+                data={categories}
+                renderItem={renderCategory}
+                keyExtractor={(item) => item}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.categoryList}
+            />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    filterContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 10,
-    },
-    filterButton: {
-        borderWidth: 1,
-        borderColor: '#79D7BE',
-        borderRadius: 20,
+    categoryContainer: {
         paddingVertical: 10,
-        paddingHorizontal: 20,
-        marginHorizontal: 5,
+        backgroundColor: "#F8F8F8",
     },
-    selectedFilterButton: {
-        backgroundColor: '#79D7BE',
+    categoryList: {
+        paddingHorizontal: 16,
     },
-    filterButtonText: {
-        color: 'gray',
+    categoryButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: "#79D7BE",
+        marginRight: 10,
     },
-    selectedFilterButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
+    selectedCategoryButton: {
+        backgroundColor: "#5E9D9F",
+        borderColor: "#5E9D9F",
+    },
+    categoryText: {
+        fontSize: 16,
+        color: "#5E9D9F",
+    },
+    selectedCategoryText: {
+        color: "#FFFFFF",
+        fontWeight: "bold",
     },
 });
 
-export default FilterButtons;
+export default CategoryFilter;

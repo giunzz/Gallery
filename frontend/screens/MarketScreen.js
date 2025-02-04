@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons"; // For cart icon
 import Header from '../components/Header';
 import CategoryFilter from '../components/FilterButtons'; 
 import ProfilePic from '../assets/home/ava.png';
+import UpgradeIcon from '../assets/home/Ellipse.png';
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
 
@@ -16,6 +17,7 @@ const UserHeader = () => {
             </View>
             <TouchableOpacity style={styles.upgradeButton}>
                 <Text style={styles.buttonText}>Upgrade</Text>
+                <Image source={UpgradeIcon} style={styles.icon} />
             </TouchableOpacity>
             <Image source={ProfilePic} style={styles.profilePicture} />
         </View>
@@ -118,9 +120,13 @@ const styles = StyleSheet.create({
         color: 'white',
         marginRight: 5,
     },
+    icon: {
+        width: 20,
+        height: 20,
+    },
     profilePicture: {
-        width: 40,
-        height: 40,
+        width: 50,
+        height: 50,
         borderRadius: 25,
     },
     container: {

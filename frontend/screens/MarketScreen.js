@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // For cart icon
 import Header from '../components/Header';
-import CategoryFilter from '../components/FilterButtons'; // Import the new component
+import CategoryFilter from '../components/FilterButtons'; 
 import ProfilePic from '../assets/home/ava.png';
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
@@ -26,17 +27,46 @@ const MarketScreen = ({ navigation }) => {
 
     const marketItems = Array.from({ length: 10 }, (_, i) => ({
         id: (i + 1).toString(),
-        title: `Artwork ${i + 1}`,
-        image: require("../assets/home/art.png"),
-        price: `$${(i + 1) * 50}`,
+        title: `Lorem ipsum do`, 
+        image: require("../assets/market/art_buy.png"), // Sample image
+        price: `176.000đ`, 
+        username: "@username",
+        userAvatar: require("../assets/market/buy.png"), // Replace with actual path
     }));
+
+    const renderItem = ({ item }) => (
+        <View style={styles.card}>
+            {/* Artwork Image */}
+            <Image source={item.image} style={styles.cardImage} />
+
+            {/* Title & Cart Icon */}
+            <View style={styles.titleContainer}>
+                <Text style={styles.itemTitle}>{item.title}</Text>
+                <TouchableOpacity>
+                    <Ionicons name="cart-outline" size={20} color="black" />
+                </TouchableOpacity>
+            </View>
+
+            {/* User Info & Price */}
+            <View style={styles.userPriceContainer}>
+                {/* User Info */}
+                <View style={styles.userContainer}>
+                    <Image source={item.userAvatar} style={styles.userAvatar} />
+                    <Text style={styles.username}>{item.username}</Text>
+                </View>
+
+                {/* Price */}
+                <Text style={styles.itemPrice}>{item.price}</Text>
+            </View>
+        </View>
+    );
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header navigation={navigation} />
             <UserHeader />
 
-            {/* Importing CategoryFilter */}
+            {/* Category Filter */}
             <CategoryFilter 
                 categories={categories} 
                 selectedCategory={selectedCategory} 
@@ -47,15 +77,9 @@ const MarketScreen = ({ navigation }) => {
             <View style={styles.container}>
                 <FlatList
                     data={marketItems}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.card}>
-                            <Image source={item.image} style={styles.cardImage} />
-                            <Text style={styles.itemTitle}>{item.title}</Text>
-                            <Text style={styles.itemPrice}>{item.price}</Text>
-                        </TouchableOpacity>
-                    )}
+                    renderItem={renderItem}
                     keyExtractor={(item) => item.id}
-                    numColumns={2}
+                    numColumns={2} // Grid format
                     contentContainerStyle={styles.listContainer}
                 />
             </View>
@@ -88,42 +112,80 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
+        right : 5
     },
     buttonText: {
         color: 'white',
         marginRight: 5,
     },
     profilePicture: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         borderRadius: 25,
+    },
+    container: {
+        flex: 1,
+        paddingHorizontal: 16,
     },
     listContainer: {
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
+        paddingBottom: 20,
     },
     card: {
         flex: 1,
-        margin: 10,
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
-        elevation: 3,
         padding: 10,
+        margin: 10,
+        elevation: 3,
         alignItems: 'center',
+        width: "45%", // Adjusted for spacing
     },
     cardImage: {
-        width: '100%',
+        width: "100%",
         height: 150,
         borderRadius: 10,
+        resizeMode: "cover",
+    },
+    titleContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        marginTop: 8,
     },
     itemTitle: {
         fontSize: 16,
-        fontWeight: 'bold',
-        marginVertical: 5,
+        fontWeight: "bold",
+        flex: 1, 
+    },
+    userPriceContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        marginTop: 8,
+    },
+    userContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    userAvatar: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        marginRight: 5,
+    },
+    username: {
+        fontSize: 10,
+        fontWeight: "bold",
+        color: "gray",
+        right : 3
     },
     itemPrice: {
         fontSize: 14,
-        color: 'gray',
+        fontWeight: "bold",
+        color: "#2A9D8F", 
     },
 });
 

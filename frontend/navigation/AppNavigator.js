@@ -7,6 +7,7 @@ import AccountScreen from '../screens/AccountScreen';
 import MarketScreen from '../screens/MarketScreen';
 import BuyingScreen from '../screens/BuyingScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
+import LibraryScreen from '../screens/Library'; // Import the LibraryScreen
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -22,7 +23,8 @@ const MarketStack = () => (
                 title: 'Buying', 
                 headerStyle: { backgroundColor: '#79D7BE' }, 
                 headerTintColor: 'black', 
-                headerTitleAlign: 'center', }} 
+                headerTitleAlign: 'center', 
+            }} 
         />
         <Stack.Screen 
             name="Checkout" 
@@ -32,7 +34,8 @@ const MarketStack = () => (
                 title: 'Checkout', 
                 headerStyle: { backgroundColor: '#79D7BE' }, 
                 headerTintColor: 'black', 
-                headerTitleAlign: 'center', }} 
+                headerTitleAlign: 'center', 
+            }} 
         />
     </Stack.Navigator>
 );
@@ -41,9 +44,30 @@ const AppNavigator = () => {
     return (
         <NavigationContainer>
             <Tab.Navigator>
-                <Tab.Screen name="Explore" component={ExploreScreen} options={{ headerShown: false }} />
-                <Tab.Screen name="Market" component={MarketStack} options={{ headerShown: false }} />
-                <Tab.Screen name="Account" component={AccountScreen} options={{ headerShown: false }} />
+                <Tab.Screen 
+                    name="Explore" 
+                    component={ExploreScreen} 
+                    options={{ headerShown: false }} 
+                />
+                <Tab.Screen 
+                    name="Market" 
+                    component={MarketStack} 
+                    options={{ headerShown: false }} 
+                />
+                <Tab.Screen 
+                    name="Library" // Add the Library tab
+                    component={LibraryScreen} 
+                    options={{ headerShown: true, 
+                        title: 'Library',  
+                        headerStyle: { backgroundColor: '#79D7BE' }, 
+                        headerTintColor: 'black', 
+                        headerTitleAlign: 'center', }} 
+                />
+                <Tab.Screen 
+                    name="Account" 
+                    component={AccountScreen} 
+                    options={{ headerShown: false }} 
+                />
             </Tab.Navigator>
         </NavigationContainer>
     );

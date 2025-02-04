@@ -7,13 +7,15 @@ import ExploreScreen from './screens/ExploreScreen';
 import AccountScreen from './screens/AccountScreen';
 import MarketScreen from './screens/MarketScreen';
 import BuyingScreen from './screens/BuyingScreen';
-import CheckoutScreen from './screens/CheckoutScreen'; // Ensure this import
+import CheckoutScreen from './screens/CheckoutScreen'; 
+import LibraryScreen from './screens/Library'; // Added LibraryScreen
 
 import ExploreIcon from './assets/home/explore.png';
-import ExploreIconOutline from './assets/home/explore.png'; // Use an actual outline version
+import ExploreIconOutline from './assets/home/explore.png'; 
 import AccountIcon from './assets/home/person_2.png';
-import AccountIconOutline from './assets/home/person_2.png'; // Use an actual outline version
+import AccountIconOutline from './assets/home/person_2.png'; 
 import MarketIcon from './assets/home/add_business.png';
+import LibaryIcon from './assets/home/Library.png';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -44,7 +46,12 @@ const MarketStack = () => (
   </Stack.Navigator>
 );
 
-// Function to render tab icons
+const LibraryStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Library" component={LibraryScreen} options={{ headerShown: false }} />
+  </Stack.Navigator>
+);
+
 const renderIcon = (routeName, focused, size) => {
   let iconSource;
 
@@ -57,6 +64,9 @@ const renderIcon = (routeName, focused, size) => {
       break;
     case 'Market':
       iconSource = MarketIcon; 
+      break;
+    case 'Library':
+      iconSource = LibaryIcon;
       break;
     default:
       iconSource = null;
@@ -86,17 +96,22 @@ export default function App() {
         <Tab.Screen 
           name="Explore" 
           component={ExploreScreen} 
-          options={{ headerShown: false }} // Hide header for Explore tab
+          options={{ headerShown: false }} 
         />
         <Tab.Screen 
           name="Market" 
           component={MarketStack} 
-          options={{ headerShown: false }} // Use MarketStack
+          options={{ headerShown: false }} 
+        />
+        <Tab.Screen 
+          name="Library" 
+          component={LibraryStack} 
+          options={{ headerShown: false }} 
         />
         <Tab.Screen 
           name="Account" 
           component={AccountScreen} 
-          options={{ headerShown: false }} // Optionally hide header for Account tab
+          options={{ headerShown: false }} 
         />
       </Tab.Navigator>
       <StatusBar style="auto" />

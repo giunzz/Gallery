@@ -8,6 +8,7 @@ import ArtImage from '../assets/home/art.png';
 
 const LibraryScreen = ({ navigation }) => {
     const [selectedItems, setSelectedItems] = useState([]);
+    const [selectedArtwork, setSelectedArtwork] = useState(null); // Store the selected artwork
 
     const artworks = Array.from({ length: 10 }, (_, i) => ({
         id: i + 1,
@@ -22,10 +23,19 @@ const LibraryScreen = ({ navigation }) => {
         );
     };
 
+    const handleViewButtonPress = () => {
+        if (selectedArtwork) {
+            navigation.navigate('ArtworkDetail', { artwork: selectedArtwork });
+        }
+    };
+
     const renderItem = ({ item }) => (
         <TouchableOpacity 
             style={[styles.card, selectedItems.includes(item.id) && styles.selectedCard]} 
-            onPress={() => toggleSelection(item.id)}
+            onPress={() => {
+                toggleSelection(item.id);
+                setSelectedArtwork(item); // Update selected artwork when clicked
+            }}
         >
             <Image source={item.image} style={styles.cardImage} />
             <Text style={styles.cardTitle}>{item.title}</Text>
@@ -41,7 +51,7 @@ const LibraryScreen = ({ navigation }) => {
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="chevron-back" size={24} color="black"  />
+                    <Ionicons name="chevron-back" size={24} color="black" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Library</Text>
                 <Text style={styles.headerTitle}>|</Text>
@@ -67,8 +77,11 @@ const LibraryScreen = ({ navigation }) => {
                     <Text style={styles.bottomText}>New art</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />
-                <TouchableOpacity style={styles.bottomButton}>
-                    <Text style={styles.bottomText}>Publish</Text>
+                <TouchableOpacity 
+                    style={styles.bottomButton} 
+                    onPress={handleViewButtonPress}  // Trigger the navigation to the detail screen
+                >
+                    <Text style={styles.bottomText}>View</Text>
                     <Ionicons name="arrow-forward" size={18} color="black" />
                 </TouchableOpacity>
             </View>
@@ -104,7 +117,6 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginRight: 10,
-        
     },
     grid: {
         paddingBottom: 80,

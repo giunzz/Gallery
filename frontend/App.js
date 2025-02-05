@@ -9,17 +9,22 @@ import MarketScreen from './screens/MarketScreen';
 import BuyingScreen from './screens/BuyingScreen';
 import CheckoutScreen from './screens/CheckoutScreen'; 
 import LibraryScreen from './screens/Library'; // Added LibraryScreen
+import CameraScreen from './screens/CameraScreen'; // Import CameraScreen
+import ArtworkDetailScreen from './screens/ArtworkDetailScreen';  // Import ArtworkDetailScreen
+import Publish_buy from './screens/PublishScreen_buy'; // Import PublishScreen_buy (PublishScreen_buy_buy)
 
 import ExploreIcon from './assets/home/explore.png';
 import ExploreIconOutline from './assets/home/explore.png'; 
 import AccountIcon from './assets/home/person_2.png';
 import AccountIconOutline from './assets/home/person_2.png'; 
 import MarketIcon from './assets/home/add_business.png';
-import LibaryIcon from './assets/home/Library.png';
+import LibraryIcon from './assets/home/Library.png';
+import CameraIcon from './assets/home/scan.png'; // Add an icon for the camera
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+// MarketStack contains the flow for the "Market" section
 const MarketStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Market" component={MarketScreen} options={{ headerShown: false }} />
@@ -46,9 +51,30 @@ const MarketStack = () => (
   </Stack.Navigator>
 );
 
+// LibraryStack contains the flow for the "Library" section
 const LibraryStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Library" component={LibraryScreen} options={{ headerShown: false }} />
+    <Stack.Screen 
+      name="ArtworkDetail" 
+      component={ArtworkDetailScreen} 
+      options={{ 
+        title: 'Artwork Details', 
+        headerStyle: { backgroundColor: '#79D7BE' }, 
+        headerTintColor: 'black',
+        headerTitleAlign: 'center' 
+      }} 
+    />
+    <Stack.Screen 
+      name="Publish_buy" 
+      component={Publish_buy} 
+      options={{ 
+        title: 'Publish Artwork', 
+        headerStyle: { backgroundColor: '#79D7BE' }, 
+        headerTintColor: 'black', 
+        headerTitleAlign: 'center' 
+      }} 
+    />
   </Stack.Navigator>
 );
 
@@ -66,7 +92,10 @@ const renderIcon = (routeName, focused, size) => {
       iconSource = MarketIcon; 
       break;
     case 'Library':
-      iconSource = LibaryIcon;
+      iconSource = LibraryIcon;
+      break;
+    case 'Camera': // Add case for Camera tab
+      iconSource = CameraIcon;
       break;
     default:
       iconSource = null;
@@ -107,6 +136,16 @@ export default function App() {
           name="Library" 
           component={LibraryStack} 
           options={{ headerShown: false }} 
+        />
+        <Tab.Screen 
+          name="Camera"  // Add the Camera tab
+          component={CameraScreen} 
+          options={{ 
+            title: 'Camera', 
+            headerStyle: { backgroundColor: '#79D7BE' }, 
+            headerTintColor: 'black', 
+            headerTitleAlign: 'center', 
+          }} 
         />
         <Tab.Screen 
           name="Account" 

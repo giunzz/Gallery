@@ -91,7 +91,7 @@ const ProfileScreen = ({ navigation }) => {
                                 <Text style={styles.artTitle}>{item.title}</Text>
                                 <View style={styles.artActions}>
                                     <TouchableOpacity style={styles.viewButton}>
-                                        <Text style={styles.viewText}>View</Text>
+                                        <Text style={styles.viewText}>Publish</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.musicButton}>
                                         <Text style={styles.musicText}>Listen music</Text>

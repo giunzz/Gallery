@@ -6,7 +6,7 @@ import { LibraryContext } from '../screens/LibraryContext';
 const CheckoutScreen = ({ route, navigation }) => {
     const { item } = route.params;
     const [selectedPayment, setSelectedPayment] = useState("Mastercard");
-    const { addItemToLibrary } = useContext(LibraryContext); // ✅ Add item to library on payment success
+    const { addItemToLibrary } = useContext(LibraryContext); 
 
     const paymentMethods = [
         { id: "Mastercard", name: "Master Card", image: require("../assets/payments/mastercard.png") },
@@ -15,10 +15,10 @@ const CheckoutScreen = ({ route, navigation }) => {
     ];
 
     const handleCheckout = async () => {
-        const paymentSuccessful = true; // Simulated payment logic
+        const paymentSuccessful = true; 
         if (paymentSuccessful) {
-            addItemToLibrary(item); // ✅ Add item to library
-            navigation.navigate("Library"); // ✅ Navigate to Library after payment
+            addItemToLibrary(item); 
+            navigation.navigate("Library"); 
         } else {
             alert("Payment failed. Please try again.");
         }

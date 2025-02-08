@@ -5,6 +5,26 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Header from '../components/Header';
 
+import { TextInput } from 'react-native';
+import {
+	WalletConnectModal,
+	useWalletConnectModal,
+} from '@walletconnect/modal-react-native';
+
+import config from '../config.js'
+const projectId = config.PROJECT_ID;
+
+const providerMetadata = {
+	name: 'YOUR_PROJECT_NAME',
+	description: 'YOUR_PROJECT_DESCRIPTION',
+	url: 'https://your-project-website.com/',
+	icons: ['https://your-project-logo.com/'],
+	redirect: {
+		native: 'YOUR_APP_SCHEME://',
+		universal: 'YOUR_APP_UNIVERSAL_LINK.com',
+	},
+};
+
 // Dummy Data for Collection
 const collectionData = [
     { id: "1", title: "Looking", image: require("../assets/home/art.png") },
@@ -13,6 +33,46 @@ const collectionData = [
 ];
 
 const ProfileScreen = ({ navigation }) => {
+    const { open, isConnected, address, provider } = useWalletConnectModal();
+
+	const [text, setText] = React.useState('');
+
+	const handleTextChange = (inputText) => {
+		setText(inputText);
+		// console.log(text);
+	};
+
+	const signText = async (text) => {
+		try {
+			if (text == "") {
+				throw new Error("Text is empty");
+			}
+			if (!isConnected) {
+				throw new Error("Wallet is not connected");
+			}
+		
+			const message = text; //encodeUtf8(text);
+			// provider.cleanupPendingPairings();
+			const signature = await provider.request({
+				method: "personal_sign",
+				params: [message, address],
+			});
+		
+			return signature;
+		} catch (error) {
+			console.error("Signing failed:", error);
+			return null;
+		}
+	};
+
+	const connectWallet = async () => {
+		if (isConnected) {
+			return provider?.disconnect();
+		}
+		return open();
+	};
+	
+
     const [selectedTab, setSelectedTab] = useState("Collection");
 
     return (

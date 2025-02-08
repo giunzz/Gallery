@@ -1,12 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import RectangleDrawing from './components/RectangleDrawing';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Hello Dung cute!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <RectangleDrawing />
   );
 }
 

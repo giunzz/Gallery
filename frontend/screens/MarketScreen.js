@@ -29,7 +29,7 @@ const MarketScreen = ({ navigation }) => {
 
     const marketItems = Array.from({ length: 10 }, (_, i) => ({
         id: (i + 1).toString(),
-        title: `Lorem ipsum do`, 
+        title: `Artwork_buy ${i + 1}`, 
         image: require("../assets/market/art_buy.png"), // Sample image
         price: `176.000đ`, 
         username: "@username",

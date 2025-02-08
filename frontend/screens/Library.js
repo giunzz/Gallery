@@ -69,9 +69,9 @@ const LibraryScreen = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="chevron-back" size={24} color="black" />
-                </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerTitle}>
+                <Ionicons name="chevron-back" size={24} color="black" />
+            </TouchableOpacity>
                 <Text style={styles.headerTitle}>Library</Text>
                 <Text style={styles.headerTitle}>|</Text>
                 <Text style={styles.headerTitle}>Settings</Text>
@@ -109,22 +109,97 @@ const LibraryScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 1 },
-    header: { flexDirection: "row", alignItems: "center", backgroundColor: "#79D7BE", justifyContent: "space-between", paddingVertical: 25, paddingHorizontal: 16, borderBottomWidth: 1, borderColor: "#ddd" },
-    headerTitle: { fontSize: 20, fontWeight: "bold", marginHorizontal: 5, top: 10 },
-    headerIcons: { flexDirection: "row", top: 10 },
-    icon: { marginRight: 10 },
-    grid: { paddingBottom: 80 },
-    card: { flex: 1, backgroundColor: "#F8F8F8", borderRadius: 10, margin: 10, padding: 10, alignItems: "center", position: "relative" },
-    selectedCard: { borderWidth: 2, borderColor: "#79D7BE" },
-    cardImage: { width: "100%", height: 150, borderRadius: 10 },
-    cardTitle: { fontSize: 14, fontWeight: "bold", marginTop: 5 },
-    cardArtist: { fontSize: 12, color: "gray" },
-    checkIcon: { position: "absolute", top: 10, right: 10 },
-    bottomBar: { flexDirection: "row", alignItems: "center", backgroundColor: "#79D7BE", paddingVertical: 10, paddingHorizontal: 16, justifyContent: "space-between", position: "absolute", bottom: 0, left: 0, right: 0 },
-    bottomButton: { flexDirection: "row", alignItems: "center" },
-    bottomText: { fontSize: 16, fontWeight: "bold", color: "black", marginRight: 5 },
-    divider: { width: 1, height: 20, backgroundColor: "black" },
+    container: {
+        flex: 1,
+        backgroundColor: "#FFFFFF",
+        paddingHorizontal: 1,
+    },
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#79D7BE",
+        justifyContent: "space-between",
+        paddingVertical: 25,
+        paddingHorizontal: 16,
+        borderBottomWidth: 1,
+        borderColor: "#ddd",
+    },
+    headerTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginHorizontal: 10,
+        top: 10,
+    },
+    headerIcons: {
+        flexDirection: "row",
+        top: 10,
+    },
+    icon: {
+        marginRight: 10,
+    },
+    grid: {
+        paddingBottom: 80,
+    },
+    card: {
+        flex: 1,
+        backgroundColor: "#F8F8F8",
+        borderRadius: 10,
+        margin: 10,
+        padding: 10,
+        alignItems: "center",
+        position: "relative",
+    },
+    selectedCard: {
+        borderWidth: 2,
+        borderColor: "#79D7BE",
+    },
+    cardImage: {
+        width: "100%",
+        height: 150,
+        borderRadius: 10,
+    },
+    cardTitle: {
+        fontSize: 14,
+        fontWeight: "bold",
+        marginTop: 5,
+    },
+    cardArtist: {
+        fontSize: 12,
+        color: "gray",
+    },
+    checkIcon: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+    },
+    bottomBar: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#79D7BE",
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        justifyContent: "space-between",
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
+    bottomButton: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    bottomText: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "black",
+        marginRight: 5,
+    },
+    divider: {
+        width: 1,
+        height: 20,
+        backgroundColor: "black",
+    },
 });
+
 
 export default LibraryScreen;

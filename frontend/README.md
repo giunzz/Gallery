@@ -24,3 +24,7 @@ Choose a template: » blank
 │   ├── README.md        # Frontend docs
 │
 ```
+flex: 1,
+        backgroundColor: "#D1F0E8",
+        paddingHorizontal: 16,
+        paddingTop: 10,

@@ -33,7 +33,6 @@ const UserHeader = () => {
     );
 };
 
-// Newfeed Art Component
 const NewfeedArt = ({ imageSource, title }) => {
     return (
         <View style={styles.newfeedCard}>
@@ -90,7 +89,7 @@ const ExploreScreen = () => {
 
                 {/* Middle Cards */}
                 <View style={styles.middleCardContainer}>
-                    <TouchableOpacity onPress={() => navigation.navigate('GeneratePlatter')} style={styles.middleCard}>
+                <TouchableOpacity onPress={() => navigation.navigate('GenerateArtScreen')} style={styles.middleCard}>
                         <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard}>
                             <Image source={require('../assets/home/chat.png')} style={styles.cardVisualSmall} />
                         </Card>

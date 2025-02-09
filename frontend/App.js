@@ -8,11 +8,13 @@ import ExploreScreen from './screens/ExploreScreen';
 import AccountScreen from './screens/AccountScreen';
 import MarketScreen from './screens/MarketScreen';
 import BuyingScreen from './screens/BuyingScreen';
-import CheckoutScreen from './screens/CheckoutScreen'; 
+import CheckoutScreen from './screens/CheckoutScreen';
 import LibraryScreen from './screens/Library';
 import CameraScreen from './screens/CameraScreen';
 import ArtworkDetailScreen from './screens/ArtworkDetailScreen';
 import Publish_buy from './screens/PublishScreen_buy';
+import GenerateArtScreen from './screens/GenerateArtScreen';
+import CanvasSizeScreen from './screens/CanvasSizeScreen'; // ✅ Added Canvas Size Screen
 
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';
@@ -20,11 +22,12 @@ import MarketIcon from './assets/home/add_business.png';
 import LibraryIcon from './assets/home/Library.png';
 import CameraIcon from './assets/home/scan.png';
 
-import { LibraryProvider } from './screens/LibraryContext'; // Corrected import
+import { LibraryProvider } from './screens/LibraryContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+// **Market Stack**
 const MarketStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Market" component={MarketScreen} options={{ headerShown: false }} />
@@ -41,6 +44,7 @@ const MarketStack = () => (
   </Stack.Navigator>
 );
 
+// **Library Stack**
 const LibraryStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Library" component={LibraryScreen} options={{ headerShown: false }} />
@@ -57,39 +61,75 @@ const LibraryStack = () => (
   </Stack.Navigator>
 );
 
-const renderIcon = (routeName, size) => {
-  let iconSource;
-  switch (routeName) {
-    case 'Explore': iconSource = ExploreIcon; break;
-    case 'Account': iconSource = AccountIcon; break;
-    case 'Market': iconSource = MarketIcon; break;
-    case 'Library': iconSource = LibraryIcon; break;
-    case 'Camera': iconSource = CameraIcon; break;
-    default: iconSource = null;
-  }
-  return <Image source={iconSource} style={{ width: size, height: size }} />;
-};
+//  **Main Tab Navigator**
+const MainTabs = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ size }) => renderIcon(route.name, size),
+      tabBarActiveTintColor: '#00BFFF',
+      tabBarInactiveTintColor: 'gray',
+      tabBarStyle: { backgroundColor: '#E0FFFF' },
+    })}
+  >
+    <Tab.Screen name="Explore" component={ExploreScreen} options={{ headerShown: false }} />
+    <Tab.Screen name="Market" component={MarketStack} options={{ headerShown: false }} />
+    <Tab.Screen name="Library" component={LibraryStack} options={{ headerShown: false }} />
+    <Tab.Screen 
+      name="Camera" 
+      component={CameraScreen} 
+      options={{ title: 'Camera', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
+    />
+    <Tab.Screen name="Account" component={AccountScreen} options={{ headerShown: false }} />
+  </Tab.Navigator>
+);
 
+// **Main App Navigation**
 export default function App() {
   return (
     <LibraryProvider>
       <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ size }) => renderIcon(route.name, size),
-            tabBarActiveTintColor: '#00BFFF',
-            tabBarInactiveTintColor: 'gray',
-            tabBarStyle: { backgroundColor: '#E0FFFF' },
-          })}
-        >
-          <Tab.Screen name="Explore" component={ExploreScreen} options={{ headerShown: false }} />
-          <Tab.Screen name="Market" component={MarketStack} options={{ headerShown: false }} />
-          <Tab.Screen name="Library" component={LibraryStack} options={{ headerShown: false }} />
-          <Tab.Screen name="Camera" component={CameraScreen} options={{ title: 'Camera', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} />
-          <Tab.Screen name="Account" component={AccountScreen} options={{ headerShown: false }} />
-        </Tab.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {/* Main Tabs */}
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+
+          {/* Additional Screens */}
+          <Stack.Screen 
+            name="GenerateArtScreen" 
+            component={GenerateArtScreen} 
+            options={{ 
+              headerShown: true, 
+              title: "Generate Art", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: "black",
+              headerTitleAlign: "center",
+            }} 
+          />
+          <Stack.Screen 
+            name="CanvasSizeScreen" 
+            component={CanvasSizeScreen} 
+            options={{ 
+              headerShown: true, 
+              title: "Canvas Size", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: "black",
+              headerTitleAlign: "center",
+            }} 
+          />
+        </Stack.Navigator>
         <StatusBar style="auto" />
       </NavigationContainer>
     </LibraryProvider>
   );
 }
+
+// **Icon Renderer for Bottom Tabs**
+const renderIcon = (routeName, size) => {
+  const icons = {
+    Explore: ExploreIcon,
+    Account: AccountIcon,
+    Market: MarketIcon,
+    Library: LibraryIcon,
+    Camera: CameraIcon,
+  };
+  return <Image source={icons[routeName]} style={{ width: size, height: size }} />;
+};

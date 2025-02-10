@@ -10,16 +10,14 @@ const PublishScreen = ({ route, navigation }) => {
         setSelectedPlan(plan);
     };
 
-    // Handle navigation to Checkout
+    // Navigate to MarketScreen and pass artwork data
     const handleTryFreePress = () => {
         if (selectedPlan) {
-            // Navigate to Checkout and pass the selected plan and artwork data
-            navigation.push('CheckoutScreen', {
-                artwork: artwork,
-                plan: selectedPlan,
+            navigation.push('MarketScreen', {
+                artwork: artwork,  // Pass artwork data
+                plan: selectedPlan,  // Pass the selected plan
             });
         } else {
-            // Optional: Display an alert if no plan was selected
             alert('Please select a plan first');
         }
     };
@@ -28,7 +26,7 @@ const PublishScreen = ({ route, navigation }) => {
         <View style={styles.container}>
             {/* Artwork Image */}
             <Image 
-                source={artwork.image} // Use the image passed from ArtworkDetailScreen
+                source={artwork.image}  // Use the artwork image passed from ArtworkDetailScreen
                 style={styles.artworkImage}
                 resizeMode="contain"
             />
@@ -37,28 +35,22 @@ const PublishScreen = ({ route, navigation }) => {
             <View style={styles.pricingContainer}>
                 {/* Monthly Plan */}
                 <TouchableOpacity 
-                    style={[
-                        styles.card, 
-                        selectedPlan === 'monthly' && styles.selectedCard
-                    ]}
+                    style={[styles.card, selectedPlan === 'monthly' && styles.selectedCard]}
                     onPress={() => handlePlanSelect('monthly')}
                 >
-                    <Text style={styles.price}>$9.99</Text>
+                    <Text style={styles.price}>50.000 VND</Text>
                     <Text style={styles.billing}>/month</Text>
-                    <Text style={styles.billing}>Billed monthly</Text>
+                    <Text style={styles.billing}>Normal customers</Text>
                 </TouchableOpacity>
 
                 {/* Yearly Plan */}
                 <TouchableOpacity 
-                    style={[
-                        styles.card, 
-                        selectedPlan === 'yearly' && styles.selectedCard
-                    ]}
+                    style={[styles.card, selectedPlan === 'yearly' && styles.selectedCard]}
                     onPress={() => handlePlanSelect('yearly')}
                 >
-                    <Text style={styles.price}>$4.17</Text>
+                    <Text style={styles.price}>100.000 VND</Text>
                     <Text style={styles.billing}>/month</Text>
-                    <Text style={styles.yearly}>Billed yearly</Text>
+                    <Text style={styles.yearly}>Premium</Text>
                     <Text style={styles.discount}>56% off</Text>
                 </TouchableOpacity>
             </View>
@@ -66,7 +58,7 @@ const PublishScreen = ({ route, navigation }) => {
             {/* Call to Action Button */}
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={handleTryFreePress}  
+                onPress={handleTryFreePress}  // Navigate to MarketScreen
             >
                 <Text style={styles.buttonText}>Try free for 7 days</Text>
             </TouchableOpacity>
@@ -98,27 +90,23 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 15,
         alignItems: 'center',
+        width: '48%',
         shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.3,
         shadowRadius: 1.5,
         elevation: 3,
-        width: '48%',
     },
-
     selectedCard: {
         borderWidth: 2,
         borderColor: '#79D7BE',
     },
     price: {
-        fontSize: 32,
+        fontSize: 22,
         fontWeight: 'bold',
     },
     billing: {
-        fontSize: 16,
+        fontSize: 14,
     },
     yearly: {
         fontSize: 12,

@@ -14,7 +14,8 @@ import CameraScreen from './screens/CameraScreen';
 import ArtworkDetailScreen from './screens/ArtworkDetailScreen';
 import Publish_buy from './screens/PublishScreen_buy';
 import GenerateArtScreen from './screens/GenerateArtScreen';
-import CanvasSizeScreen from './screens/CanvasSizeScreen'; // ✅ Added Canvas Size Screen
+import CanvasSizeScreen from './screens/CanvasSizeScreen';
+import ReportScreen from './screens/ReportScreen'; // Add ReportScreen import
 
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';
@@ -61,7 +62,7 @@ const LibraryStack = () => (
   </Stack.Navigator>
 );
 
-//  **Main Tab Navigator**
+// **Main Tab Navigator**
 const MainTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -114,6 +115,17 @@ export default function App() {
               headerTintColor: "black",
               headerTitleAlign: "center",
             }} 
+          />
+          <Stack.Screen 
+            name="ReportScreen" // Add ReportScreen to the navigation stack
+            component={ReportScreen} 
+            options={{ 
+              headerShown: true, 
+              title: "Report Artwork", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: 'black', 
+              headerTitleAlign: 'center'
+            }}
           />
         </Stack.Navigator>
         <StatusBar style="auto" />

@@ -33,7 +33,9 @@ const UserHeader = () => {
     );
 };
 
-const NewfeedArt = ({ imageSource, title }) => {
+const NewfeedArt = ({ imageSource, title, artistName }) => {
+    const navigation = useNavigation();
+
     return (
         <View style={styles.newfeedCard}>
             {/* Artwork Image */}
@@ -52,13 +54,19 @@ const NewfeedArt = ({ imageSource, title }) => {
                     <Icon name="chatbubble-outline" size={24} color="black" />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.reportButton}>
+                <TouchableOpacity
+                    style={styles.reportButton}
+                    onPress={() => navigation.navigate('ReportScreen', { artwork: { title, artistName, imageSource } })}
+                >
                     <Text style={styles.reportText}>Report</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 };
+
+
+
 
 const ExploreScreen = () => {
     const navigation = useNavigation();

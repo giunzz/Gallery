@@ -12,7 +12,9 @@ import CameraScreen from '../screens/CameraScreen';
 import ArtworkDetailScreen from '../screens/ArtworkDetailScreen';
 import Publish_buy from '../screens/PublishScreen_buy';
 import GenerateArtScreen from '../screens/GenerateArtScreen';
-import CanvasSizeScreen from '../screens/CanvasSizeScreen'; 
+import CanvasSizeScreen from '../screens/CanvasSizeScreen';
+import ReportScreen from '../screens/ReportScreen'; // Import the new ReportScreen
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -107,7 +109,6 @@ const AppNavigator = () => {
                 {/* Main Tabs */}
                 <Stack.Screen name="MainTabs" component={BottomTabs} />
 
-                {/* Screens outside of Tabs */}
                 <Stack.Screen 
                     name="GenerateArtScreen" 
                     component={GenerateArtScreen} 
@@ -129,6 +130,28 @@ const AppNavigator = () => {
                         headerTintColor: "black",
                         headerTitleAlign: "center",
                     }} 
+                />
+                <Stack.Screen 
+                    name="MarketScreen" 
+                    component={MarketScreen} 
+                    options={{ 
+                        headerShown: true, 
+                        title: "Market", 
+                        headerStyle: { backgroundColor: '#79D7BE' }, 
+                        headerTintColor: 'black', 
+                        headerTitleAlign: 'center'
+                    }}
+                />
+                <Stack.Screen 
+                    name="ReportScreen" // Add ReportScreen here
+                    component={ReportScreen} 
+                    options={{ 
+                        headerShown: true, 
+                        title: "Report", 
+                        headerStyle: { backgroundColor: '#79D7BE' }, 
+                        headerTintColor: 'black', 
+                        headerTitleAlign: 'center'
+                    }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

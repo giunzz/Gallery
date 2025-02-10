@@ -10,7 +10,6 @@ const PublishScreen = ({ route, navigation }) => {
         setSelectedPlan(plan);
     };
 
-    // Navigate to MarketScreen and pass artwork data
     const handleTryFreePress = () => {
         if (selectedPlan) {
             navigation.push('MarketScreen', {
@@ -21,6 +20,7 @@ const PublishScreen = ({ route, navigation }) => {
             alert('Please select a plan first');
         }
     };
+    
 
     return (
         <View style={styles.container}>

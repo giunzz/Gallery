@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import React, { useState, useContext } from "react";
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // For cart icon
 import Header from '../components/Header';
 import CategoryFilter from '../components/FilterButtons'; 
 import ProfilePic from '../assets/home/ava.png';
 import UpgradeIcon from '../assets/home/Ellipse.png';
+import { LibraryContext } from '../screens/LibraryContext'; // Ensure to import the context
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
 
@@ -25,16 +26,12 @@ const UserHeader = () => {
 };
 
 const MarketScreen = ({ navigation }) => {
+    const { libraryItems } = useContext(LibraryContext); 
     const [selectedCategory, setSelectedCategory] = useState("All");
 
-    const marketItems = Array.from({ length: 10 }, (_, i) => ({
-        id: (i + 1).toString(),
-        title: `Artwork_buy ${i + 1}`, 
-        image: require("../assets/market/art_buy.png"), // Sample image
-        price: `176.000đ`, 
-        username: "@username",
-        userAvatar: require("../assets/market/buy.png"), // Replace with actual path
-    }));
+    const marketItems = libraryItems.filter(item => 
+        selectedCategory === "All" || item.category === selectedCategory
+    );
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Buying", { item })}>
@@ -81,7 +78,7 @@ const MarketScreen = ({ navigation }) => {
                     data={marketItems}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
-                    numColumns={2} // Grid format
+                    numColumns={2} 
                     contentContainerStyle={styles.listContainer}
                 />
             </View>
@@ -94,7 +91,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FFFFF',
+        backgroundColor: '#FFFFFF',
     },
     greetingContainer: {
         flex: 1,

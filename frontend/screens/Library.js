@@ -6,7 +6,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { LibraryContext } from '../screens/LibraryContext';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ArtImage from '../assets/home/art.png';
+import ArtImage from '../assets/market/pic.png';
 
 const LibraryScreen = ({ navigation }) => {
     const { libraryItems } = useContext(LibraryContext);
@@ -24,7 +24,7 @@ const LibraryScreen = ({ navigation }) => {
             const parsedLibrary = savedLibrary ? JSON.parse(savedLibrary) : [];
             setArtworks([
                 ...parsedLibrary, 
-                ...Array.from({ length: 10 }, (_, i) => ({
+                ...Array.from({ length: 100 }, (_, i) => ({
                     id: `static-${i + 1}`,
                     title: `Artwork ${i + 1}`,
                     type: `Type ${i + 1}`,

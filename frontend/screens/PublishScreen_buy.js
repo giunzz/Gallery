@@ -1,26 +1,41 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { LibraryContext } from './LibraryContext'; // Import the context to manage library items
+import { CommonActions } from '@react-navigation/native'; // Import CommonActions
+import ProfilePic from '../assets/home/ava.png';
 
 const PublishScreen = ({ route, navigation }) => {
     const { artwork } = route.params;  // Get the artwork object passed from ArtworkDetailScreen
     const [selectedPlan, setSelectedPlan] = useState(null);
+    const { addItemToLibrary } = useContext(LibraryContext); // Access the context
 
-    // Handle plan selection
     const handlePlanSelect = (plan) => {
         setSelectedPlan(plan);
     };
 
     const handleTryFreePress = () => {
         if (selectedPlan) {
-            navigation.push('MarketScreen', {
-                artwork: artwork,  // Pass artwork data
-                plan: selectedPlan,  // Pass the selected plan
-            });
+            addItemToLibrary(artwork); // Add the artwork to your library context
+
+            // Show success alert
+            Alert.alert("Success", "Artwork has been successfully published!", [
+                {
+                    text: "OK",
+                    onPress: () => {
+                        // Reset the navigation state and navigate to Market
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Market' }],
+                            })
+                        );
+                    }
+                }
+            ]);
         } else {
-            alert('Please select a plan first');
+            Alert.alert('Warning', 'Please select a plan first');
         }
     };
-    
 
     return (
         <View style={styles.container}>
@@ -55,10 +70,9 @@ const PublishScreen = ({ route, navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            {/* Call to Action Button */}
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={handleTryFreePress}  // Navigate to MarketScreen
+                onPress={handleTryFreePress}  // Handle the button press
             >
                 <Text style={styles.buttonText}>Try free for 7 days</Text>
             </TouchableOpacity>

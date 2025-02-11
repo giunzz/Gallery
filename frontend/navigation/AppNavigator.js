@@ -21,7 +21,7 @@ const Stack = createStackNavigator();
 // **Market Stack**
 const MarketStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Market" component={MarketScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MarketScreen" component={MarketScreen} options={{ headerShown: false }} />
         <Stack.Screen 
             name="Buying" 
             component={BuyingScreen} 

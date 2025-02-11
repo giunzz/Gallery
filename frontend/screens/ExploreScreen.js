@@ -72,7 +72,7 @@ const ExploreScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
 
-    const artworks = Array.from({ length: 10 }, (_, i) => ({
+    const artworks = Array.from({ length: 100 }, (_, i) => ({
         id: i + 1,
         title: `Artwork ${i + 1}`,
         imageSource: ArtImage,

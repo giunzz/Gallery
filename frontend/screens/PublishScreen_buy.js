@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { LibraryContext } from './LibraryContext'; // Import the context to manage library items
 import { CommonActions } from '@react-navigation/native'; // Import CommonActions
-import ProfilePic from '../assets/home/ava.png';
 
 const PublishScreen = ({ route, navigation }) => {
     const { artwork } = route.params;  // Get the artwork object passed from ArtworkDetailScreen

@@ -6,7 +6,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { LibraryContext } from '../screens/LibraryContext';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ArtImage from '../assets/market/pic.png';
+import ArtImage from '../assets/home/art.png';
 
 const LibraryScreen = ({ navigation }) => {
     const { libraryItems } = useContext(LibraryContext);
@@ -16,7 +16,7 @@ const LibraryScreen = ({ navigation }) => {
 
     useEffect(() => {
         loadLibraryData();
-    }, []);  // Trigger once on mount
+    }, []);  
 
     const loadLibraryData = async () => {
         try {
@@ -59,7 +59,7 @@ const LibraryScreen = ({ navigation }) => {
             <Image 
                 source={typeof item.image === "string" ? { uri: item.image } : item.image} 
                 style={styles.cardImage} 
-                fallbackSource={ArtImage}  // Fallback image in case of an invalid URL
+                fallbackSource={ArtImage}  
             />
             <Text style={styles.cardTitle}>{item.title}</Text>
             <Text style={styles.cardArtist}>{item.type || "Unknown Type"}</Text>

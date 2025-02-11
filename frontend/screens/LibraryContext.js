@@ -8,13 +8,9 @@ export const LibraryProvider = ({ children }) => {
 
     useEffect(() => {
         const loadLibrary = async () => {
-            try {
-                const savedItems = await AsyncStorage.getItem("libraryItems");
-                if (savedItems) {
-                    setLibraryItems(JSON.parse(savedItems));
-                }
-            } catch (error) {
-                console.error("Error loading library items from AsyncStorage", error);
+            const savedItems = await AsyncStorage.getItem("libraryItems");
+            if (savedItems) {
+                setLibraryItems(JSON.parse(savedItems));
             }
         };
         loadLibrary();
@@ -25,26 +21,15 @@ export const LibraryProvider = ({ children }) => {
             const exists = prevItems.some((i) => i.id === item.id);
             if (!exists) {
                 const updatedLibrary = [...prevItems, item];
-                AsyncStorage.setItem("libraryItems", JSON.stringify(updatedLibrary)).catch((error) => {
-                    console.error("Error saving item to AsyncStorage", error);
-                });
+                AsyncStorage.setItem("libraryItems", JSON.stringify(updatedLibrary));
                 return updatedLibrary;
             }
             return prevItems;
         });
     };
 
-    const resetLibraryWithNewItems = async (newItems) => {
-        try {
-            setLibraryItems(newItems);
-            await AsyncStorage.setItem("libraryItems", JSON.stringify(newItems));
-        } catch (error) {
-            console.error("Error resetting library with new items", error);
-        }
-    };
-
     return (
-        <LibraryContext.Provider value={{ libraryItems, addItemToLibrary, resetLibraryWithNewItems }}>
+        <LibraryContext.Provider value={{ libraryItems, addItemToLibrary }}>
             {children}
         </LibraryContext.Provider>
     );

@@ -26,10 +26,9 @@ const UserHeader = () => {
 };
 
 const MarketScreen = ({ navigation }) => {
-    const { libraryItems } = useContext(LibraryContext); // Access the context for library items
+    const { libraryItems } = useContext(LibraryContext); 
     const [selectedCategory, setSelectedCategory] = useState("All");
 
-    // Filter market items based on selected category
     const marketItems = libraryItems.filter(item => 
         selectedCategory === "All" || item.category === selectedCategory
     );
@@ -79,7 +78,7 @@ const MarketScreen = ({ navigation }) => {
                     data={marketItems}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
-                    numColumns={2} // Grid format
+                    numColumns={2} 
                     contentContainerStyle={styles.listContainer}
                 />
             </View>

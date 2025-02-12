@@ -2,7 +2,6 @@ import React from 'react';
 import {Text, StatusBar, View} from 'react-native';
 import Button from './components/Button/Button';
 import InputField from './components/InputField/InputField';
-import Explore from './assets/explore.svg';
 
 const App = () => {
   return (
@@ -20,7 +19,6 @@ const App = () => {
         secure={true}
         keyboardType={'password'}
       />
-      <Explore width={100} height={100} />
     </View>
   );
 };

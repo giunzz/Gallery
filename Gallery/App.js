@@ -1,24 +1,19 @@
 import React from 'react';
-import {Text, StatusBar, View} from 'react-native';
-import Button from './components/Button/Button';
-import InputField from './components/InputField/InputField';
+import {StatusBar, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+
+import MainNavigator from './navigation/MainNav';
 
 const App = () => {
   return (
-    <View>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'#79D7BE'} />
-      <Text>Hello, world!</Text>
-      <Button
-        content={'Press me!'}
-        onPress={() => console.log('Button pressed!')}
-        width="80%"
-      />
-      <InputField
-        title={'Name'}
-        placeholder={'Enter your name'}
-        secure={true}
-        keyboardType={'password'}
-      />
+    <View style={{flex: 1}}>
+      <StatusBar barStyle="dark-content" backgroundColor={'#79D7BE'} />
+      <GestureHandlerRootView>
+        <NavigationContainer>
+          <MainNavigator />
+        </NavigationContainer>
+      </GestureHandlerRootView>
     </View>
   );
 };

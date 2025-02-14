@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
@@ -18,11 +18,17 @@
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
     "@walletconnect/modal-react-native": "^1.1.0",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "expo": "~52.0.28",
+    "expo-camera": "^16.0.16",
+    "expo-dev-client": "~5.0.12",
     "expo-linking": "~7.0.5",
     "expo-permissions": "^14.4.0",
     "expo-status-bar": "~2.0.1",
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9",
     "path": "^0.12.7",
     "react": "18.3.1",
     "react-native": "0.76.6",
@@ -34,11 +40,15 @@
     "react-native-safe-area-context": "^5.2.0",
     "react-native-screens": "^4.6.0",
     "react-native-tab-view": "^4.0.5",
-    "react-native-vector-icons": "^10.2.0"
+    "react-native-vector-icons": "^10.2.0",
+    "react-native-vision-camera": "^4.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@react-native-community/cli": "latest"
   },
-  "private": true
+  "private": true,
+  "description": "Choose a template: » blank  \r ```\r     cd frontend\r     npm start \r ```",
+  "keywords": [],
+  "author": ""
 }

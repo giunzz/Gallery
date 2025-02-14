@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from "react-native";
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // For cart icon
 import Header from '../components/Header';
 import CategoryFilter from '../components/FilterButtons'; 
@@ -183,7 +183,6 @@ const styles = StyleSheet.create({
         fontSize: 10,
         fontWeight: "bold",
         color: "gray",
-        right: 3,
     },
     itemPrice: {
         fontSize: 14,

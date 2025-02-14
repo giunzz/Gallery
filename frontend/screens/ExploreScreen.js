@@ -4,7 +4,7 @@ import {
     Image, TextInput, StyleSheet, FlatList
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons'; // Import icons for the newfeed actions
+import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 import Header from '../components/Header';
 
@@ -14,7 +14,6 @@ import GenArt from '../assets/home/Gallery Add.png';
 import UpgradeIcon from '../assets/home/Ellipse.png';
 import ProfilePic from '../assets/home/ava.png';
 import ArtImage from '../assets/home/art.png';
-
 
 // User Header Component
 const UserHeader = () => {
@@ -38,25 +37,19 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
 
     return (
         <View style={styles.newfeedCard}>
-            {/* Artwork Image */}
             <Image source={imageSource} style={styles.cardImage} resizeMode="cover" />
-
-            {/* Artist Name */}
-            <Text style={styles.artistName}>{title}</Text>
-
-            {/* Action Buttons (Like, Comment, Report) */}
+            <Text style={styles.artTitle}>{title}</Text>
+            <Text style={styles.artistName}>{artistName}</Text>
             <View style={styles.cardActions}>
                 <TouchableOpacity style={styles.iconButton}>
                     <Icon name="heart-outline" size={24} color="black" />
                 </TouchableOpacity>
-
                 <TouchableOpacity style={styles.iconButton}>
                     <Icon name="chatbubble-outline" size={24} color="black" />
                 </TouchableOpacity>
-
                 <TouchableOpacity
                     style={styles.reportButton}
-                    onPress={() => navigation.navigate('ReportScreen', { artwork: { title, artistName, imageSource } })}
+                    onPress={() => navigation.navigate('ReportScreen', { artwork: { title, imageSource } })}
                 >
                     <Text style={styles.reportText}>Report</Text>
                 </TouchableOpacity>
@@ -65,9 +58,6 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
     );
 };
 
-
-
-
 const ExploreScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
@@ -75,15 +65,21 @@ const ExploreScreen = () => {
     const artworks = Array.from({ length: 100 }, (_, i) => ({
         id: i + 1,
         title: `Artwork ${i + 1}`,
+        artistName: `Artist ${i + 1}`, // Add artist names
         imageSource: ArtImage,
     }));
+
+    const handleSearch = () => {
+        if (searchQuery.trim()) {
+            navigation.navigate('SearchResultsScreen', { searchQuery });
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header navigation={navigation} />
             <UserHeader />
 
-            {/* Scrollable Art Feed */}
             <ScrollView contentContainerStyle={{ padding: 20 }}>
                 {/* Top Card */}
                 <View style={styles.topCardContainer}>
@@ -97,12 +93,11 @@ const ExploreScreen = () => {
 
                 {/* Middle Cards */}
                 <View style={styles.middleCardContainer}>
-                <TouchableOpacity onPress={() => navigation.navigate('GenerateArtScreen')} style={styles.middleCard}>
+                    <TouchableOpacity onPress={() => navigation.navigate('GenerateArtScreen')} style={styles.middleCard}>
                         <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard}>
                             <Image source={require('../assets/home/chat.png')} style={styles.cardVisualSmall} />
                         </Card>
                     </TouchableOpacity>
-
                     <TouchableOpacity onPress={() => navigation.navigate('MarketScreen')} style={styles.middleCard}>
                         <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard}>
                             <Image source={require('../assets/home/megaphone.png')} style={styles.cardVisualSmall} />
@@ -118,6 +113,9 @@ const ExploreScreen = () => {
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                     />
+                    <TouchableOpacity onPress={handleSearch}>
+                        <Icon name="search" size={24} color="black" />
+                    </TouchableOpacity>
                 </View>
 
                 {/* Newfeed Art Loop */}
@@ -126,7 +124,7 @@ const ExploreScreen = () => {
                     data={artworks}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
-                        <NewfeedArt imageSource={item.imageSource} title={item.title} />
+                        <NewfeedArt imageSource={item.imageSource} title={item.title} artistName={item.artistName} />
                     )}
                     showsVerticalScrollIndicator={false}
                 />
@@ -162,7 +160,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        right: 6
     },
     buttonText: {
         color: 'white',
@@ -177,15 +174,6 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 25,
     },
- /// Top Card
-    CardTitle: {
-        fontSize: 16,  // Reduce from 18 to 14
-        fontWeight: 'bold',
-        marginLeft: 10,
-        color: '#FFFFFF',
-        flexShrink: 1, // Prevents text from breaking UI
-    },
-
     topCardContainer: {
         marginBottom: 20,
     },
@@ -194,7 +182,7 @@ const styles = StyleSheet.create({
         padding: 25,
         borderRadius: 20,
         height: 180,
-        position: "relative", // Ensure children respect positioning
+        position: "relative",
     },
     cardSubtitle: {
         fontSize: 16,
@@ -204,12 +192,10 @@ const styles = StyleSheet.create({
     cardVisual: {
         width: 90,
         height: 90,
-        position: "left",
-        left: 10, // Move the image to the left side
-        bottom: 10, // Align towards the bottom
+        position: "absolute",
+        left: 10,
+        bottom: 10,
     },
-
-    // Middle Cards
     middleCardContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -224,7 +210,7 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 20,
         height: 120,
-        position: "relative", // Ensures proper child positioning
+        position: "relative",
     },
     marketCard: {
         backgroundColor: "#7851A9",
@@ -236,12 +222,13 @@ const styles = StyleSheet.create({
     cardVisualSmall: {
         width: 40,
         height: 40,
-        position: "center",
-        left: 20, // Moves small visuals to the left
+        position: "absolute",
+        left: 20,
         bottom: 20,
     },
-    // Search Bar
     searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         padding: 10,
     },
     searchInput: {
@@ -251,9 +238,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 10,
         backgroundColor: '#FFFFFF',
+        flex: 1,
     },
-
-    // Newfeed Section
     sectionTitle: {
         fontSize: 24,
         fontWeight: 'bold',
@@ -270,10 +256,16 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 10,
     },
-    artistName: {
+    artTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         marginTop: 10,
+        alignSelf: 'flex-start',
+        paddingLeft: 10,
+    },
+    artistName: {
+        fontSize: 16,
+        color: 'gray',
         alignSelf: 'flex-start',
         paddingLeft: 10,
     },

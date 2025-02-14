@@ -14,6 +14,7 @@ import Publish_buy from '../screens/PublishScreen_buy';
 import GenerateArtScreen from '../screens/GenerateArtScreen';
 import CanvasSizeScreen from '../screens/CanvasSizeScreen';
 import ReportScreen from '../screens/ReportScreen'; // Import the new ReportScreen
+import SearchResultsScreen from '../screens/SearchResultsScreen'; // Import SearchResultsScreen
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -148,6 +149,17 @@ const AppNavigator = () => {
                     options={{ 
                         headerShown: true, 
                         title: "Report", 
+                        headerStyle: { backgroundColor: '#79D7BE' }, 
+                        headerTintColor: 'black', 
+                        headerTitleAlign: 'center'
+                    }}
+                />
+                <Stack.Screen 
+                    name="SearchResultsScreen" // Add SearchResultsScreen here
+                    component={SearchResultsScreen} 
+                    options={{ 
+                        headerShown: true, 
+                        title: "Search Results", 
                         headerStyle: { backgroundColor: '#79D7BE' }, 
                         headerTintColor: 'black', 
                         headerTitleAlign: 'center'

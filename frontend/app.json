@@ -17,16 +17,41 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.CAMERA"
+      ],
+      "package": "com.anonymous.Gallery"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "react-native-vision-camera"
+    ]
+  },
+  "camera-app": {
+    "name": "camera-app",
+    "slug": "camera-app",
+    "plugins": [
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(Gallery) needs access to your Camera.",
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "$(Gallery) needs access to your Microphone."
+        }
+      ]
+    ]
   }
 }

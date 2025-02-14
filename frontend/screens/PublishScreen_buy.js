@@ -1,13 +1,14 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { LibraryContext } from './LibraryContext'; // Import the context to manage library items
 import { CommonActions } from '@react-navigation/native'; // Import CommonActions
-import ProfilePic from '../assets/home/ava.png';
 
 const PublishScreen = ({ route, navigation }) => {
-    const { artwork } = route.params;  // Get the artwork object passed from ArtworkDetailScreen
+    const { artwork } = route.params;  
     const [selectedPlan, setSelectedPlan] = useState(null);
-    const { addItemToLibrary } = useContext(LibraryContext); // Access the context
+    const [price, setPrice] = useState(artwork.price || ''); 
+    const [username, setUsername] = useState('Jane'); 
+    const { addItemToLibrary } = useContext(LibraryContext); 
 
     const handlePlanSelect = (plan) => {
         setSelectedPlan(plan);
@@ -15,7 +16,13 @@ const PublishScreen = ({ route, navigation }) => {
 
     const handleTryFreePress = () => {
         if (selectedPlan) {
-            addItemToLibrary(artwork); // Add the artwork to your library context
+            // Add the artwork with the modified price and username to your library context
+            const artworkWithDetails = {
+                ...artwork,
+                price: price || '0 VND', // Use the entered price or default to 0
+                username: username, // Add username
+            };
+            addItemToLibrary(artworkWithDetails); 
 
             // Show success alert
             Alert.alert("Success", "Artwork has been successfully published!", [
@@ -44,6 +51,15 @@ const PublishScreen = ({ route, navigation }) => {
                 source={artwork.image}  // Use the artwork image passed from ArtworkDetailScreen
                 style={styles.artworkImage}
                 resizeMode="contain"
+            />
+
+            {/* Editable Price Input */}
+            <TextInput
+                style={styles.priceInput}
+                value={price}
+                onChangeText={setPrice}
+                placeholder="Enter price in VND"
+                keyboardType="numeric" 
             />
 
             {/* Pricing Options */}
@@ -91,6 +107,15 @@ const styles = StyleSheet.create({
     artworkImage: {
         width: '100%',
         height: 300,
+        marginBottom: 20,
+    },
+    priceInput: {
+        height: 40,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        width: '100%',
         marginBottom: 20,
     },
     pricingContainer: {

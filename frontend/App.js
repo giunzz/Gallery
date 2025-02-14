@@ -16,6 +16,7 @@ import Publish_buy from './screens/PublishScreen_buy';
 import GenerateArtScreen from './screens/GenerateArtScreen';
 import CanvasSizeScreen from './screens/CanvasSizeScreen';
 import ReportScreen from './screens/ReportScreen'; // Add ReportScreen import
+import SearchResultsScreen from './screens/SearchResultsScreen'; // Import SearchResultsScreen
 
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';
@@ -122,6 +123,17 @@ export default function App() {
             options={{ 
               headerShown: true, 
               title: "Report Artwork", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: 'black', 
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen 
+            name="SearchResultsScreen" // Add SearchResultsScreen to the navigation stack
+            component={SearchResultsScreen} 
+            options={{ 
+              headerShown: true, 
+              title: "Search Results", 
               headerStyle: { backgroundColor: '#79D7BE' }, 
               headerTintColor: 'black', 
               headerTitleAlign: 'center'

@@ -15,8 +15,8 @@ import ArtworkDetailScreen from './screens/ArtworkDetailScreen';
 import Publish_buy from './screens/PublishScreen_buy';
 import GenerateArtScreen from './screens/GenerateArtScreen';
 import CanvasSizeScreen from './screens/CanvasSizeScreen';
-import ReportScreen from './screens/ReportScreen'; // Add ReportScreen import
-import SearchResultsScreen from './screens/SearchResultsScreen'; // Import SearchResultsScreen
+import ReportScreen from './screens/ReportScreen';
+import SearchResultsScreen from './screens/SearchResultsScreen'; 
 
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';

@@ -26,8 +26,8 @@ const ReportScreen = () => {
 
             {/* Artwork Info */}
             <View style={styles.profileCard}>
-                <Text style={styles.artistName}>{artwork.title}</Text>
-                <Text style={styles.subText}>{artwork.artistName}</Text>
+                <Text style={styles.NameArt}>{artwork.title}</Text>
+                <Text style={styles.artistName}>{artwork.artistName || 'Artist Name'}</Text>
             </View>
 
             <View style={styles.reasonContainer}>
@@ -90,12 +90,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
-    artistName: {
+    NameArt: {
         fontSize: 18,
         fontWeight: 'bold',
     },
-    subText: {
+    artistName: {
         color: '#888',
+        fontSize: 16,
     },
     reasonContainer: {
         marginBottom: 20,

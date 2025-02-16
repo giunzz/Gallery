@@ -50,7 +50,7 @@ const MarketScreen = ({ navigation }) => {
             <View style={styles.userPriceContainer}>
                 {/* User Info */}
                 <View style={styles.userContainer}>
-                    <Image source={item.userAvatar} style={styles.userAvatar} />
+                    <Image source={item.userAvatar || '../assets/market/buy.png'} style={styles.userAvatar} />
                     <Text style={styles.username}>{item.username}</Text>
                 </View>
 
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFF8F8',
     },
     greetingContainer: {
         flex: 1,
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         right: 5,
     },
     buttonText: {
-        color: 'white',
+        color: '#FFFFFF',
         marginRight: 5,
     },
     icon: {

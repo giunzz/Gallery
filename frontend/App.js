@@ -14,9 +14,11 @@ import CameraScreen from './screens/CameraScreen';
 import ArtworkDetailScreen from './screens/ArtworkDetailScreen';
 import Publish_buy from './screens/PublishScreen_buy';
 import GenerateArtScreen from './screens/GenerateArtScreen';
+import LoadingGenArt from './screens/LoadingGenArt'; 
+import ResultGenArt from './screens/ResultGenArt';
 import CanvasSizeScreen from './screens/CanvasSizeScreen';
 import ReportScreen from './screens/ReportScreen';
-import SearchResultsScreen from './screens/SearchResultsScreen'; 
+import SearchResultsScreen from './screens/SearchResultsScreen';
 
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';
@@ -96,6 +98,19 @@ export default function App() {
 
           {/* Additional Screens */}
           <Stack.Screen 
+            name="ExploreScreen" 
+            component={ExploreScreen}
+          />
+          <Stack.Screen 
+            name="Publish_buy" 
+            component={Publish_buy} 
+            options={{ title: 'Publish Artwork', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
+          />
+          
+          <Stack.Screen name="Library" component={LibraryScreen} options={{ headerShown: false }} />
+    
+          
+          <Stack.Screen 
             name="GenerateArtScreen" 
             component={GenerateArtScreen} 
             options={{ 
@@ -105,6 +120,10 @@ export default function App() {
               headerTintColor: "black",
               headerTitleAlign: "center",
             }} 
+          />
+          <Stack.Screen 
+            name="LoadingGenArt" 
+            component={LoadingGenArt} 
           />
           <Stack.Screen 
             name="CanvasSizeScreen" 
@@ -118,7 +137,7 @@ export default function App() {
             }} 
           />
           <Stack.Screen 
-            name="ReportScreen" // Add ReportScreen to the navigation stack
+            name="ReportScreen" 
             component={ReportScreen} 
             options={{ 
               headerShown: true, 
@@ -129,11 +148,22 @@ export default function App() {
             }}
           />
           <Stack.Screen 
-            name="SearchResultsScreen" // Add SearchResultsScreen to the navigation stack
+            name="SearchResultsScreen" 
             component={SearchResultsScreen} 
             options={{ 
               headerShown: true, 
               title: "Search Results", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: 'black', 
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen 
+            name="ResultGenArt" 
+            component={ResultGenArt} 
+            options={{ 
+              headerShown: true, 
+              title: "Generated Artwork", 
               headerStyle: { backgroundColor: '#79D7BE' }, 
               headerTintColor: 'black', 
               headerTitleAlign: 'center'

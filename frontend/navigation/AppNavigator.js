@@ -109,7 +109,10 @@ const AppNavigator = () => {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 {/* Main Tabs */}
                 <Stack.Screen name="MainTabs" component={BottomTabs} />
-
+                <Stack.Screen 
+                    name = "ExploreScreen" 
+                    component={ExploreScreen}
+                />
                 <Stack.Screen 
                     name="GenerateArtScreen" 
                     component={GenerateArtScreen} 
@@ -120,6 +123,16 @@ const AppNavigator = () => {
                         headerTintColor: "black",
                         headerTitleAlign: "center",
                     }} 
+                />
+                <Stack.Screen 
+                    name="LoadingGenArt" 
+                    component={LoadingGenArt} 
+                    options={{ headerShown: true, title: "Loading Artwork", headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
+                />
+                <stack.Screen
+                    name ="ResultGenArt" 
+                    component={ResultGenArt}
+                    options={{ headerShown: true, title: "Generated Artwork", headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }}
                 />
                 <Stack.Screen 
                     name="CanvasSizeScreen" 
@@ -144,7 +157,7 @@ const AppNavigator = () => {
                     }}
                 />
                 <Stack.Screen 
-                    name="ReportScreen" // Add ReportScreen here
+                    name="ReportScreen" 
                     component={ReportScreen} 
                     options={{ 
                         headerShown: true, 

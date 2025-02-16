@@ -38,7 +38,7 @@ const CategoryFilter = ({ categories, selectedCategory, onSelectCategory }) => {
 const styles = StyleSheet.create({
     categoryContainer: {
         paddingVertical: 10,
-        backgroundColor: "#F8F8F8",
+        backgroundColor: "#FFF8F8",
     },
     categoryList: {
         paddingHorizontal: 16,

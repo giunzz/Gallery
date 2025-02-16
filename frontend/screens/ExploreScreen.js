@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     ScrollView, SafeAreaView, View, Text, TouchableOpacity,
     Image, TextInput, StyleSheet, FlatList
@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 import Header from '../components/Header';
+
+import { LibraryContext } from '../screens/LibraryContext'; // Import LibraryContext
 
 import ColorImage from '../assets/home/Color.png';
 import ShopImage from '../assets/home/Shop.png';
@@ -61,8 +63,9 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
 const ExploreScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
+    const { clearLibrary } = useContext(LibraryContext); // Access clearLibrary function from context
 
-    const artworks = Array.from({ length: 100 }, (_, i) => ({
+    const artworks = Array.from({ length: 1 }, (_, i) => ({
         id: i + 1,
         title: `Artwork ${i + 1}`,
         artistName: `Artist ${i + 1}`, // Add artist names
@@ -128,6 +131,11 @@ const ExploreScreen = () => {
                     )}
                     showsVerticalScrollIndicator={false}
                 />
+
+                {/* Clear Library Button */}
+                <TouchableOpacity style={styles.clearButton} onPress={clearLibrary}>
+                    <Text style={styles.clearButtonText}>Clear Library</Text>
+                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );
@@ -289,6 +297,19 @@ const styles = StyleSheet.create({
     reportText: {
         color: 'white',
         fontWeight: 'bold',
+    },
+    clearButton: {
+        backgroundColor: "#FF5722", // Red color for clear button
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    clearButtonText: {
+        color: "#FFFFFF",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });
 

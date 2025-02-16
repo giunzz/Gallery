@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Button, StyleSheet, Image, Modal, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ReportScreen = () => {
@@ -9,23 +9,29 @@ const ReportScreen = () => {
 
     const [selectedReason, setSelectedReason] = useState('');
     const [additionalInfo, setAdditionalInfo] = useState('');
+    const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
 
     const handleNext = () => {
         console.log('Selected Reason:', selectedReason);
-        console.log('Additional Info:', additionalInfo);
+        setModalVisible(true); // Show the modal when "Next" is pressed
+    };
+
+    const handleModalClose = () => {
+        setModalVisible(false);
+        navigation.goBack(); // Navigate back to the previous screen
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerText}></Text>
             </View>
 
-            {/* Artwork Image */}
             <Image source={artwork.imageSource} style={styles.artworkImage} resizeMode="cover" />
 
             {/* Artwork Info */}
             <View style={styles.profileCard}>
+                <Image source={"../assets/market/buy.png"} style={styles.avatar} /> {/* Avatar Image */}
                 <Text style={styles.NameArt}>{artwork.title}</Text>
                 <Text style={styles.artistName}>{artwork.artistName || 'Artist Name'}</Text>
             </View>
@@ -55,17 +61,37 @@ const ReportScreen = () => {
             </View>
 
             <Button title="Next" onPress={handleNext} />
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={handleModalClose}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.checkmarkContainer}>
+                            <Text style={styles.checkmark}>✔️</Text>
+                        </View>
+                        <Text style={styles.modalText}>Thank you for your report!!</Text>
+                        <TouchableOpacity style={styles.okButton} onPress={handleModalClose}>
+                            <Text style={styles.okButtonText}>OK</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
             {/* Blue Footer */}
             <View style={styles.footer}>
                 <Text style={styles.footerText}></Text>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1, // Allows the ScrollView to grow
         padding: 16,
         backgroundColor: '#f0f0f0',
     },
@@ -109,8 +135,8 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     selectedReason: {
-        backgroundColor: '#79D7BE',  // Highlight color for selected option
-        color: '#ffffff',            // Change text color for better visibility
+        backgroundColor: '#79D7BE',  
+        color: '#ffffff',           
     },
     input: {
         height: 40,
@@ -119,6 +145,47 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         marginTop: 10,
+    },
+    avatar: {
+        width: 10, 
+        height: 10, 
+        borderRadius: 25, // Make it circular
+        marginRight: 10, // Space between avatar and text
+    },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    },
+    modalContent: {
+        width: '80%',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    checkmarkContainer: {
+        marginBottom: 20,
+    },
+    checkmark: {
+        fontSize: 40,
+        color: 'green',
+    },
+    modalText: {
+        fontSize: 18,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    okButton: {
+        backgroundColor: '#79D7BE',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    okButtonText: {
+        color: 'white',
+        fontSize: 16,
     },
     footer: {
         position: "absolute",

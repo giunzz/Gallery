@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "d",
   "license": "0BSD",
   "version": "1.0.0",
   "main": "index.js",
@@ -17,6 +17,7 @@
     "@react-navigation/material-top-tabs": "^7.1.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
+    "@wagmi/core": "^2.16.4",
     "@walletconnect/modal-react-native": "^1.1.0",
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
@@ -42,7 +43,9 @@
     "react-native-screens": "^4.6.0",
     "react-native-tab-view": "^4.0.5",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-vision-camera": "^4.6.3"
+    "react-native-vision-camera": "^4.6.3",
+    "viem": "^2.23.2",
+    "wagmi": "^2.14.11"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

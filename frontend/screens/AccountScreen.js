@@ -17,7 +17,7 @@ import config from '../config.js';
 import { getMessageFromServer, getAuthorizationToken } from '../services/apiService';
 import { signMessage } from '../utils/signMessage'; 
 
-const projectId = config.PROJECT_ID;
+const projectId = config.PROJECT_ID; // Ensure this is correct
 
 const providerMetadata = {
     name: 'Gallery',
@@ -42,6 +42,7 @@ const AccountScreen = ({ navigation }) => {
     const [selectedTab, setSelectedTab] = useState("Collection");
     const [message, setMessage] = useState('');
     const [token, setToken] = useState('');
+    const [signed, setSigned] = useState(false); // Track if the text has been signed
 
     const handleTextChange = (inputText) => {
         setText(inputText);
@@ -50,7 +51,7 @@ const AccountScreen = ({ navigation }) => {
     const handleConnectWallet = async () => {
         try {
             if (!isConnected) {
-                await open(); 
+                await open();
                 return;
             }
 
@@ -85,6 +86,12 @@ const AccountScreen = ({ navigation }) => {
                 method: "personal_sign",
                 params: [text, address],
             });
+
+            // If the signing is successful, set the 'signed' state to true
+            if (signature) {
+                setSigned(true);
+                Alert.alert("Success", "Text signed successfully!");
+            }
 
             return signature;
         } catch (error) {
@@ -151,15 +158,17 @@ const AccountScreen = ({ navigation }) => {
                     {message && <Text style={styles.messageText}>Message: {message}</Text>}
                     {token && <Text style={styles.tokenText}>Authorization Token: {token}</Text>}
 
-                    {/* Text Input for Signing */}
                     <TextInput
                         style={styles.input}
                         placeholder="Enter text"
                         onChangeText={handleTextChange}
                     />
-                    <TouchableOpacity style={styles.signButton} onPress={() => signText(text).then(console.log)}>
-                        <Text style={styles.signButtonText}>Sign Text</Text>
-                    </TouchableOpacity>
+                    {/* Conditionally render the button based on signing status */}
+                    {!signed && (
+                        <TouchableOpacity style={styles.signButton} onPress={() => signText(text).then(console.log)}>
+                            <Text style={styles.signButtonText}>Sign Text</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 {/* Tabs: Collection | Activity */}
@@ -213,7 +222,6 @@ const AccountScreen = ({ navigation }) => {
     );
 };
 
-// Styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,

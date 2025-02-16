@@ -21,7 +21,6 @@ export const LibraryProvider = ({ children }) => {
         loadLibrary();
     }, []);
 
-    // Add item to the library and update AsyncStorage
     const addItemToLibrary = async (item) => {
         setLibraryItems((prevItems) => {
             const exists = prevItems.some((i) => i.id === item.id);

@@ -3,8 +3,6 @@ import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView
 import { Ionicons } from "@expo/vector-icons"; // For cart icon
 import Header from '../components/Header';
 import CategoryFilter from '../components/FilterButtons'; 
-import ProfilePic from '../assets/home/ava.png';
-import UpgradeIcon from '../assets/home/Ellipse.png';
 import { LibraryContext } from '../screens/LibraryContext'; // Ensure to import the context
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
@@ -18,17 +16,18 @@ const UserHeader = () => {
             </View>
             <TouchableOpacity style={styles.upgradeButton}>
                 <Text style={styles.buttonText}>Upgrade</Text>
-                <Image source={UpgradeIcon} style={styles.icon} />
+                <Image source={require('../assets/home/Ellipse.png')} style={styles.icon} />
             </TouchableOpacity>
-            <Image source={ProfilePic} style={styles.profilePicture} />
+            <Image source={require('../assets/home/ava.png')} style={styles.profilePicture} />
         </View>
     );
 };
 
 const MarketScreen = ({ navigation }) => {
-    const { libraryItems } = useContext(LibraryContext); 
+    const { libraryItems } = useContext(LibraryContext); // Get library items from context
     const [selectedCategory, setSelectedCategory] = useState("All");
 
+    // Filter items based on selected category
     const marketItems = libraryItems.filter(item => 
         selectedCategory === "All" || item.category === selectedCategory
     );
@@ -50,12 +49,12 @@ const MarketScreen = ({ navigation }) => {
             <View style={styles.userPriceContainer}>
                 {/* User Info */}
                 <View style={styles.userContainer}>
-                    <Image source={item.userAvatar || '../assets/market/buy.png'} style={styles.userAvatar} />
+                    <Image source={item.userAvatar || require('../assets/market/buy.png')} style={styles.userAvatar} />
                     <Text style={styles.username}>{item.username}</Text>
                 </View>
 
                 {/* Price */}
-                <Text style={styles.itemPrice}>{item.price}</Text>
+                <Text style={styles.itemPrice}>{item.price}VND</Text>
             </View>
         </TouchableOpacity>
     );

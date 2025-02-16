@@ -65,7 +65,7 @@ const ExploreScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const { clearLibrary } = useContext(LibraryContext); // Access clearLibrary function from context
 
-    const artworks = Array.from({ length: 1 }, (_, i) => ({
+    const artworks = Array.from({ length: 5 }, (_, i) => ({
         id: i + 1,
         title: `Artwork ${i + 1}`,
         artistName: `Artist ${i + 1}`, // Add artist names

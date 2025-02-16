@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 import Header from '../components/Header';
 
-import { LibraryContext } from '../screens/LibraryContext'; // Import LibraryContext
+import { LibraryContext } from '../components//LibraryContext'; 
 
 import ColorImage from '../assets/home/Color.png';
 import ShopImage from '../assets/home/Shop.png';
@@ -101,7 +101,7 @@ const ExploreScreen = () => {
                             <Image source={require('../assets/home/chat.png')} style={styles.cardVisualSmall} />
                         </Card>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('MarketScreen')} style={styles.middleCard}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Market')} style={styles.middleCard}>
                         <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard}>
                             <Image source={require('../assets/home/megaphone.png')} style={styles.cardVisualSmall} />
                         </Card>
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         position: "absolute",
-        left: 20,
+        right: 20,
         bottom: 20,
     },
     searchContainer: {

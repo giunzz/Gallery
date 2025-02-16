@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // For cart icon
+import { Ionicons } from "@expo/vector-icons"; 
 import Header from '../components/Header';
 import CategoryFilter from '../components/FilterButtons'; 
-import { LibraryContext } from '../screens/LibraryContext'; // Ensure to import the context
+import { LibraryContext } from '../components//LibraryContext';  
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
 

@@ -34,6 +34,7 @@ const collectionData = [
     { id: "1", title: "Looking", image: require("../assets/home/art.png") },
     { id: "2", title: "Dreamy", image: require("../assets/home/art.png") },
     { id: "3", title: "Surreal", image: require("../assets/home/art.png") },
+    
 ];
 
 const AccountScreen = ({ navigation }) => {

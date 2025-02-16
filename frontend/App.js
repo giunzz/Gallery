@@ -26,7 +26,7 @@ import MarketIcon from './assets/home/add_business.png';
 import LibraryIcon from './assets/home/Library.png';
 import CameraIcon from './assets/home/scan.png';
 
-import { LibraryProvider } from './screens/LibraryContext';
+import { LibraryProvider } from './components/LibraryContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -95,7 +95,7 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {/* Main Tabs */}
           <Stack.Screen name="MainTabs" component={MainTabs} />
-
+          <Stack.Screen name="Market" component={MarketStack} />
           {/* Additional Screens */}
           <Stack.Screen 
             name="ExploreScreen" 

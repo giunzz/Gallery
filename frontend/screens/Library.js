@@ -4,7 +4,7 @@ import {
     StyleSheet, SafeAreaView 
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LibraryContext } from '../screens/LibraryContext';
+import { LibraryContext } from '../components//LibraryContext'; 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ArtImage from '../assets/home/art.png';
 

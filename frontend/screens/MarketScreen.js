@@ -3,7 +3,7 @@ import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView
 import { Ionicons } from "@expo/vector-icons"; 
 import Header from '../components/Header';
 import CategoryFilter from '../components/FilterButtons'; 
-import { LibraryContext } from '../components//LibraryContext';  
+import { LibraryContext } from '../components/LibraryContext';  
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
 
@@ -27,7 +27,6 @@ const MarketScreen = ({ navigation }) => {
     const { libraryItems } = useContext(LibraryContext); // Get library items from context
     const [selectedCategory, setSelectedCategory] = useState("All");
 
-    // Filter items based on selected category
     const marketItems = libraryItems.filter(item => 
         selectedCategory === "All" || item.category === selectedCategory
     );

@@ -1,11 +1,20 @@
 import React, { useRef, useState } from 'react';
-import { View, Button, StyleSheet, Image } from 'react-native';
+import { View, Button, StyleSheet, Image, Text } from 'react-native';
 import { RNCamera } from 'react-native-camera';
+
+const NotFoundScreen = () => (
+    <View style={styles.notFoundContainer}>
+        <Text style={styles.notFoundText}>No Results Found</Text>
+        <Text style={styles.notFoundMessage}>
+            We couldn't find what you searched for. Try searching again.
+        </Text>
+    </View>
+);
 
 const CameraScreen = () => {
     const cameraRef = useRef(null);
     const [imageUri, setImageUri] = useState(null);
-
+    
     const takePicture = async () => {
         if (cameraRef.current) {
             const options = { quality: 0.5, base64: true };
@@ -13,6 +22,16 @@ const CameraScreen = () => {
             setImageUri(data.uri);
         }
     };
+
+    // Simulate checking if the image exists (replace with your actual logic)
+    const imageExists = (uri) => {
+        // Add your logic here to check if the image exists in the library
+        return uri !== null; // For demonstration, assuming imageUri is valid
+    };
+
+    if (imageUri && !imageExists(imageUri)) {
+        return <NotFoundScreen />;
+    }
 
     return (
         <View style={styles.container}>
@@ -51,6 +70,19 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         resizeMode: 'contain',
+    },
+    notFoundContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    notFoundText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    notFoundMessage: {
+        fontSize: 16,
+        textAlign: 'center',
     },
 });
 

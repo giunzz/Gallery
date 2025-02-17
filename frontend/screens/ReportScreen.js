@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, StyleSheet, Image, Modal, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import img from '../assets/home/art.png'
 
 const ReportScreen = () => {
     const navigation = useNavigation();
@@ -13,12 +14,12 @@ const ReportScreen = () => {
 
     const handleNext = () => {
         console.log('Selected Reason:', selectedReason);
-        setModalVisible(true); 
+        setModalVisible(true); // Show the modal when "Next" is pressed
     };
 
     const handleModalClose = () => {
         setModalVisible(false);
-        navigation.goBack(); 
+        navigation.goBack(); // Navigate back to the previous screen
     };
 
     return (
@@ -27,19 +28,11 @@ const ReportScreen = () => {
                 <Text style={styles.headerText}></Text>
             </View>
 
-            {/* Ensure artwork.imageSource is a valid URI */}
-            <Image 
-                source={artwork.imageSource ? { uri: artwork.imageSource } : require("../assets/home/art.png")} 
-                style={styles.artworkImage} 
-                resizeMode="cover" 
-            />
+            <Image source={artwork.imageSource || img} style={styles.artworkImage} resizeMode="cover" />
 
             {/* Artwork Info */}
             <View style={styles.profileCard}>
-                {/* <Image 
-                    source={require("../assets/market/buy.png")} // Ensure this is a valid image path
-                    style={styles.avatar} 
-                /> */}
+                <Image source={"../assets/market/buy.png"} style={styles.avatar} /> {/* Avatar Image */}
                 <Text style={styles.NameArt}>{artwork.title}</Text>
                 <Text style={styles.artistName}>{artwork.artistName || 'Artist Name'}</Text>
             </View>
@@ -81,7 +74,7 @@ const ReportScreen = () => {
                         <View style={styles.checkmarkContainer}>
                             <Text style={styles.checkmark}>✔️</Text>
                         </View>
-                        <Text style={styles.modalText}>Thank you for your report!</Text>
+                        <Text style={styles.modalText}>Thank you for your report!!</Text>
                         <TouchableOpacity style={styles.okButton} onPress={handleModalClose}>
                             <Text style={styles.okButtonText}>OK</Text>
                         </TouchableOpacity>
@@ -155,8 +148,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     avatar: {
-        width: 40, 
-        height: 40, 
+        width: 10, 
+        height: 10, 
         borderRadius: 25, // Make it circular
         marginRight: 10, // Space between avatar and text
     },

@@ -124,9 +124,6 @@ const AccountScreen = ({ navigation }) => {
                         <TouchableOpacity style={styles.smallButton}>
                             <Text style={styles.buttonText}>Edit account</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.smallButtonDark}>
-                            <Text style={styles.buttonText}>Payment</Text>
-                        </TouchableOpacity>
                         <TouchableOpacity style={styles.smallButton}>
                             <Text style={styles.buttonText}>Verify artist</Text>
                         </TouchableOpacity>
@@ -260,12 +257,6 @@ const styles = StyleSheet.create({
         marginTop: 8
     },
     smallButton: {
-        backgroundColor: "#79D7BE",
-        padding: 6,
-        margin: 5,
-        borderRadius: 8
-    },
-    smallButtonDark: {
         backgroundColor: "#1B5E20",
         padding: 6,
         margin: 5,

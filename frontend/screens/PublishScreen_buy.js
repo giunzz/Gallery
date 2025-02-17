@@ -18,7 +18,6 @@ const PublishScreen = ({ route, navigation }) => {
         setSelectedPlan(plan);
     };
 
-    // Items for verification
     const verificationItems = [
         { id: 1, title: "Copyright and Ownership Rights", isChecked: null }, 
         { id: 2, title: "Lorem ipsum", isChecked: null },
@@ -36,7 +35,8 @@ const PublishScreen = ({ route, navigation }) => {
             const updatedStatus = verificationItems.map((item, index) => ({
                 ...item,
                 // isChecked: index % 2 === 0 ? 'success' : 'fail',
-                isChecked: 'success',
+                //isChecked: 'success',
+                isChecked: 'fail',
             }));
             setVerificationStatus(updatedStatus);
             setLoading(false); // Stop loading

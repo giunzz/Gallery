@@ -19,7 +19,7 @@ import ResultGenArt from './screens/ResultGenArt';
 import CanvasSizeScreen from './screens/CanvasSizeScreen';
 import ReportScreen from './screens/ReportScreen';
 import SearchResultsScreen from './screens/SearchResultsScreen';
-
+import NoResultsScreen from './screens/NotFound';
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';
 import MarketIcon from './assets/home/add_business.png';
@@ -109,7 +109,7 @@ export default function App() {
           
           <Stack.Screen name="Library" component={LibraryScreen} options={{ headerShown: false }} />
     
-          
+          <Stack.Screen name="NotFound" component={NoResultsScreen} />
           <Stack.Screen 
             name="GenerateArtScreen" 
             component={GenerateArtScreen} 

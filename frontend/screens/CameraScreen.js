@@ -1,20 +1,35 @@
 import React, { useRef, useState } from 'react';
-import { View, Button, StyleSheet, Image, Text } from 'react-native';
+import { View, Button, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import { RNCamera } from 'react-native-camera';
+import { useNavigation } from '@react-navigation/native';
 
-const NotFoundScreen = () => (
-    <View style={styles.notFoundContainer}>
-        <Text style={styles.notFoundText}>No Results Found</Text>
-        <Text style={styles.notFoundMessage}>
-            We couldn't find what you searched for. Try searching again.
-        </Text>
-    </View>
-);
+// NotFoundScreen Component
+const NotFoundScreen = () => {
+    const navigation = useNavigation(); // Hook to access navigation
 
+    const handleOkPress = () => {
+        navigation.navigate('CameraScreen'); // Navigate back to CameraScreen or wherever you want
+    };
+
+    return (
+        <View style={styles.notFoundContainer}>
+            <Text style={styles.notFoundText}>No Results Found</Text>
+            <Text style={styles.notFoundMessage}>
+                We couldn't find what you searched for. Try searching again.
+            </Text>
+            <TouchableOpacity style={styles.okButton} onPress={handleOkPress}>
+                <Text style={styles.okButtonText}>OK</Text>
+            </TouchableOpacity>
+        </View>
+    );
+};
+
+// CameraScreen Component
 const CameraScreen = () => {
     const cameraRef = useRef(null);
     const [imageUri, setImageUri] = useState(null);
-    
+    const navigation = useNavigation(); // Hook to access navigation
+
     const takePicture = async () => {
         if (cameraRef.current) {
             const options = { quality: 0.5, base64: true };
@@ -25,12 +40,13 @@ const CameraScreen = () => {
 
     // Simulate checking if the image exists (replace with your actual logic)
     const imageExists = (uri) => {
-        // Add your logic here to check if the image exists in the library
         return uri !== null; // For demonstration, assuming imageUri is valid
     };
 
+    // Check if the image exists; if not, navigate to NotFoundScreen
     if (imageUri && !imageExists(imageUri)) {
-        return <NotFoundScreen />;
+        navigation.navigate('NoResultsScreen'); // Navigate to NoResultsScreen
+        return null; // Prevent rendering of CameraScreen
     }
 
     return (
@@ -83,6 +99,17 @@ const styles = StyleSheet.create({
     notFoundMessage: {
         fontSize: 16,
         textAlign: 'center',
+    },
+    okButton: {
+        marginTop: 20,
+        backgroundColor: '#2d6a4f', // Dark green for button
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    okButtonText: {
+        color: '#ffffff', // White text for button
+        fontSize: 16,
     },
 });
 

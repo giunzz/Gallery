@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { 
     View, Text, TextInput, TouchableOpacity, 
-    StyleSheet, SafeAreaView, ActivityIndicator 
+    StyleSheet, SafeAreaView, ActivityIndicator, Alert 
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -11,12 +11,29 @@ const GenerateArtScreen = ({ navigation, route }) => {
     const [selectedCanvas, setSelectedCanvas] = useState(route.params?.selectedSize || ""); // Store canvas size
     const maxLength = 300;
 
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.navigate("ExploreScreen")}>
+                    <Ionicons name="arrow-back" size={24} color="black" style={{ marginLeft: 10 }} />
+                </TouchableOpacity>
+            ),
+            title: "Generate Art",
+        });
+    }, [navigation]);
+
     const handleGenerate = () => {
+        if (prompt.trim() === "") {
+            // Show an alert if the prompt is empty
+            Alert.alert("No Prompt Entered", "Please enter a prompt before generating art.", [
+                { text: "OK" },
+            ]);
+            return;
+        }
+
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            alert(`Artwork Generated with ${selectedCanvas} canvas! 🎨`);
-        }, 2000);
+        // Navigate to the LoadingGenArt screen with the prompt and selected canvas
+        navigation.navigate("LoadingGenArt", { prompt, selectedCanvas });
     };
 
     return (
@@ -56,7 +73,6 @@ const GenerateArtScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
             </View>
 
-            {/* Display Selected Canvas Size */}
             {selectedCanvas ? (
                 <Text style={styles.selectedCanvasText}>Selected Canvas: {selectedCanvas}</Text>
             ) : null}
@@ -65,7 +81,7 @@ const GenerateArtScreen = ({ navigation, route }) => {
             <TouchableOpacity 
                 style={[styles.generateButton, prompt.length === 0 && styles.disabledButton]} 
                 onPress={handleGenerate} 
-                disabled={prompt.length === 0 || loading}
+                disabled={loading}
             >
                 {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.generateText}>Generate</Text>}
             </TouchableOpacity>

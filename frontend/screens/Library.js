@@ -4,7 +4,7 @@ import {
     StyleSheet, SafeAreaView 
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LibraryContext } from '../screens/LibraryContext';
+import { LibraryContext } from '../components/LibraryContext'; 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ArtImage from '../assets/home/art.png';
 
@@ -16,7 +16,7 @@ const LibraryScreen = ({ navigation }) => {
 
     useEffect(() => {
         loadLibraryData();
-    }, [libraryItems]); 
+    }, []);  
 
     const loadLibraryData = async () => {
         try {
@@ -24,9 +24,9 @@ const LibraryScreen = ({ navigation }) => {
             const parsedLibrary = savedLibrary ? JSON.parse(savedLibrary) : [];
             setArtworks([
                 ...parsedLibrary, 
-                ...Array.from({ length: 10 }, (_, i) => ({
+                ...Array.from({ length: 100 }, (_, i) => ({
                     id: `static-${i + 1}`,
-                    title: `Artwork ${i + 1}`,
+                    title: `Artwork  ${i + 1}`,
                     type: `Type ${i + 1}`,
                     image: ArtImage,
                 }))
@@ -56,7 +56,11 @@ const LibraryScreen = ({ navigation }) => {
                 setSelectedArtwork(item);
             }}
         >
-            <Image source={typeof item.image === "string" ? { uri: item.image } : item.image} style={styles.cardImage} />
+            <Image 
+                source={typeof item.image === "string" ? { uri: item.image } : item.image} 
+                style={styles.cardImage} 
+                fallbackSource={ArtImage}  
+            />
             <Text style={styles.cardTitle}>{item.title}</Text>
             <Text style={styles.cardArtist}>{item.type || "Unknown Type"}</Text>
             {selectedItems.includes(item.id) && (
@@ -69,9 +73,9 @@ const LibraryScreen = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerTitle}>
-                <Ionicons name="chevron-back" size={24} color="black" />
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerTitle}>
+                    <Ionicons name="chevron-back" size={24} color="black" />
+                </TouchableOpacity>
                 <Text style={styles.headerTitle}>Library</Text>
                 <Text style={styles.headerTitle}>|</Text>
                 <Text style={styles.headerTitle}>Settings</Text>
@@ -200,6 +204,5 @@ const styles = StyleSheet.create({
         backgroundColor: "black",
     },
 });
-
 
 export default LibraryScreen;

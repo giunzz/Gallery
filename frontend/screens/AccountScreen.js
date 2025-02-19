@@ -8,18 +8,16 @@ import {
     SafeAreaView,
     FlatList,
     ScrollView,
-    Button,
     TextInput,
+    Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Header from '../components/Header';
-import {
-    WalletConnectModal,
-    useWalletConnectModal,
-} from '@walletconnect/modal-react-native';
+import { WalletConnectModal, useWalletConnectModal } from '@walletconnect/modal-react-native';
 import config from '../config.js';
+import { getMessageFromServer, getAuthorizationToken } from '../services/apiService';
+import { signMessage } from '../utils/signMessage'; 
 
-const projectId = config.PROJECT_ID;
+const projectId = config.PROJECT_ID; // Ensure this is correct
 
 const providerMetadata = {
     name: 'Gallery',
@@ -36,15 +34,44 @@ const collectionData = [
     { id: "1", title: "Looking", image: require("../assets/home/art.png") },
     { id: "2", title: "Dreamy", image: require("../assets/home/art.png") },
     { id: "3", title: "Surreal", image: require("../assets/home/art.png") },
+    
 ];
 
-const ProfileScreen = ({ navigation }) => {
+const AccountScreen = ({ navigation }) => {
     const { open, isConnected, address, provider } = useWalletConnectModal();
     const [text, setText] = useState('');
     const [selectedTab, setSelectedTab] = useState("Collection");
+    const [message, setMessage] = useState('');
+    const [token, setToken] = useState('');
+    const [signed, setSigned] = useState(false); // Track if the text has been signed
 
     const handleTextChange = (inputText) => {
         setText(inputText);
+    };
+
+    const handleConnectWallet = async () => {
+        try {
+            if (!isConnected) {
+                await open();
+                return;
+            }
+
+            const userAddress = address;
+
+            const serverMessage = await getMessageFromServer(userAddress);
+            setMessage(serverMessage);
+
+            const signature = await signMessage(serverMessage, provider, userAddress);
+
+            const authToken = await getAuthorizationToken(userAddress, serverMessage, signature);
+            setToken(authToken);
+
+            console.log("Authorization Token:", authToken);
+            Alert.alert("Success", "Wallet connected and token received!");
+        } catch (error) {
+            console.error("Error in wallet connection flow:", error);
+            Alert.alert("Error", "Failed to connect wallet or obtain token.");
+        }
     };
 
     const signText = async (text) => {
@@ -56,24 +83,22 @@ const ProfileScreen = ({ navigation }) => {
                 throw new Error("Wallet is not connected");
             }
 
-            const message = text;
             const signature = await provider.request({
                 method: "personal_sign",
-                params: [message, address],
+                params: [text, address],
             });
+
+            // If the signing is successful, set the 'signed' state to true
+            if (signature) {
+                setSigned(true);
+                Alert.alert("Success", "Text signed successfully!");
+            }
 
             return signature;
         } catch (error) {
             console.error("Signing failed:", error);
             return null;
         }
-    };
-
-    const connectWallet = async () => {
-        if (isConnected) {
-            return provider?.disconnect();
-        }
-        return open();
     };
 
     return (
@@ -83,7 +108,7 @@ const ProfileScreen = ({ navigation }) => {
                     <Ionicons name="chevron-back" size={24} color="black" />
                 </TouchableOpacity>
                 <View style={styles.headerIcons}>
-                    <Ionicons name="notifications-outline" size={24} color="black" style={styles.icon} />
+                    <Ionicons name="notifications-outline" size={24} color="black" />
                     <Ionicons name="cart-outline" size={24} color="black" />
                 </View>
             </View>
@@ -93,14 +118,11 @@ const ProfileScreen = ({ navigation }) => {
                 <View style={styles.profileCard}>
                     <Image source={require("../assets/home/ava.png")} style={styles.profileImage} />
                     <Text style={styles.username}>@Jane</Text>
-                    <Ionicons name="shield-checkmark" size={16} color="gold" style={styles.verifiedBadge} />
+                    <Ionicons name="shield-checkmark" size={16} color="gold" />
 
                     <View style={styles.buttonGroup}>
                         <TouchableOpacity style={styles.smallButton}>
                             <Text style={styles.buttonText}>Edit account</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.smallButtonDark}>
-                            <Text style={styles.buttonText}>Payment</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.smallButton}>
                             <Text style={styles.buttonText}>Verify artist</Text>
@@ -124,17 +146,27 @@ const ProfileScreen = ({ navigation }) => {
                     </View>
 
                     {/* Connect Wallet Button */}
-                    <Button title={isConnected ? address : "Connect Wallet"} onPress={() => connectWallet()} />
+                    <TouchableOpacity style={styles.connectButton} onPress={handleConnectWallet}>
+                        <Text style={styles.connectButtonText}>
+                            {isConnected ? `Connected: ${address}` : "Connect Wallet"}
+                        </Text>
+                    </TouchableOpacity>
 
-                    {/* Text Input for Signing */}
+                    {/* Display Message and Token */}
+                    {message && <Text style={styles.messageText}>Message: {message}</Text>}
+                    {token && <Text style={styles.tokenText}>Authorization Token: {token}</Text>}
+
                     <TextInput
-                        style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginTop: 20, width: '80%' }}
+                        style={styles.input}
                         placeholder="Enter text"
                         onChangeText={handleTextChange}
                     />
-                    <Button title="Sign Text" onPress={() => {
-                        signText(text).then(console.log);
-                    }} />
+                    {/* Conditionally render the button based on signing status */}
+                    {!signed && (
+                        <TouchableOpacity style={styles.signButton} onPress={() => signText(text).then(console.log)}>
+                            <Text style={styles.signButtonText}>Sign Text</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 {/* Tabs: Collection | Activity */}
@@ -179,9 +211,7 @@ const ProfileScreen = ({ navigation }) => {
             </ScrollView>
 
             <WalletConnectModal
-                explorerRecommendedWalletIds={[
-                    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
-                ]}
+                explorerRecommendedWalletIds={['c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96']}
                 explorerExcludedWalletIds={'ALL'}
                 projectId={projectId}
                 providerMetadata={providerMetadata}
@@ -222,20 +252,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginVertical: 8
     },
-    verifiedBadge: {
-        marginLeft: 5
-    },
     buttonGroup: {
         flexDirection: "row",
         marginTop: 8
     },
     smallButton: {
-        backgroundColor: "#79D7BE",
-        padding: 6,
-        margin: 5,
-        borderRadius: 8
-    },
-    smallButtonDark: {
         backgroundColor: "#1B5E20",
         padding: 6,
         margin: 5,
@@ -311,6 +332,42 @@ const styles = StyleSheet.create({
         padding: 4,
         borderRadius: 5
     },
+    input: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginTop: 20,
+        width: '80%',
+        paddingHorizontal: 10,
+    },
+    signButton: {
+        backgroundColor: "#79D7BE",
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 10,
+    },
+    signButtonText: {
+        color: "white",
+        textAlign: "center",
+    },
+    connectButton: {
+        backgroundColor: "#79D7BE",
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 20,
+    },
+    connectButtonText: {
+        color: "white",
+        textAlign: "center",
+    },
+    messageText: {
+        marginTop: 10,
+        color: "black",
+    },
+    tokenText: {
+        marginTop: 10,
+        color: "black",
+    },
 });
 
-export default ProfileScreen;
+export default AccountScreen;

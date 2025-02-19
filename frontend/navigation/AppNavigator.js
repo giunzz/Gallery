@@ -12,14 +12,17 @@ import CameraScreen from '../screens/CameraScreen';
 import ArtworkDetailScreen from '../screens/ArtworkDetailScreen';
 import Publish_buy from '../screens/PublishScreen_buy';
 import GenerateArtScreen from '../screens/GenerateArtScreen';
-import CanvasSizeScreen from '../screens/CanvasSizeScreen'; 
+import CanvasSizeScreen from '../screens/CanvasSizeScreen';
+import ReportScreen from '../screens/ReportScreen'; // Import the new ReportScreen
+import SearchResultsScreen from '../screens/SearchResultsScreen'; // Import SearchResultsScreen
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 // **Market Stack**
 const MarketStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Market" component={MarketScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MarketScreen" component={MarketScreen} options={{ headerShown: false }} />
         <Stack.Screen 
             name="Buying" 
             component={BuyingScreen} 
@@ -106,8 +109,10 @@ const AppNavigator = () => {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 {/* Main Tabs */}
                 <Stack.Screen name="MainTabs" component={BottomTabs} />
-
-                {/* Screens outside of Tabs */}
+                <Stack.Screen 
+                    name = "ExploreScreen" 
+                    component={ExploreScreen}
+                />
                 <Stack.Screen 
                     name="GenerateArtScreen" 
                     component={GenerateArtScreen} 
@@ -120,6 +125,16 @@ const AppNavigator = () => {
                     }} 
                 />
                 <Stack.Screen 
+                    name="LoadingGenArt" 
+                    component={LoadingGenArt} 
+                    options={{ headerShown: true, title: "Loading Artwork", headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
+                />
+                <stack.Screen
+                    name ="ResultGenArt" 
+                    component={ResultGenArt}
+                    options={{ headerShown: true, title: "Generated Artwork", headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }}
+                />
+                <Stack.Screen 
                     name="CanvasSizeScreen" 
                     component={CanvasSizeScreen} 
                     options={{ 
@@ -129,6 +144,39 @@ const AppNavigator = () => {
                         headerTintColor: "black",
                         headerTitleAlign: "center",
                     }} 
+                />
+                <Stack.Screen 
+                    name="MarketScreen" 
+                    component={MarketScreen} 
+                    options={{ 
+                        headerShown: true, 
+                        title: "Market", 
+                        headerStyle: { backgroundColor: '#79D7BE' }, 
+                        headerTintColor: 'black', 
+                        headerTitleAlign: 'center'
+                    }}
+                />
+                <Stack.Screen 
+                    name="ReportScreen" 
+                    component={ReportScreen} 
+                    options={{ 
+                        headerShown: true, 
+                        title: "Report", 
+                        headerStyle: { backgroundColor: '#79D7BE' }, 
+                        headerTintColor: 'black', 
+                        headerTitleAlign: 'center'
+                    }}
+                />
+                <Stack.Screen 
+                    name="SearchResultsScreen" // Add SearchResultsScreen here
+                    component={SearchResultsScreen} 
+                    options={{ 
+                        headerShown: true, 
+                        title: "Search Results", 
+                        headerStyle: { backgroundColor: '#79D7BE' }, 
+                        headerTintColor: 'black', 
+                        headerTitleAlign: 'center'
+                    }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

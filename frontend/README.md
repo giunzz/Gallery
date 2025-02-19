@@ -24,7 +24,8 @@ Choose a template: » blank
 │   ├── README.md        # Frontend docs
 │
 ```
-flex: 1,
-        backgroundColor: "#D1F0E8",
-        paddingHorizontal: 16,
-        paddingTop: 10,
+Key Features of the ProfileScreen
+MetaMask Connection: Users can connect their MetaMask wallet to the application.
+User Profile: Displays user information, including a profile image, username, and stats.
+Signing Messages: Users can enter text to sign using their connected wallet.
+Art Collection: Displays a grid of artworks with options to publish or listen to music.

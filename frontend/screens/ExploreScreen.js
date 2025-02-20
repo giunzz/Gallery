@@ -87,9 +87,8 @@ const ExploreScreen = () => {
                 {/* Top Card */}
                 <View style={styles.topCardContainer}>
                     <TouchableOpacity onPress={() => navigation.navigate('NewArtScreen')}>
-                        <Card title="New Art" imageSource={ColorImage} style={styles.topCard}>
+                        <Card title="New Art" imageSource={ColorImage} style={styles.topCard} visual={require('../assets/home/guitar.png')}>
                             <Text style={styles.cardSubtitle}>Let's see what can I do for you?</Text>
-                            <Image source={require('../assets/home/guitar.png')} style={styles.cardVisual} />
                         </Card>
                     </TouchableOpacity>
                 </View>
@@ -97,13 +96,11 @@ const ExploreScreen = () => {
                 {/* Middle Cards */}
                 <View style={styles.middleCardContainer}>
                     <TouchableOpacity onPress={() => navigation.navigate('GenerateArtScreen')} style={styles.middleCard}>
-                        <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard}>
-                            <Image source={require('../assets/home/chat.png')} style={styles.cardVisualSmall} />
+                        <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard} visualsmal= {require('../assets/home/chat.png')}>
                         </Card>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Market')} style={styles.middleCard}>
-                        <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard}>
-                            <Image source={require('../assets/home/megaphone.png')} style={styles.cardVisualSmall} />
+                    <TouchableOpacity onPress={() => navigation.navigate('Market')} style={styles.middleCard} >
+                        <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard} visualsmal = {require('../assets/home/megaphone.png')}>
                         </Card>
                     </TouchableOpacity>
                 </View>
@@ -165,6 +162,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#79D7BE',
         paddingVertical: 8,
         paddingHorizontal: 12,
+        right: 10,
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
@@ -193,16 +191,16 @@ const styles = StyleSheet.create({
         position: "relative",
     },
     cardSubtitle: {
-        fontSize: 16,
+        fontSize: 14,
         color: "#FFFFFF",
-        marginTop: 10,
+        width: '100%', 
+        bottom: 1000,
     },
     cardVisual: {
-        width: 90,
-        height: 90,
-        position: "absolute",
-        left: 10,
-        bottom: 10,
+        width: 95,
+        height: 150,
+        position: "relative",
+        bottom: 1000,
     },
     middleCardContainer: {
         flexDirection: "row",
@@ -228,11 +226,11 @@ const styles = StyleSheet.create({
         position: "relative",
     },
     cardVisualSmall: {
-        width: 40,
-        height: 40,
-        position: "absolute",
+        width: 20,
+        height: 30,
         right: 20,
         bottom: 20,
+        top: 200,
     },
     searchContainer: {
         flexDirection: 'row',

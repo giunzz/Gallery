@@ -20,6 +20,7 @@ import CanvasSizeScreen from './screens/CanvasSizeScreen';
 import ReportScreen from './screens/ReportScreen';
 import SearchResultsScreen from './screens/SearchResultsScreen';
 import NoResultsScreen from './screens/NotFound';
+import Uploading from './screens/UploadScreen';
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';
 import MarketIcon from './assets/home/add_business.png';
@@ -153,6 +154,17 @@ export default function App() {
             options={{ 
               headerShown: true, 
               title: "Search Results", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: 'black', 
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen
+            name = "UploadScreen" 
+            component={Uploading}
+            options={{ 
+              headerShown: true, 
+              title: "", 
               headerStyle: { backgroundColor: '#79D7BE' }, 
               headerTintColor: 'black', 
               headerTitleAlign: 'center'

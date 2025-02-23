@@ -7,15 +7,15 @@ import { LibraryContext } from '../components/LibraryContext';
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
 
-const UserHeader = () => {
+const UserHeader = ({ navigation }) => {
     return (
         <View style={styles.userHeaderContainer}>
             <View style={styles.greetingContainer}>
                 <Text style={styles.greetingText}>Hi, Jane!</Text>
                 <Text style={styles.subtitleText}>Explore the world</Text>
             </View>
-            <TouchableOpacity style={styles.upgradeButton}>
-                <Text style={styles.buttonText}>Upgrade</Text>
+            <TouchableOpacity style={styles.upgradeButton} onPress={() => navigation.navigate('UploadScreen')}>
+                <Text style={styles.buttonText}>Uploading</Text>
                 <Image source={require('../assets/home/Ellipse.png')} style={styles.icon} />
             </TouchableOpacity>
             <Image source={require('../assets/home/ava.png')} style={styles.profilePicture} />
@@ -24,13 +24,15 @@ const UserHeader = () => {
 };
 
 const MarketScreen = ({ navigation }) => {
-    const { libraryItems } = useContext(LibraryContext); // Get library items from context
+    const { libraryItems } = useContext(LibraryContext);  // Access library items from context
     const [selectedCategory, setSelectedCategory] = useState("All");
 
+    // Filter items based on selected category
     const marketItems = libraryItems.filter(item => 
         selectedCategory === "All" || item.category === selectedCategory
     );
 
+    // Render each market item
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Buying", { item })}>
             {/* Artwork Image */}
@@ -61,7 +63,7 @@ const MarketScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header navigation={navigation} />
-            <UserHeader />
+            <UserHeader navigation={navigation} /> {/* Pass navigation prop to UserHeader */}
 
             {/* Category Filter */}
             <CategoryFilter 

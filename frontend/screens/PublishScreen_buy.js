@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, ActivityIndicator, ScrollView } from 'react-native';
 import { LibraryContext } from '../components/LibraryContext'; // Import the context to manage library items
 import { CommonActions } from '@react-navigation/native'; // Import CommonActions
-import { setNonce } from 'viem/actions';
 
 const PublishScreen = ({ route, navigation }) => {
     const { artwork } = route.params;  

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     ScrollView, SafeAreaView, View, Text, TouchableOpacity,
     Image, TextInput, StyleSheet, FlatList
@@ -7,10 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 import Header from '../components/Header';
-import axios from 'axios';
+import axios from 'axios';  // Import axios
 
-
-import { LibraryContext } from '../components//LibraryContext'; 
+import { LibraryContext } from '../components/LibraryContext';
 
 import ColorImage from '../assets/home/Color.png';
 import ShopImage from '../assets/home/Shop.png';
@@ -40,7 +39,7 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
 
     return (
         <View style={styles.newfeedCard}>
-            <Image source={imageSource} style={styles.cardImage} resizeMode="cover" />
+            <Image source={{ uri: imageSource }} style={styles.cardImage} resizeMode="cover" />
             <Text style={styles.artTitle}>{title}</Text>
             <Text style={styles.artistName}>{artistName}</Text>
             <View style={styles.cardActions}>
@@ -64,27 +63,22 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
 const ExploreScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
+    const [newsData, setNewsData] = useState([]);  // State to hold fetched data
     const { clearLibrary } = useContext(LibraryContext); 
 
-    const artworks = Array.from({ length: 5 }, (_, i) => ({
-        id: i + 1,
-        title: `Artwork ${i + 1}`,
-        artistName: `Artist ${i + 1}`, // Add artist names
-        imageSource: ArtImage,
-    }));
+    // Fetch the news data from the API
+    useEffect(() => {
+        const fetchNewsData = async () => {
+            try {
+                const response = await axios.get('http://54.169.208.148/user/news');
+                setNewsData(response.data); 
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
 
-    // useEffect(() => {
-    //     const fetchArtworks = async () => {
-    //         try {
-    //             const response = await axios.get('http://54.169.208.148/user/news');
-    //             setArtworks(response.data); 
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     };
-
-    //     fetchArtworks();
-    // }, []); 
+        fetchNewsData();  
+    }, []);
 
     const handleSearch = () => {
         if (searchQuery.trim()) {
@@ -110,12 +104,10 @@ const ExploreScreen = () => {
                 {/* Middle Cards */}
                 <View style={styles.middleCardContainer}>
                     <TouchableOpacity onPress={() => navigation.navigate('GenerateArtScreen')} style={styles.middleCard}>
-                        <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard} visualsmal= {require('../assets/home/chat.png')}>
-                        </Card>
+                        <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard} visualsmal={require('../assets/home/chat.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Market')} style={styles.middleCard} >
-                        <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard} visualsmal = {require('../assets/home/megaphone.png')}>
-                        </Card>
+                    <TouchableOpacity onPress={() => navigation.navigate('Market')} style={styles.middleCard}>
+                        <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard} visualsmal={require('../assets/home/megaphone.png')} />
                     </TouchableOpacity>
                 </View>
 
@@ -135,10 +127,10 @@ const ExploreScreen = () => {
                 {/* Newfeed Art Loop */}
                 <Text style={styles.sectionTitle}>Newfeed Art</Text>
                 <FlatList
-                    data={artworks}
-                    keyExtractor={(item) => item.id.toString()}
+                    data={newsData}  // Using newsData fetched from API
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
-                        <NewfeedArt imageSource={item.imageSource} title={item.title} artistName={item.artistName} />
+                        <NewfeedArt imageSource={item.image} title={item.title} artistName={item.artistName} />
                     )}
                     showsVerticalScrollIndicator={false}
                 />

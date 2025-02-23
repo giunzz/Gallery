@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 import Header from '../components/Header';
+import axios from 'axios';
+
 
 import { LibraryContext } from '../components//LibraryContext'; 
 
@@ -17,7 +19,6 @@ import UpgradeIcon from '../assets/home/Ellipse.png';
 import ProfilePic from '../assets/home/ava.png';
 import ArtImage from '../assets/home/art.png';
 
-// User Header Component
 const UserHeader = () => {
     return (
         <View style={styles.container}>
@@ -63,7 +64,7 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
 const ExploreScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
-    const { clearLibrary } = useContext(LibraryContext); // Access clearLibrary function from context
+    const { clearLibrary } = useContext(LibraryContext); 
 
     const artworks = Array.from({ length: 5 }, (_, i) => ({
         id: i + 1,
@@ -71,6 +72,19 @@ const ExploreScreen = () => {
         artistName: `Artist ${i + 1}`, // Add artist names
         imageSource: ArtImage,
     }));
+
+    // useEffect(() => {
+    //     const fetchArtworks = async () => {
+    //         try {
+    //             const response = await axios.get('http://54.169.208.148/user/news');
+    //             setArtworks(response.data); 
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     };
+
+    //     fetchArtworks();
+    // }, []); 
 
     const handleSearch = () => {
         if (searchQuery.trim()) {

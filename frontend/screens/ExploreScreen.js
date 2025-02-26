@@ -66,7 +66,6 @@ const ExploreScreen = () => {
     const [newsData, setNewsData] = useState([]);  // State to hold fetched data
     const { clearLibrary } = useContext(LibraryContext); 
 
-    // Fetch the news data from the API
     useEffect(() => {
         const fetchNewsData = async () => {
             try {

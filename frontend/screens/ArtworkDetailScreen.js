@@ -4,12 +4,16 @@ import { View, Text, Image, StyleSheet, SafeAreaView, TouchableOpacity } from 'r
 const ArtworkDetailScreen = ({ route, navigation }) => {
     const { artwork } = route.params;
     const [isDrawPressed, setIsDrawPressed] = useState(false);
-    const [isColorPressed, setIsColorPressed] = useState(false);
+    const [isOwnershipPressed, setIsOwnershipPressed] = useState(false);
     const [isPublishPressed, setIsPublishPressed] = useState(false);
 
     // Correctly navigate to PublishScreen_buy with the artwork object
     const handlePublishPress = () => {
         navigation.navigate('Publish_buy', { artwork: artwork });
+    };
+
+    const handleOwnerPress = () => {
+        navigation.navigate('Ownership', { artwork: artwork }); // This is correct
     };
 
     return (
@@ -34,18 +38,21 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
                     <Text style={styles.buttonText}>Draw</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    style={[styles.colorButton, isColorPressed && styles.buttonPressed]} 
-                    onPressIn={() => setIsColorPressed(true)}
-                    onPressOut={() => setIsColorPressed(false)}
+                    style={[styles.colorButton, isOwnershipPressed && styles.buttonPressed]} 
+                    onPressIn={() => setIsOwnershipPressed(true)}
+                    onPressOut={() => {
+                        setIsOwnershipPressed(false);
+                        handleOwnerPress(); // Call the correct navigation function
+                    }}
                 >
-                    <Text style={styles.buttonText}>Color</Text>
+                    <Text style={styles.buttonText}>Ownership</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.publishButton, isPublishPressed && styles.buttonPressed]} 
                     onPressIn={() => setIsPublishPressed(true)}
                     onPressOut={() => {
                         setIsPublishPressed(false);
-                        handlePublishPress();  // Correctly navigate to the publish screen
+                        handlePublishPress();  
                     }}
                 >
                     <Text style={styles.buttonText}>Publish</Text>
@@ -54,6 +61,7 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
         </SafeAreaView>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {
@@ -121,7 +129,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: "#FFF",
-        fontSize: 16,
+        fontSize: 15,
     },
     buttonPressed: {
         backgroundColor: "#555",

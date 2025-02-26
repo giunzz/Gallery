@@ -34,8 +34,8 @@ const PublishScreen = ({ route, navigation }) => {
             const updatedStatus = verificationItems.map((item, index) => ({
                 ...item,
                 // isChecked: index % 2 === 0 ? 'success' : 'fail',
-                //isChecked: 'success',
-                isChecked: 'fail',
+                isChecked: 'success',
+                //isChecked: 'fail',
             }));
             setVerificationStatus(updatedStatus);
             setLoading(false); // Stop loading

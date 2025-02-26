@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -14,32 +14,53 @@ import { Ionicons } from '@expo/vector-icons';
 const OwnershipScreen = ({ route, navigation }) => {
     const { artwork } = route.params; // Get the artwork object from navigation parameters
 
+    const [isChecked, setIsChecked] = useState(false); // Track the checkbox state
+    const [price, setPrice] = useState(''); // Track the price input value
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollView}>
-                <Text style={styles.title}>Ownership</Text>
+                <Text style={styles.title}></Text>
 
+                {/* Artwork Display with Frame */}
                 <View style={styles.imageContainer}>
-                    <Image
-                        source={artwork.image} // Use the passed image
-                        style={styles.image}
+                    <View style={styles.frame}>
+                        <Image
+                            source={artwork.image} // Use the passed image
+                            style={styles.image}
+                        />
+                    </View>
+                </View>
+
+                <TouchableOpacity
+                    style={styles.checkboxContainer}
+                    onPress={() => setIsChecked(!isChecked)} // Toggle checkbox state
+                >
+                    <Ionicons
+                        name={isChecked ? 'checkmark-circle' : 'ellipse-outline'}
+                        size={24}
+                        color={isChecked ? 'green' : 'gray'}
                     />
-                </View>
-
-                <View style={styles.checkboxContainer}>
-                    <Ionicons name="checkmark-circle" size={24} color="green" />
                     <Text style={styles.checkboxText}>Resign ownership</Text>
-                </View>
+                </TouchableOpacity>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="120.000d"
-                    keyboardType="numeric"
-                />
+                {isChecked && (
+                    <TextInput
+                        style={styles.input}
+                        value={price}
+                        onChangeText={setPrice}
+                        placeholder="120.000đ"
+                        keyboardType="numeric"
+                    />
+                )}
 
-                <TouchableOpacity 
-                    style={styles.continueButton} 
-                    onPress={() => navigation.navigate('NextScreen')} // Replace with your next screen
+                <TouchableOpacity
+                    style={styles.continueButton}
+                    onPress={() => {
+                        // Handle continue action
+                        console.log('Price:', price);
+                        navigation.navigate('NextScreen'); // Replace with your next screen
+                    }}
                 >
                     <Text style={styles.buttonText}>Continue</Text>
                 </TouchableOpacity>
@@ -63,16 +84,22 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     imageContainer: {
-        borderWidth: 1,
-        borderColor: '#E0E0E0',
-        borderRadius: 10,
-        overflow: 'hidden',
+        width: '100%',
+        alignItems: 'center',
         marginBottom: 20,
     },
+    frame: {
+        borderWidth: 5,
+        borderColor: '#E0E0E0', // Light gray frame color
+        padding: 10, // Padding between the image and the frame
+        borderRadius: 15, // Optional: rounded corners for the frame
+        overflow: 'hidden', // Ensures the image stays within the frame bounds
+    },
     image: {
-        width: 300,
-        height: 300,
-        resizeMode: 'contain',
+        width: '100%', // Ensure image fills the container
+        height: undefined,
+        aspectRatio: 1, // Maintain aspect ratio of the image
+        resizeMode: 'contain', // Ensure the image is contained within the frame
     },
     checkboxContainer: {
         flexDirection: 'row',

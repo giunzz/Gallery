@@ -9,7 +9,7 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
 
     // Correctly navigate to PublishScreen_buy with the artwork object
     const handlePublishPress = () => {
-        navigation.navigate('Publish_buy', { artwork: artwork });
+        navigation.navigate('PublishArtwork', { artwork: artwork });
     };
 
     const handleOwnerPress = () => {
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: "#FFF",
-        fontSize: 15,
+        fontSize: 14,
     },
     buttonPressed: {
         backgroundColor: "#555",

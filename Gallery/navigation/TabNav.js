@@ -25,7 +25,14 @@ import UnselectedScan from '../assets/bottomTabSvg/UnselectedScan.svg';
 import RowComponent from '../components/BottomTab/RowComponent';
 
 const getTabBarVisibility = route => {
-  const allowedRoutes = ['Explore', 'Scan', 'Market', 'Account', 'Library'];
+  const allowedRoutes = [
+    'Explore',
+    'Scan',
+    'Market',
+    'Account',
+    'Library',
+    'ConnectWallet',
+  ];
   const routeName = getFocusedRouteNameFromRoute(route) ?? 'Explore';
   if (allowedRoutes.includes(routeName)) {
     return {
@@ -78,7 +85,7 @@ const TabNavigator = () => {
                 styles={{
                   alignItems: 'center',
                 }}>
-                <IconComponent width={22} height={22} />
+                <IconComponent width={24} height={24} />
                 {focused && (
                   <Text
                     style={[

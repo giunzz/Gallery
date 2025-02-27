@@ -1,180 +1,353 @@
-import React, {useState, useRef} from 'react';
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
-import {Canvas, Path, Skia} from '@shopify/react-native-skia';
+import React, {useState, useEffect, useContext} from 'react';
+import {
+  ScrollView,
+  SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import Card from '../../components/Card';
+import axios from 'axios'; // Import axios
 
-const COLORS = ['black', 'red', 'blue', 'green', 'orange'];
+import {LibraryContext} from '../../components/LibraryContext';
 
-const ExploreMain = () => {
-  const [paths, setPaths] = useState([]);
-  const [currentPath, setCurrentPath] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [hasMoved, setHasMoved] = useState(false);
-  const [startPoint, setStartPoint] = useState(null);
-  const [previousPoint, setPreviousPoint] = useState(null);
-  // Use a ref to store the last computed midpoint for smoothing.
-  const lastMidPointRef = useRef(null);
+import ColorImage from '../../assets/home/Color.png';
+import ShopImage from '../../assets/home/Shop.png';
+import GenArt from '../../assets/home/GalleryAdd.png';
+import UpgradeIcon from '../../assets/home/Ellipse.png';
+import ProfilePic from '../../assets/home/ava.png';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faComment, faHeart, faSearch} from '@fortawesome/free-solid-svg-icons';
 
-  const onTouchStart = event => {
-    if (isDrawing) return;
-    const {locationX, locationY} = event.nativeEvent;
-    console.log('onTouchStart:', locationX, locationY);
-    setIsDrawing(true);
-    setHasMoved(false);
-    const start = {x: locationX, y: locationY};
-    setStartPoint(start);
-    setPreviousPoint(start);
-    lastMidPointRef.current = null; // reset the last midpoint
-    const path = Skia.Path.Make();
-    path.moveTo(locationX, locationY);
-    setCurrentPath(path);
-  };
-
-  const onTouchMove = event => {
-    if (!isDrawing || !currentPath || !previousPoint) return;
-    const {locationX, locationY} = event.nativeEvent;
-    console.log('onTouchMove:', locationX, locationY);
-    setHasMoved(true);
-    const currentPoint = {x: locationX, y: locationY};
-    // Compute the midpoint between the previous touch and current touch
-    const midPoint = {
-      x: (previousPoint.x + currentPoint.x) / 2,
-      y: (previousPoint.y + currentPoint.y) / 2,
-    };
-    // If this is the first segment, we simply quadTo from previousPoint to midPoint.
-    // Otherwise, we continue smoothing from the last midpoint.
-    currentPath.quadTo(
-      previousPoint.x,
-      previousPoint.y,
-      midPoint.x,
-      midPoint.y,
-    );
-    // Store the current midPoint for the next segment.
-    lastMidPointRef.current = midPoint;
-    setPreviousPoint(currentPoint);
-    // Copy the updated path to trigger re-render.
-    setCurrentPath(currentPath.copy());
-  };
-
-  const onTouchEnd = () => {
-    if (!isDrawing || !currentPath) return;
-    // If no movement occurred, add a small dot.
-    if (!hasMoved && startPoint) {
-      console.log('Single tap detected, drawing a dot');
-      currentPath.addCircle(startPoint.x, startPoint.y, 2);
-    }
-    console.log('onTouchEnd:', currentPath.toSVGString());
-    // Optionally, you can ensure the final segment is drawn.
-    if (hasMoved && previousPoint) {
-      currentPath.lineTo(previousPoint.x, previousPoint.y);
-    }
-    setPaths(prevPaths => [
-      ...prevPaths,
-      {path: currentPath, color: selectedColor},
-    ]);
-    // Reset all drawing state.
-    setCurrentPath(null);
-    setIsDrawing(false);
-    setHasMoved(false);
-    setStartPoint(null);
-    setPreviousPoint(null);
-    lastMidPointRef.current = null;
-  };
-
-  const clearCanvas = () => {
-    console.log('clearCanvas');
-    setPaths([]);
-    setCurrentPath(null);
-    setIsDrawing(false);
-  };
-
+const UserHeader = () => {
   return (
     <View style={styles.container}>
-      <Canvas style={styles.canvas}>
-        {/* Render completed paths */}
-        {paths.map((p, index) => (
-          <Path
-            key={`path-${index}`}
-            path={p.path}
-            style="stroke"
-            strokeWidth={4}
-            color={p.color}
-          />
-        ))}
-        {/* Render current path being drawn */}
-        {currentPath && (
-          <Path
-            path={currentPath}
-            style="stroke"
-            strokeWidth={4}
-            color={selectedColor}
-          />
-        )}
-      </Canvas>
+      <View style={styles.greetingContainer}>
+        <Text style={styles.greetingText}>Hi, Jane!</Text>
+        <Text style={styles.subtitleText}>Explore the world</Text>
+      </View>
+      <TouchableOpacity style={styles.upgradeButton}>
+        <Text style={styles.buttonText}>Upgrade</Text>
+        <Image source={UpgradeIcon} style={styles.icon} />
+      </TouchableOpacity>
+      <Image source={ProfilePic} style={styles.profilePicture} />
+    </View>
+  );
+};
 
-      <View
-        style={styles.touchArea}
-        onStartShouldSetResponder={() => true}
-        onResponderGrant={onTouchStart}
-        onResponderMove={onTouchMove}
-        onResponderRelease={onTouchEnd}
-        onResponderTerminate={onTouchEnd}
+const NewfeedArt = ({imageSource, title, artistName}) => {
+  const navigation = useNavigation();
+
+  return (
+    <View style={styles.newfeedCard}>
+      <Image
+        source={{uri: imageSource}}
+        style={styles.cardImage}
+        resizeMode="cover"
       />
-
-      <View style={styles.controls}>
-        {COLORS.map(color => (
-          <TouchableOpacity
-            key={color}
-            style={[
-              styles.colorButton,
-              {
-                backgroundColor: color,
-                borderWidth: selectedColor === color ? 3 : 0,
-                borderColor: '#fff',
-              },
-            ]}
-            onPress={() => setSelectedColor(color)}
-          />
-        ))}
-        <TouchableOpacity style={styles.clearButton} onPress={clearCanvas}>
-          <View style={styles.clearText} />
+      <Text style={styles.artTitle}>{title}</Text>
+      <Text style={styles.artistName}>{artistName}</Text>
+      <View style={styles.cardActions}>
+        <TouchableOpacity style={styles.iconButton}>
+          <FontAwesomeIcon icon={faHeart} size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton}>
+          <FontAwesomeIcon icon={faComment} size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.reportButton}
+          onPress={() =>
+            navigation.navigate('ReportScreen', {artwork: {title, imageSource}})
+          }>
+          <Text style={styles.reportText}>Report</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
+const ExploreMain = () => {
+  const navigation = useNavigation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [newsData, setNewsData] = useState([]); // State to hold fetched data
+  const {clearLibrary} = useContext(LibraryContext);
+
+  // Fetch the news data from the API
+  useEffect(() => {
+    const fetchNewsData = async () => {
+      try {
+        const response = await axios.get('http://54.169.208.148/user/news');
+        setNewsData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchNewsData();
+  }, []);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigation.navigate('SearchResultsScreen', {searchQuery});
+    }
+  };
+
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      <UserHeader />
+
+      <ScrollView contentContainerStyle={{padding: 20}}>
+        {/* Top Card */}
+        <View style={styles.topCardContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('NewArtScreen')}>
+            <Card
+              title="New Art"
+              imageSource={ColorImage}
+              style={styles.topCard}
+              visual={require('../../assets/home/guitar.png')}>
+              <Text style={styles.cardSubtitle}>
+                Let's see what can I do for you?
+              </Text>
+            </Card>
+          </TouchableOpacity>
+        </View>
+
+        {/* Middle Cards */}
+        <View style={styles.middleCardContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('GenerateArtScreen')}
+            style={styles.middleCard}>
+            <Card
+              title="Generate Picture"
+              imageSource={GenArt}
+              style={styles.generateCard}
+              visualsmal={require('../../assets/home/chat.png')}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Market')}
+            style={styles.middleCard}>
+            <Card
+              title="Exploring Market"
+              imageSource={ShopImage}
+              style={styles.marketCard}
+              visualsmal={require('../../assets/home/megaphone.png')}
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search name"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          <TouchableOpacity onPress={handleSearch}>
+            <FontAwesomeIcon icon={faSearch} size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Newfeed Art Loop */}
+        <Text style={styles.sectionTitle}>Newfeed Art</Text>
+        <FlatList
+          data={newsData} // Using newsData fetched from API
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => (
+            <NewfeedArt
+              imageSource={item.image}
+              title={item.title}
+              artistName={item.artistName}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+
+        {/* Clear Library Button */}
+        <TouchableOpacity style={styles.clearButton} onPress={clearLibrary}>
+          <Text style={styles.clearButtonText}>Clear Library</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+// Styles
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#fff'},
-  canvas: {flex: 1},
-  touchArea: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  controls: {
+  container: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    padding: 10,
-    backgroundColor: '#f0f0f0',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#FFFFF',
   },
-  colorButton: {
-    width: 40,
-    height: 40,
+  greetingContainer: {
+    flex: 1,
+  },
+  greetingText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  subtitleText: {
+    fontSize: 18,
+    color: 'gray',
+  },
+  upgradeButton: {
+    backgroundColor: '#79D7BE',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    right: 10,
     borderRadius: 20,
-    margin: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    marginRight: 5,
+  },
+  icon: {
+    width: 20,
+    height: 20,
+  },
+  profilePicture: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  topCardContainer: {
+    marginBottom: 20,
+  },
+  topCard: {
+    backgroundColor: '#F7BB36',
+    padding: 25,
+    borderRadius: 20,
+    height: 180,
+    position: 'relative',
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    width: '100%',
+    bottom: 1000,
+  },
+  cardVisual: {
+    width: 95,
+    height: 150,
+    position: 'relative',
+    bottom: 1000,
+  },
+  middleCardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  middleCard: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  generateCard: {
+    backgroundColor: '#FF8358',
+    padding: 20,
+    borderRadius: 20,
+    height: 120,
+    position: 'relative',
+  },
+  marketCard: {
+    backgroundColor: '#7851A9',
+    padding: 20,
+    borderRadius: 20,
+    height: 120,
+    position: 'relative',
+  },
+  cardVisualSmall: {
+    width: 20,
+    height: 30,
+    right: 20,
+    bottom: 20,
+    top: 200,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
+    flex: 1,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 15,
+  },
+  newfeedCard: {
+    backgroundColor: '#F8F8F8',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+  },
+  cardImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+  },
+  artTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+    alignSelf: 'flex-start',
+    paddingLeft: 10,
+  },
+  artistName: {
+    fontSize: 16,
+    color: 'gray',
+    alignSelf: 'flex-start',
+    paddingLeft: 10,
+  },
+  cardActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  iconButton: {
+    padding: 10,
+  },
+  reportButton: {
+    backgroundColor: '#E57373',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  reportText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   clearButton: {
-    width: 60,
-    height: 40,
-    backgroundColor: '#ccc',
-    justifyContent: 'center',
+    backgroundColor: '#FF5722', // Red color for clear button
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
     alignItems: 'center',
-    borderRadius: 10,
-    marginLeft: 10,
+    marginTop: 20,
   },
-  clearText: {
-    width: 30,
-    height: 5,
-    backgroundColor: '#fff',
+  clearButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

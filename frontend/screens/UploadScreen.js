@@ -7,7 +7,6 @@ const UploadPicture = () => {
     const [imageUri, setImageUri] = useState(null);
     const [token, setToken] = useState(null);
 
-    // ✅ Fetch token properly
     useEffect(() => {
         const fetchToken = async () => {
             try {

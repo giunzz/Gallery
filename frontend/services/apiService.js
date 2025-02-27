@@ -37,7 +37,6 @@ export const getAuthorizationToken = async (address, message, signature) => {
     }
 };
 
-// Retrieve token from AsyncStorage
 export const getToken = async () => {
     try {
         const token = await AsyncStorage.getItem("token");
@@ -58,7 +57,7 @@ export const addPicture = async (imageUri, token) => {
 
     const formData = new FormData();
     formData.append('picture', {
-        uri: imageUri.replace('file://', ''), // Fix file path format
+        uri: imageUri,
         type: 'image/jpeg',
         name: 'photo.jpg',
     });

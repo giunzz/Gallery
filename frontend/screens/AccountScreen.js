@@ -120,11 +120,9 @@ const AccountScreen = ({ navigation }) => {
     const copyToClipboard = async (textToCopy) => {
         await Clipboard.setString(textToCopy);
 
-        // Show a toast notification (different for Android and iOS)
         if (Platform.OS === 'android') {
             ToastAndroid.show('Copied to clipboard!', ToastAndroid.SHORT);
         } else {
-            // For iOS, use an Alert (or a custom notification library)
             Alert.alert("Copied", "Text copied to clipboard!");
         }
     };
@@ -210,7 +208,6 @@ const AccountScreen = ({ navigation }) => {
                         onChangeText={handleTextChange}
                         value={text}
                     />
-                   
                         <TouchableOpacity
                             style={styles.signButton}
                             onPress={() => signText(text)}

@@ -25,7 +25,6 @@ const PublishScreen = ({ route, navigation }) => {
         { id: 5, title: "Lorem ipsum", isChecked: null }
     ];
 
-    // Start verification process
     const handleVerifyAndPublish = () => {
         setModalVisible(true); // Show the modal during verification
         setLoading(true); // Start loading

@@ -19,7 +19,19 @@ const LibraryScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [token, setToken] = useState(null);
-
+    
+    const handleViewButtonPress = () => {
+        if (selectedItems.length === 0) {
+            Alert.alert("No Selection", "Please select an artwork first.");
+            return;
+        }
+        // Get the selected artwork (only the first selected item for now)
+        const selectedArtwork = userPictures.find((item) => item.id === selectedItems[0]);
+    
+        if (selectedArtwork) {
+            navigation.navigate("ArtworkDetail", { artwork: selectedArtwork });
+        }
+    };
     useEffect(() => {
         const fetchTokenAndPictures = async () => {
             try {
@@ -136,8 +148,8 @@ const LibraryScreen = ({ navigation }) => {
                     <Text style={styles.bottomText}>New art</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />
-                <TouchableOpacity style={styles.bottomButton}>
-                    <Text style={styles.bottomText}>Publish</Text>
+                <TouchableOpacity style={styles.bottomButton} onPress={handleViewButtonPress}>
+                    <Text style={styles.bottomText}>View</Text>
                     <Ionicons name="arrow-forward" size={18} color="black" />
                 </TouchableOpacity>
             </View>

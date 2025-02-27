@@ -1,22 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ScrollView, SafeAreaView, View, Text, TouchableOpacity,
-    Image, TextInput, StyleSheet, FlatList
+    Image, TextInput, StyleSheet, FlatList, Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 import Header from '../components/Header';
-import axios from 'axios';  // Import axios
-
-import { LibraryContext } from '../components/LibraryContext';
 
 import ColorImage from '../assets/home/Color.png';
 import ShopImage from '../assets/home/Shop.png';
 import GenArt from '../assets/home/Gallery Add.png';
 import UpgradeIcon from '../assets/home/Ellipse.png';
 import ProfilePic from '../assets/home/ava.png';
-import ArtImage from '../assets/home/art.png';
+import { getUserPicture, getToken } from "../services/apiService";
 
 const UserHeader = () => {
     return (
@@ -63,21 +60,40 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
 const ExploreScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
-    const [newsData, setNewsData] = useState([]);  // State to hold fetched data
-    const { clearLibrary } = useContext(LibraryContext); 
+    const [newsData, setNewsData] = useState([]);  
+    const [token, setToken] = useState(null);
 
     useEffect(() => {
-        const fetchNewsData = async () => {
+        const fetchTokenAndPictures = async () => {
             try {
-                const response = await axios.get('http://54.169.208.148/user/news');
-                setNewsData(response.data); 
+                const storedToken = await getToken();
+                if (storedToken) {
+                    setToken(storedToken);
+                    await loadNewsData(storedToken);
+                } else {
+                    Alert.alert('Error', 'No token found. Please log in again.');
+                }
             } catch (error) {
-                console.error('Error fetching data:', error);
+                Alert.alert('Error', 'Failed to retrieve token.');
             }
         };
-
-        fetchNewsData();  
+        fetchTokenAndPictures();
     }, []);
+
+    const loadNewsData = async (token) => {
+        try {
+            const response = await getUserPicture(token);
+            const pictures = response.pictures.map((item) => ({
+                id: item.token, // Use `token` as a unique ID
+                title: item.token.slice(0, 6), // Display first 6 characters of token
+                artistName: item.address, // Use `address` as artist name
+                image: item.url, // Use `url` for the image
+            }));
+            setNewsData(pictures);
+        } catch (error) {
+            console.error("Error fetching news data:", error);
+        }
+    };
 
     const handleSearch = () => {
         if (searchQuery.trim()) {
@@ -126,24 +142,18 @@ const ExploreScreen = () => {
                 {/* Newfeed Art Loop */}
                 <Text style={styles.sectionTitle}>Newfeed Art</Text>
                 <FlatList
-                    data={newsData}  // Using newsData fetched from API
-                    keyExtractor={(item, index) => index.toString()}
+                    data={newsData}
+                    keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <NewfeedArt imageSource={item.image} title={item.title} artistName={item.artistName} />
                     )}
                     showsVerticalScrollIndicator={false}
                 />
-
-                {/* Clear Library Button */}
-                <TouchableOpacity style={styles.clearButton} onPress={clearLibrary}>
-                    <Text style={styles.clearButtonText}>Clear Library</Text>
-                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );
 };
 
-// Styles
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
@@ -313,6 +323,66 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         fontSize: 16,
         fontWeight: "bold",
+    },
+    newfeedCard: {
+        backgroundColor: '#F8F8F8',
+        borderRadius: 10,
+        padding: 15,
+        marginBottom: 15,
+    },
+    cardImage: {
+        width: '100%',
+        height: 200,
+        borderRadius: 10,
+    },
+    artTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 10,
+    },
+    artistName: {
+        fontSize: 16,
+        color: 'gray',
+    },
+    cardActions: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        paddingHorizontal: 10,
+        marginTop: 10,
+    },
+    iconButton: {
+        padding: 10,
+    },
+    reportButton: {
+        backgroundColor: '#E57373',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        borderRadius: 5,
+    },
+    reportText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+    },
+    searchInput: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        backgroundColor: '#FFFFFF',
+        flex: 1,
+    },
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginVertical: 15,
     },
 });
 

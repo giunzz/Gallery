@@ -91,3 +91,18 @@ export const getUserPicture = async (token) => {
         throw new Error('Failed to fetch user picture');
     }
 };
+
+export const NewsExpore = async (token) => {
+    try {
+        const response = await axios.get('http://54.169.208.148/user/news', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+
+        return response.data; 
+    } catch (error) {
+        console.error('Error fetching picture:', error);
+        throw new Error('Failed to fetch picture');
+    }
+};

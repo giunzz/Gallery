@@ -20,13 +20,15 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
         <SafeAreaView style={styles.container}>
             {/* Artwork Details */}
             <View style={styles.detailsContainer}>
-                <Image source={artwork.image} style={styles.artworkImage} />
-                <Text style={styles.artworkTitle}>{artwork.title}</Text>
-                <Text style={styles.artworkType}>{artwork.type}</Text>
-                <Text style={styles.description}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </Text>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="chevron-back" size={28} color="black" />
+                </TouchableOpacity>
+                
+                <Image source={{ uri: artwork.url }} style={styles.image} />
+
+                <Text style={styles.title}>Token: {artwork.token}</Text>
+                <Text style={styles.subtext}>Address: {artwork.address}</Text>
+                <Text style={styles.subtext}>Visibility: {artwork.visibility}</Text>
             </View>
             
             <View style={styles.buttonContainer}>
@@ -73,27 +75,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
-    artworkImage: {
-        width: '100%',
+    backButton: {
+        position: "absolute",
+        top: 50,
+        left: 20,
+        zIndex: 10,
+    },
+    image: {
+        width: "100%",
         height: 300,
         borderRadius: 10,
-        marginBottom: 15,
+        marginTop: 60,
     },
-    artworkTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 5,
+    title: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 20,
     },
-    artworkType: {
-        fontSize: 18,
-        color: 'gray',
-    },
-    description: {
-        marginTop: 1,
-        fontSize: 14,
-        color: "#555",
-        lineHeight: 20,
-        textAlign: 'center', 
+    subtext: {
+        fontSize: 16,
+        color: "#666",
+        marginTop: 5,
     },
     buttonContainer: {
         flexDirection: "row",

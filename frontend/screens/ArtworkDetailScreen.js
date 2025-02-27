@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // ✅ Import Ionicons
 
 const ArtworkDetailScreen = ({ route, navigation }) => {
     const { artwork } = route.params;

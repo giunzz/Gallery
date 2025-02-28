@@ -21,9 +21,6 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
         <SafeAreaView style={styles.container}>
             {/* Artwork Details */}
             <View style={styles.detailsContainer}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Ionicons name="chevron-back" size={28} color="black" />
-                </TouchableOpacity>
                 
                 <Image source={{ uri: artwork.url }} style={styles.image} />
 

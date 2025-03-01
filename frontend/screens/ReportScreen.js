@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, StyleSheet, Image, Modal, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import img from '../assets/home/art.png'
-
 const ReportScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { artwork } = route.params; // Get artwork data from route parameters
+    const { artwork } = route.params || {}; // Get artwork data from route parameters
 
     const [selectedReason, setSelectedReason] = useState('');
     const [additionalInfo, setAdditionalInfo] = useState('');
-    const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
-
+    const [modalVisible, setModalVisible] = useState(false); 
     const handleNext = () => {
         console.log('Selected Reason:', selectedReason);
         setModalVisible(true); // Show the modal when "Next" is pressed
@@ -28,13 +25,16 @@ const ReportScreen = () => {
                 <Text style={styles.headerText}></Text>
             </View>
 
-            <Image source={artwork.imageSource || img} style={styles.artworkImage} resizeMode="cover" />
+            <Image 
+                source={{ uri: artwork.imageUrl || '../assets/home/art.png'}} 
+                style={styles.artworkImage} 
+                resizeMode="cover" 
+            />
 
             {/* Artwork Info */}
             <View style={styles.profileCard}>
-                <Image source={"../assets/market/buy.png"} style={styles.avatar} /> {/* Avatar Image */}
-                <Text style={styles.NameArt}>{artwork.title}</Text>
-                <Text style={styles.artistName}>{artwork.artistName || 'Artist Name'}</Text>
+                <Text style={styles.NameArt}>{artwork.title || 'Untitled'}</Text>
+                <Text style={styles.artistName}>{artwork.artistName || 'Unknown Artist'}</Text>
             </View>
 
             <View style={styles.reasonContainer}>
@@ -148,10 +148,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     avatar: {
-        width: 10, 
-        height: 10, 
+        width: 50, 
+        height: 50, 
         borderRadius: 25, // Make it circular
-        marginRight: 10, // Space between avatar and text
+        marginBottom: 10, // Space between avatar and text
     },
     modalOverlay: {
         flex: 1,

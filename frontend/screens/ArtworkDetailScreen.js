@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // ✅ Import Ionicons
 
 const ArtworkDetailScreen = ({ route, navigation }) => {
     const { artwork } = route.params;
@@ -8,14 +7,28 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
     const [isOwnershipPressed, setIsOwnershipPressed] = useState(false);
     const [isPublishPressed, setIsPublishPressed] = useState(false);
 
-    // Correctly navigate to PublishScreen_buy with the artwork object
     const handlePublishPress = () => {
-        navigation.navigate('PublishArtwork', { artwork: artwork });
+        navigation.navigate('PublishArtwork', { 
+            artwork: { 
+                title: artwork.token, 
+                artistName: artwork.address, 
+                imageUrl: artwork.url, // ✅ Ensure the correct image property
+                visibility: artwork.visibility, 
+                price: artwork.price || '0 VND' // ✅ Ensure price is sent
+            }
+        });
     };
 
     const handleOwnerPress = () => {
-        navigation.navigate('Ownership', { artwork: artwork }); // This is correct
+        navigation.navigate('Ownership', { 
+            artwork: { 
+                title: artwork.token, 
+                artistName: artwork.address, 
+                imageUrl: artwork.url // ✅ Pass correct image URL
+            } 
+        });
     };
+    
 
     return (
         <SafeAreaView style={styles.container}>

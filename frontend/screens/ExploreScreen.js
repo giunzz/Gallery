@@ -13,7 +13,7 @@ import ShopImage from '../assets/home/Shop.png';
 import GenArt from '../assets/home/Gallery Add.png';
 import UpgradeIcon from '../assets/home/Ellipse.png';
 import ProfilePic from '../assets/home/ava.png';
-import { getUserPicture, getToken } from "../services/apiService";
+import { NewsExplore, getToken } from "../services/apiService";
 
 const UserHeader = () => {
     return (
@@ -48,7 +48,15 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.reportButton}
-                    onPress={() => navigation.navigate('ReportScreen', { artwork: { title, imageSource } })}
+                    onPress={() =>
+                        navigation.navigate('ReportScreen', {
+                            artwork: { 
+                                title, 
+                                artistName, 
+                                imageUrl: imageSource // ✅ Ensure the correct image property is sent
+                            }
+                        })
+                    }
                 >
                     <Text style={styles.reportText}>Report</Text>
                 </TouchableOpacity>
@@ -56,6 +64,7 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
         </View>
     );
 };
+
 
 const ExploreScreen = () => {
     const navigation = useNavigation();
@@ -82,9 +91,9 @@ const ExploreScreen = () => {
 
     const loadNewsData = async (token) => {
         try {
-            const response = await getUserPicture(token);
+            const response = await NewsExplore(token);
             const pictures = response.pictures.map((item) => ({
-                id: item.token, // Use `token` as a unique ID
+                id: item.token, 
                 title: item.token.slice(0, 6), // Display first 6 characters of token
                 artistName: item.address, // Use `address` as artist name
                 image: item.url, // Use `url` for the image

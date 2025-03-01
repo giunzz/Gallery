@@ -1,9 +1,9 @@
 import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = 'http://54.169.208.148/auth/request-token';
-const API_URL1 = 'http://54.169.208.148/auth/login-address';
-const API_AddPic = 'http://54.169.208.148/picture/add';
+const API_URL = 'http://13.250.12.56/auth/request-token';
+const API_URL1 = 'http://13.250.12.56/auth/login-address';
+const API_AddPic = 'http://13.250.12.56/picture/add';
 
 export const getMessageFromServer = async (address) => {
     try {
@@ -45,7 +45,6 @@ export const getToken = async () => {
     }
 };
 
-// Image upload function
 export const addPicture = async (imageUri, token) => {
     if (!token) {
         console.error("Authorization token is missing");
@@ -76,7 +75,7 @@ export const addPicture = async (imageUri, token) => {
 
 export const getUserPicture = async (token) => {
     try {
-        const response = await axios.get('http://54.169.208.148/user/pictures', {
+        const response = await axios.get('http://13.250.12.56/user/pictures', {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -89,7 +88,7 @@ export const getUserPicture = async (token) => {
 
 export const NewsExplore = async (token) => {
     try {
-        const response = await axios.get('http://54.169.208.148/user/news', {
+        const response = await axios.get('http://13.250.12.56/user/news', {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -102,7 +101,7 @@ export const NewsExplore = async (token) => {
 
 export const GenerateLineArt = async (prompt) => {
     try {
-        const response = await axios.post('http://54.169.208.148/ai/art', {
+        const response = await axios.post('http://13.250.12.56/ai/art', {
             prompt: prompt || "Default prompt",  // Ensures input is always valid
         }, {
             headers: {

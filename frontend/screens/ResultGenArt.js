@@ -11,15 +11,15 @@ const ResultGenArt = ({ route, navigation }) => {
     const [uploading, setUploading] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
 
-    // ✅ Function to fetch generated art, ensuring no direct state updates during render
     const fetchGeneratedArt = async () => {
         setLoading(true);
         try {
             const response = await GenerateLineArt(prompt); // Call API
             console.log("Generated Art Response:", response); // Debugging output
     
+            // ✅ Correct way to update state
             if (response && response.url) {
-                setImageUrl(response.url); 
+                setImageUrl(response.url);  // ✅ Use setState function
             } else {
                 console.warn("Invalid response structure:", response);
                 Alert.alert("Error", "Failed to fetch generated artwork.");
@@ -31,6 +31,7 @@ const ResultGenArt = ({ route, navigation }) => {
             setLoading(false);
         }
     };
+    
     
 
     useEffect(() => {
@@ -52,7 +53,6 @@ const ResultGenArt = ({ route, navigation }) => {
                 return;
             }
     
-            // ✅ Try getting existing images, and handle potential errors
             let existingImages = [];
             try {
                 existingImages = await getUserPicture(token);
@@ -99,8 +99,7 @@ const ResultGenArt = ({ route, navigation }) => {
         } else if (buttonName === 'Draw') {
             navigation.navigate('Draw');
         } else if (buttonName === 'Explore') {
-            navigation.navigate('MainTabs', { screen: 'Explore' }); // ✅ Navigate inside the Main Tab
-        }
+            navigation.navigate('MainTabs', { screen: 'Explore' });        }
     };    
     
     useLayoutEffect(() => {

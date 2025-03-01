@@ -1,11 +1,25 @@
-import React, { useState, useContext } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import React, { useState } from "react";
+import { 
+    View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView 
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons"; 
 import Header from '../components/Header';
 import CategoryFilter from '../components/FilterButtons'; 
-import { LibraryContext } from '../components/LibraryContext';  
+import { useNavigation } from "@react-navigation/native";
+
+import ArtImage from '../assets/home/art.png'; // Placeholder image
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
+
+// ✅ Sample artworks data
+const artworks = Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    title: `Artwork ${i + 1}`,
+    imageUrl: ArtImage, // ✅ Using placeholder image
+    price: (i + 1) * 10000, // Fake price in VND
+    username: `User ${i + 1}`, // Fake username
+    category: categories[i % categories.length], // Assign random categories
+}));
 
 const UserHeader = ({ navigation }) => {
     return (
@@ -24,19 +38,24 @@ const UserHeader = ({ navigation }) => {
 };
 
 const MarketScreen = ({ navigation }) => {
-    const { libraryItems } = useContext(LibraryContext);  // Access library items from context
     const [selectedCategory, setSelectedCategory] = useState("All");
 
-    // Filter items based on selected category
-    const marketItems = libraryItems.filter(item => 
+    // ✅ Filter artworks based on selected category
+    const filteredItems = artworks.filter(item => 
         selectedCategory === "All" || item.category === selectedCategory
     );
 
-    // Render each market item
+    // ✅ Render artwork card
     const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Buying", { item })}>
+        <TouchableOpacity 
+            style={styles.card} 
+            onPress={() => navigation.navigate("BuyingScreen", { artwork: item })} // ✅ Pass artwork details
+        >
             {/* Artwork Image */}
-            <Image source={item.image} style={styles.cardImage} />
+            <Image 
+                source={item.imageUrl} 
+                style={styles.cardImage} 
+            />
 
             {/* Title & Cart Icon */}
             <View style={styles.titleContainer}>
@@ -50,12 +69,15 @@ const MarketScreen = ({ navigation }) => {
             <View style={styles.userPriceContainer}>
                 {/* User Info */}
                 <View style={styles.userContainer}>
-                    <Image source={item.userAvatar || require('../assets/market/buy.png')} style={styles.userAvatar} />
+                    <Image 
+                        source={require('../assets/market/buy.png')} 
+                        style={styles.userAvatar} 
+                    />
                     <Text style={styles.username}>{item.username}</Text>
                 </View>
 
                 {/* Price */}
-                <Text style={styles.itemPrice}>{item.price}VND</Text>
+                <Text style={styles.itemPrice}>{item.price} VND</Text>
             </View>
         </TouchableOpacity>
     );
@@ -63,7 +85,7 @@ const MarketScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header navigation={navigation} />
-            <UserHeader navigation={navigation} /> {/* Pass navigation prop to UserHeader */}
+            <UserHeader navigation={navigation} /> 
 
             {/* Category Filter */}
             <CategoryFilter 
@@ -75,9 +97,9 @@ const MarketScreen = ({ navigation }) => {
             {/* Market Items */}
             <View style={styles.container}>
                 <FlatList
-                    data={marketItems}
+                    data={filteredItems}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.id.toString()}
                     numColumns={2} 
                     contentContainerStyle={styles.listContainer}
                 />
@@ -142,7 +164,7 @@ const styles = StyleSheet.create({
         margin: 10,
         elevation: 3,
         alignItems: 'center',
-        width: "45%", // Adjusted for spacing
+        width: "45%",
     },
     cardImage: {
         width: "100%",

@@ -7,34 +7,44 @@ import {
     TouchableOpacity,
     StyleSheet,
     SafeAreaView,
-    ScrollView
+    ScrollView,
+    Modal
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const OwnershipScreen = ({ route, navigation }) => {
-    const { artwork } = route.params; // Get the artwork object from navigation parameters
+    const { artwork } = route.params || {}; 
+    const [isChecked, setIsChecked] = useState(false); 
+    const [price, setPrice] = useState(''); 
+    const [modalVisible, setModalVisible] = useState(false); 
 
-    const [isChecked, setIsChecked] = useState(false); // Track the checkbox state
-    const [price, setPrice] = useState(''); // Track the price input value
+    const handleContinue = () => {
+        console.log('Price:', price);
+        setModalVisible(true); 
+    };
+
+    const handleModalClose = () => {
+        setModalVisible(false);
+        navigation.navigate('MainTabs', { screen: 'Library' }); 
+    };
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollView}>
-                <Text style={styles.title}></Text>
-
-                {/* Artwork Display with Frame */}
                 <View style={styles.imageContainer}>
                     <View style={styles.frame}>
                         <Image
-                            source={artwork.image} // Use the passed image
+                            source={{ uri: artwork.imageUrl  }} 
                             style={styles.image}
                         />
                     </View>
                 </View>
 
+                <Text style={styles.artistName}>{artwork.artistName || "Unknown Artist"}</Text>
+
                 <TouchableOpacity
                     style={styles.checkboxContainer}
-                    onPress={() => setIsChecked(!isChecked)} // Toggle checkbox state
+                    onPress={() => setIsChecked(!isChecked)} 
                 >
                     <Ionicons
                         name={isChecked ? 'checkmark-circle' : 'ellipse-outline'}
@@ -54,17 +64,30 @@ const OwnershipScreen = ({ route, navigation }) => {
                     />
                 )}
 
-                <TouchableOpacity
-                    style={styles.continueButton}
-                    onPress={() => {
-                        // Handle continue action
-                        console.log('Price:', price);
-                        navigation.navigate('NextScreen'); // Replace with your next screen
-                    }}
-                >
+                <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
                     <Text style={styles.buttonText}>Continue</Text>
                 </TouchableOpacity>
             </ScrollView>
+
+            {/* ✅ Success Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={handleModalClose}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.checkmarkContainer}>
+                            <Ionicons name="checkmark-circle" size={50} color="green" />
+                        </View>
+                        <Text style={styles.modalText}>Ownership Updated Successfully!</Text>
+                        <TouchableOpacity style={styles.okButton} onPress={handleModalClose}>
+                            <Text style={styles.okButtonText}>OK</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -78,9 +101,9 @@ const styles = StyleSheet.create({
     scrollView: {
         alignItems: 'center',
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
+    artistName: {
+        fontSize: 18,
+        color: 'gray',
         marginBottom: 20,
     },
     imageContainer: {
@@ -90,16 +113,16 @@ const styles = StyleSheet.create({
     },
     frame: {
         borderWidth: 5,
-        borderColor: '#E0E0E0', // Light gray frame color
-        padding: 10, // Padding between the image and the frame
-        borderRadius: 15, // Optional: rounded corners for the frame
-        overflow: 'hidden', // Ensures the image stays within the frame bounds
+        borderColor: '#E0E0E0',
+        padding: 10,
+        borderRadius: 15,
+        overflow: 'hidden',
     },
     image: {
-        width: '100%', // Ensure image fills the container
-        height: undefined,
-        aspectRatio: 1, // Maintain aspect ratio of the image
-        resizeMode: 'contain', // Ensure the image is contained within the frame
+        width: 300,
+        height: 300,
+        borderRadius: 10,
+        resizeMode: 'contain',
     },
     checkboxContainer: {
         flexDirection: 'row',
@@ -130,6 +153,39 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+
+    // ✅ Modal Styles
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    checkmarkContainer: {
+        marginBottom: 20,
+    },
+    modalText: {
+        fontSize: 18,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    okButton: {
+        backgroundColor: '#79D7BE',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    okButtonText: {
+        color: 'white',
+        fontSize: 16,
     },
 });
 

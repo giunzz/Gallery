@@ -106,15 +106,33 @@ const SearchOwnership = () => {
                         <Text style={styles.resultsTitle}>Result :</Text>
                         <FlatList
                             data={searchResults}
-                            numColumns={2} // Display images in a 2-column grid
+                            numColumns={2}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
-                                <View style={styles.artContainer}>
+                                <View 
+                                    style={[
+                                        styles.artContainer, 
+                                        item.ownership === "yes" && styles.ownedArtContainer // Green border for owned items
+                                    ]}
+                                >
                                     <Image source={{ uri: item.url }} style={styles.artImage} />
-                                    <Text style={styles.tokenText}>Token: {item.token.slice(0, 2)}...</Text> {/* Display first 2 characters of the token */}
+                                    
+                                    {/* Overlay container for text inside the image */}
+                                    <View style={styles.overlayContainer}>
+                                        <Text style={styles.tokenText}>Token: {item.token.slice(0, 6)}...</Text>
+                                        <Text 
+                                            style={[
+                                                styles.ownershipText, 
+                                                item.ownership === "yes" ? styles.ownershipYes : styles.ownershipNo
+                                            ]}
+                                        >
+                                            {item.ownership === "yes" ? "Owned" : "Not Owned"}
+                                        </Text>
+                                    </View>
                                 </View>
                             )}
                         />
+
                     </View>
                 )}
             </ScrollView>
@@ -224,6 +242,67 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         borderRadius: 5,
     },
+    ownedArtContainer: {
+        borderColor: '#28A745', // Green border for owned items
+        borderWidth: 3,
+    },
+    
+    artContainer: {
+        width: '45%', // 2-column layout
+        margin: '2.5%',
+        aspectRatio: 1, // Keeps square shape
+        borderRadius: 10,
+        overflow: 'hidden',
+        backgroundColor: '#ffffff',
+        borderWidth: 2,
+        borderColor: '#ccc',
+        position: 'relative', // Allows absolute positioning inside
+    },
+    
+    artImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+        borderRadius: 10,
+    },
+    
+    overlayContainer: {
+        position: 'absolute',
+        bottom: 0, // Aligns text at the bottom
+        width: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        alignItems: 'center',
+    },
+    
+    tokenText: {
+        color: '#ffffff',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    
+    ownershipText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        paddingVertical: 3,
+        paddingHorizontal: 8,
+        borderRadius: 5,
+        marginTop: 2,
+    },
+    
+    ownershipYes: {
+        color: '#ffffff',
+        backgroundColor: '#28A745', // Green for owned items
+    },
+    
+    ownershipNo: {
+        color: '#ffffff',
+        backgroundColor: '#DC3545', // Red for not owned items
+    },
+    
+    
 });
 
 export default SearchOwnership;

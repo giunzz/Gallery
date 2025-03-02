@@ -83,7 +83,7 @@ const MainTabs = () => (
     <Tab.Screen 
       name="CameraScreen" 
       component={CameraScreen} 
-      options={{ title: 'Search', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
+      options={{ title: 'Search Ownership', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
     />
     <Tab.Screen name="Account" component={AccountScreen} options={{ headerShown: false }} />
   </Tab.Navigator>

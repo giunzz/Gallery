@@ -8,18 +8,17 @@ import {
     Alert, 
     ScrollView, 
     ActivityIndicator, 
-    SafeAreaView  // ✅ Add this import
+    SafeAreaView, 
+    FlatList 
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { SearchOwner } from '../services/apiService'; // Import correct API function
-
+import { SearchOwner } from '../services/apiService'; 
 
 const SearchOwnership = () => {
     const [imageUri, setImageUri] = useState(null);
-    const [searchResults, setSearchResults] = useState([]); // Store search results (artworks)
-    const [loading, setLoading] = useState(false); // Loading state
+    const [searchResults, setSearchResults] = useState([]); 
+    const [loading, setLoading] = useState(false);
 
-    // Function to pick an image from the gallery
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -45,7 +44,6 @@ const SearchOwnership = () => {
         }
     };
 
-    // Function to search for ownership using the selected image
     const Search = async () => {
         if (!imageUri) {
             Alert.alert('No image selected', 'Please select an image before searching.');
@@ -55,10 +53,9 @@ const SearchOwnership = () => {
         setLoading(true);
         try {
             const result = await SearchOwner(imageUri);
-            console.log('Search Results:', result);
-            
-            if (result && result.artworks) {
-                setSearchResults(result.artworks); // Assuming API response contains an `artworks` array
+
+            if (result && Array.isArray(result.pictures)) {
+                setSearchResults(result.pictures);
             } else {
                 setSearchResults([]);
                 Alert.alert("No results found", "No ownership data was found for the selected image.");
@@ -74,8 +71,10 @@ const SearchOwnership = () => {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollView}>
-                <Text style={styles.title}>Search Artwork Ownership</Text>
-                
+                {/* Title */}
+                <Text style={styles.title}></Text>
+
+                {/* Selected Image */}
                 <View style={styles.imageContainer}>
                     {imageUri ? (
                         <Image source={{ uri: imageUri }} style={styles.image} />
@@ -84,41 +83,41 @@ const SearchOwnership = () => {
                     )}
                 </View>
 
-                {/* Pick Image Button */}
-                <TouchableOpacity style={styles.button} onPress={pickImage}>
-                    <Text style={styles.buttonText}>Pick an Image</Text>
-                </TouchableOpacity>
+                {/* Buttons in Row */}
+                <View style={styles.buttonRow}>
+                    <TouchableOpacity style={styles.button} onPress={pickImage}>
+                        <Text style={styles.buttonText}>Pick an image</Text>
+                    </TouchableOpacity>
 
-                {/* Search Button */}
-                <TouchableOpacity 
-                    style={[styles.button, !imageUri && styles.disabledButton]} 
-                    onPress={Search} 
-                    disabled={!imageUri}
-                >
-                    <Text style={styles.buttonText}>Search Ownership</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity 
+                        style={[styles.button, !imageUri && styles.disabledButton]} 
+                        onPress={Search} 
+                        disabled={!imageUri}
+                    >
+                        <Text style={styles.buttonText}>Search </Text>
+                    </TouchableOpacity>
+                </View>
 
-                {/* Loading Indicator */}
-                {loading && <ActivityIndicator size="large" color="#4DA1A9" style={styles.loadingIndicator} />}
+                {loading && <ActivityIndicator size="large" color="#146C43" style={styles.loadingIndicator} />}
 
-                {/* Display Search Results */}
+                {/* Search Results Grid */}
                 {searchResults.length > 0 && (
                     <View style={styles.resultsContainer}>
-                        <Text style={styles.resultsTitle}>Similar Artworks:</Text>
-                        {searchResults.map((art, index) => (
-                            <View key={index} style={styles.artContainer}>
-                                <Image source={{ uri: art.imageUrl }} style={styles.artImage} />
-                                <Text style={styles.artTitle}>{art.title || 'Untitled'}</Text>
-                            </View>
-                        ))}
+                        <Text style={styles.resultsTitle}>Result :</Text>
+                        <FlatList
+                            data={searchResults}
+                            numColumns={2} // Display images in a 2-column grid
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item }) => (
+                                <View style={styles.artContainer}>
+                                    <Image source={{ uri: item.url }} style={styles.artImage} />
+                                    <Text style={styles.tokenText}>Token: {item.token.slice(0, 2)}...</Text> {/* Display first 2 characters of the token */}
+                                </View>
+                            )}
+                        />
                     </View>
                 )}
             </ScrollView>
-
-            {/* Footer */}
-            <View style={styles.footer}>
-                <Text style={styles.footerText}></Text>
-            </View>
         </SafeAreaView>
     );
 };
@@ -126,32 +125,29 @@ const SearchOwnership = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#FFFFFF',    
     },
     scrollView: {
         alignItems: 'center',
         width: '100%',
+        paddingVertical: 20,
     },
     title: {
         fontSize: 22,
         fontWeight: 'bold',
-        marginBottom: 20,
-        color: '#333',
+        color: '#2D2D2D',
+        marginBottom: 15,
     },
     imageContainer: {
-        width: 200,
+        width: '90%',
         height: 200,
-        borderRadius: 10,
+        borderRadius: 15,
+        overflow: 'hidden',
         borderColor: '#ccc',
         borderWidth: 2,
+        backgroundColor: '#ffffff',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20,
-        overflow: 'hidden',
-        backgroundColor: '#eaeaea',
     },
     image: {
         width: '100%',
@@ -161,19 +157,27 @@ const styles = StyleSheet.create({
     placeholderText: {
         color: '#777',
         fontSize: 16,
+        textAlign: 'center',
+        paddingTop: 80,
+    },
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '90%',
+        marginTop: 15,
     },
     button: {
-        backgroundColor: '#4DA1A9',
+        backgroundColor: '#79D7BE',
         paddingVertical: 12,
         paddingHorizontal: 20,
-        borderRadius: 5,
-        width: '100%',
+        borderRadius: 10,
+        width: '45%', 
         alignItems: 'center',
-        marginBottom: 10,
     },
     buttonText: {
         color: '#ffffff',
-        fontSize: 18,
+        fontSize: 15,
+        fontWeight: 'bold',
     },
     disabledButton: {
         backgroundColor: '#ccc',
@@ -182,51 +186,43 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     resultsContainer: {
-        width: '100%',
+        width: '90%',
         marginTop: 20,
-        alignItems: 'center',
     },
     resultsTitle: {
         fontSize: 20,
         fontWeight: 'bold',
+        color: '#2D2D2D',
         marginBottom: 10,
     },
     artContainer: {
-        width: '90%',
-        backgroundColor: '#fff',
+        width: '45%', // Set to 45% for 2-column layout
+        margin: '2.5%', // Add margin for spacing
+        aspectRatio: 1, // Keep square aspect ratio
         borderRadius: 10,
-        padding: 10,
-        alignItems: 'center',
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 5,
+        overflow: 'hidden',
+        backgroundColor: '#ffffff',
+        borderWidth: 2,
+        borderColor: '#ccc',
+        position: 'relative',
     },
     artImage: {
         width: '100%',
-        height: 150,
-        borderRadius: 5,
+        height: '100%',
+        resizeMode: 'cover',
+        borderRadius: 10,
     },
-    artTitle: {
-        marginTop: 5,
+    tokenText: {
+        position: 'absolute',
+        bottom: 10,
+        left: 10,
+        color: '#ffffff',
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#333',
-    },
-    footer: {
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: "#79D7BE",
-        paddingVertical: 10,
-        alignItems: "center",
-    },
-    footerText: {
-        fontSize: 14,
-        color: "#fff",
-        fontWeight: "bold",
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        paddingVertical: 2,
+        paddingHorizontal: 5,
+        borderRadius: 5,
     },
 });
 

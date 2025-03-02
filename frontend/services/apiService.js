@@ -146,7 +146,7 @@ export const SearchOwner = async (imageUri) => {
         const formData = new FormData();
         formData.append('picture', {
             uri: imageUri,
-            type: 'image/jpeg', // Adjust type based on image format
+            type: 'image/jpeg', 
             name: 'upload.jpg',
         });
 
@@ -155,11 +155,10 @@ export const SearchOwner = async (imageUri) => {
             formData,
             {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // Important for file uploads
+                    'Content-Type': 'multipart/form-data', 
                 }
             }
         );
-
         return response.data; 
     } catch (error) {
         console.error('Error fetching ownership:', error.response ? error.response.data : error.message);

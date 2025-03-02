@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -8,24 +8,64 @@ import {
     StyleSheet,
     SafeAreaView,
     ScrollView,
-    Modal
+    Modal,
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Ownership, getToken } from '../services/apiService';
 
 const OwnershipScreen = ({ route, navigation }) => {
     const { artwork } = route.params || {}; 
     const [isChecked, setIsChecked] = useState(false); 
     const [price, setPrice] = useState(''); 
     const [modalVisible, setModalVisible] = useState(false); 
+    const [ownershipData, setOwnershipData] = useState(null); 
+    const [token_user, setToken] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); // Loading state
 
-    const handleContinue = () => {
+    useEffect(() => {
+        const fetchToken = async () => {
+            try {
+                const storedToken = await getToken();
+                console.log("Retrieved Token:", storedToken);
+                if (storedToken) {
+                    setToken(storedToken);
+                } else {
+                    Alert.alert('Error', 'No token found. Please log in again.');
+                }
+            } catch (error) {
+                console.error("Error retrieving token:", error);
+                Alert.alert('Error', 'Failed to retrieve token.');
+            }
+        };
+        fetchToken();
+    }, []);
+
+    const handleContinue = async () => {
         console.log('Price:', price);
-        setModalVisible(true); 
+        console.log('Artwork Token:', artwork.token);
+
+        if (artwork.token && token_user) {
+            setIsLoading(true); // Show loading indicator
+
+            try {
+                const own = await Ownership(token_user, artwork.token); // Pass the user and artwork tokens
+                setOwnershipData(own);  
+                setModalVisible(true);  
+            } catch (error) {
+                Alert.alert("Error", "Failed to fetch ownership data");
+            } finally {
+                setIsLoading(false); // Hide loading indicator
+            }
+        } else {
+            Alert.alert("Error", "Artwork token or User token is missing");
+        }
     };
 
     const handleModalClose = () => {
         setModalVisible(false);
-        navigation.navigate('MainTabs', { screen: 'Library' }); 
+        navigation.navigate('MainTabs', { screen: 'Library' }); // Navigate to Library on modal close
     };
 
     return (
@@ -34,13 +74,13 @@ const OwnershipScreen = ({ route, navigation }) => {
                 <View style={styles.imageContainer}>
                     <View style={styles.frame}>
                         <Image
-                            source={{ uri: artwork.imageUrl  }} 
+                            source={{ uri: artwork.imageUrl }} 
                             style={styles.image}
                         />
                     </View>
                 </View>
 
-                <Text style={styles.artistName}>{artwork.artistName || "Unknown Artist"}</Text>
+                <Text style={styles.artistName}>Token: {artwork.token}</Text>
 
                 <TouchableOpacity
                     style={styles.checkboxContainer}
@@ -64,12 +104,14 @@ const OwnershipScreen = ({ route, navigation }) => {
                     />
                 )}
 
-                <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+                <TouchableOpacity style={styles.continueButton} onPress={handleContinue} disabled={isLoading}>
                     <Text style={styles.buttonText}>Continue</Text>
                 </TouchableOpacity>
+
+                {isLoading && <ActivityIndicator size="large" color="#79D7BE" style={styles.loadingIndicator} />}
             </ScrollView>
 
-            {/* ✅ Success Modal */}
+            {/* Success Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -82,6 +124,7 @@ const OwnershipScreen = ({ route, navigation }) => {
                             <Ionicons name="checkmark-circle" size={50} color="green" />
                         </View>
                         <Text style={styles.modalText}>Ownership Updated Successfully!</Text>
+                        {ownershipData && <Text style={styles.modalText}>Ownership Data: {JSON.stringify(ownershipData)}</Text>}
                         <TouchableOpacity style={styles.okButton} onPress={handleModalClose}>
                             <Text style={styles.okButtonText}>OK</Text>
                         </TouchableOpacity>
@@ -154,8 +197,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    loadingIndicator: {
+        marginTop: 20,
+    },
 
-    // ✅ Modal Styles
+    // Modal Styles
     modalOverlay: {
         flex: 1,
         justifyContent: 'center',

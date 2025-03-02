@@ -22,9 +22,9 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
     const handleOwnerPress = () => {
         navigation.navigate('Ownership', { 
             artwork: { 
-                title: artwork.token, 
+                token: artwork.token, 
                 artistName: artwork.address, 
-                imageUrl: artwork.url // ✅ Pass correct image URL
+                imageUrl: artwork.url 
             } 
         });
     };

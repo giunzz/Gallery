@@ -1,115 +1,232 @@
-import React, { useRef, useState } from 'react';
-import { View, Button, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
-import { RNCamera } from 'react-native-camera';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { 
+    View, 
+    Text, 
+    Image, 
+    TouchableOpacity, 
+    StyleSheet, 
+    Alert, 
+    ScrollView, 
+    ActivityIndicator, 
+    SafeAreaView  // ✅ Add this import
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { SearchOwner } from '../services/apiService'; // Import correct API function
 
-// NotFoundScreen Component
-const NotFoundScreen = () => {
-    const navigation = useNavigation(); // Hook to access navigation
 
-    const handleOkPress = () => {
-        navigation.navigate('CameraScreen'); // Navigate back to CameraScreen or wherever you want
-    };
-
-    return (
-        <View style={styles.notFoundContainer}>
-            <Text style={styles.notFoundText}>No Results Found</Text>
-            <Text style={styles.notFoundMessage}>
-                We couldn't find what you searched for. Try searching again.
-            </Text>
-            <TouchableOpacity style={styles.okButton} onPress={handleOkPress}>
-                <Text style={styles.okButtonText}>OK</Text>
-            </TouchableOpacity>
-        </View>
-    );
-};
-
-// CameraScreen Component
 const CameraScreen = () => {
-    const cameraRef = useRef(null);
     const [imageUri, setImageUri] = useState(null);
-    const navigation = useNavigation(); // Hook to access navigation
+    const [searchResults, setSearchResults] = useState([]); // Store search results (artworks)
+    const [loading, setLoading] = useState(false); // Loading state
 
-    const takePicture = async () => {
-        if (cameraRef.current) {
-            const options = { quality: 0.5, base64: true };
-            const data = await cameraRef.current.takePictureAsync(options);
-            setImageUri(data.uri);
+    // Function to pick an image from the gallery
+    const pickImage = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (status !== 'granted') {
+            Alert.alert(
+                'Permission Denied',
+                'Sorry, we need camera roll permission to upload images.'
+            );
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+            allowsEditing: true,
+            aspect: [4, 3], 
+            quality: 1, 
+        });
+
+        if (!result.canceled) {
+            setImageUri(result.assets[0].uri);
+        } else {
+            Alert.alert('Image selection canceled');
         }
     };
 
-    // Simulate checking if the image exists (replace with your actual logic)
-    const imageExists = (uri) => {
-        return uri !== null; // For demonstration, assuming imageUri is valid
+    // Function to search for ownership using the selected image
+    const Search = async () => {
+        if (!imageUri) {
+            Alert.alert('No image selected', 'Please select an image before searching.');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const result = await SearchOwner(imageUri);
+            console.log('Search Results:', result);
+            
+            if (result && result.artworks) {
+                setSearchResults(result.artworks); // Assuming API response contains an `artworks` array
+            } else {
+                setSearchResults([]);
+                Alert.alert("No results found", "No ownership data was found for the selected image.");
+            }
+        } catch (error) {
+            console.error("Error searching ownership:", error);
+            Alert.alert("Error", "Failed to fetch ownership data.");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // Check if the image exists; if not, navigate to NotFoundScreen
-    if (imageUri && !imageExists(imageUri)) {
-        navigation.navigate('NoResultsScreen'); // Navigate to NoResultsScreen
-        return null; // Prevent rendering of CameraScreen
-    }
-
     return (
-        <View style={styles.container}>
-            {imageUri ? (
-                <Image source={{ uri: imageUri }} style={styles.image} />
-            ) : (
-                <RNCamera
-                    ref={cameraRef}
-                    style={styles.preview}
-                    type={RNCamera.Constants.Type.back}
-                    flashMode={RNCamera.Constants.FlashMode.off}
-                    androidCameraPermissionOptions={{
-                        title: 'Camera Permission',
-                        message: 'We need your permission to use your camera.',
-                        buttonPositive: 'OK',
-                        buttonNegative: 'Cancel',
-                    }}
+        <SafeAreaView style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollView}>
+                <Text style={styles.title}>Search Artwork Ownership</Text>
+                
+                <View style={styles.imageContainer}>
+                    {imageUri ? (
+                        <Image source={{ uri: imageUri }} style={styles.image} />
+                    ) : (
+                        <Text style={styles.placeholderText}>No image selected</Text>
+                    )}
+                </View>
+
+                {/* Pick Image Button */}
+                <TouchableOpacity style={styles.button} onPress={pickImage}>
+                    <Text style={styles.buttonText}>Pick an Image</Text>
+                </TouchableOpacity>
+
+                {/* Search Button */}
+                <TouchableOpacity 
+                    style={[styles.button, !imageUri && styles.disabledButton]} 
+                    onPress={Search} 
+                    disabled={!imageUri}
                 >
-                    <Button title="Capture" onPress={takePicture} />
-                </RNCamera>
-            )}
-        </View>
+                    <Text style={styles.buttonText}>Search Ownership</Text>
+                </TouchableOpacity>
+
+                {/* Loading Indicator */}
+                {loading && <ActivityIndicator size="large" color="#4DA1A9" style={styles.loadingIndicator} />}
+
+                {/* Display Search Results */}
+                {searchResults.length > 0 && (
+                    <View style={styles.resultsContainer}>
+                        <Text style={styles.resultsTitle}>Similar Artworks:</Text>
+                        {searchResults.map((art, index) => (
+                            <View key={index} style={styles.artContainer}>
+                                <Image source={{ uri: art.imageUrl }} style={styles.artImage} />
+                                <Text style={styles.artTitle}>{art.title || 'Untitled'}</Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+            </ScrollView>
+
+            {/* Footer */}
+            <View style={styles.footer}>
+                <Text style={styles.footerText}>Artwork Ownership Finder</Text>
+            </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    preview: {
-        flex: 1,
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#f9f9f9',
+    },
+    scrollView: {
+        alignItems: 'center',
+        width: '100%',
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#333',
+    },
+    imageContainer: {
+        width: 200,
+        height: 200,
+        borderRadius: 10,
+        borderColor: '#ccc',
+        borderWidth: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+        overflow: 'hidden',
+        backgroundColor: '#eaeaea',
     },
     image: {
         width: '100%',
         height: '100%',
-        resizeMode: 'contain',
+        resizeMode: 'cover',
     },
-    notFoundContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    notFoundText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-    notFoundMessage: {
+    placeholderText: {
+        color: '#777',
         fontSize: 16,
-        textAlign: 'center',
     },
-    okButton: {
-        marginTop: 20,
-        backgroundColor: '#2d6a4f', // Dark green for button
+    button: {
+        backgroundColor: '#4DA1A9',
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 5,
+        width: '100%',
+        alignItems: 'center',
+        marginBottom: 10,
     },
-    okButtonText: {
-        color: '#ffffff', // White text for button
+    buttonText: {
+        color: '#ffffff',
+        fontSize: 18,
+    },
+    disabledButton: {
+        backgroundColor: '#ccc',
+    },
+    loadingIndicator: {
+        marginTop: 20,
+    },
+    resultsContainer: {
+        width: '100%',
+        marginTop: 20,
+        alignItems: 'center',
+    },
+    resultsTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    artContainer: {
+        width: '90%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 10,
+        alignItems: 'center',
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 5,
+    },
+    artImage: {
+        width: '100%',
+        height: 150,
+        borderRadius: 5,
+    },
+    artTitle: {
+        marginTop: 5,
         fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    footer: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: "#79D7BE",
+        paddingVertical: 10,
+        alignItems: "center",
+    },
+    footerText: {
+        fontSize: 14,
+        color: "#fff",
+        fontWeight: "bold",
     },
 });
 

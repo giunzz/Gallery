@@ -18,8 +18,7 @@ const CheckoutScreen = ({ route, navigation }) => {
         const paymentSuccessful = true; 
         if (paymentSuccessful) {
             addItemToLibrary(item); 
-            navigation.navigate("Library"); 
-        } else {
+            navigation.navigate('MainTabs', { screen: 'Library' })        } else {
             alert("Payment failed. Please try again.");
         }
     };
@@ -65,7 +64,7 @@ const CheckoutScreen = ({ route, navigation }) => {
             <TouchableOpacity 
                 style={[styles.checkoutButton, { backgroundColor: selectedPayment ? "#2A9D8F" : "#ccc" }]} 
                 disabled={!selectedPayment}
-                onPress={handleCheckout} // ✅ Trigger checkout process
+                onPress={handleCheckout} 
             >
                 <Text style={styles.checkoutText}>Checkout</Text>
             </TouchableOpacity>

@@ -4,7 +4,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const API_URL = 'http://13.250.12.56/auth/request-token';
 const API_URL1 = 'http://13.250.12.56/auth/login-address';
 const API_AddPic = 'http://13.250.12.56/picture/add';
-
 export const getMessageFromServer = async (address) => {
     try {
         const response = await axios.post(API_URL, { address }, {
@@ -113,5 +112,48 @@ export const GenerateLineArt = async (prompt) => {
     } catch (error) {
         console.error('Error generating picture:', error.response?.data || error);
         throw new Error(error.response?.data?.error || "Failed to generate picture.");
+    }
+};
+
+const API_Owner = 'http://13.250.12.56/picture/own';
+
+export const Ownership = async (user_token, art_token) => {
+    try {
+        const response = await axios.post(
+            API_Owner,
+            { token: art_token },  
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user_token}`,
+                }
+            }
+        );
+
+        return response.data; 
+    } catch (error) {
+        console.error('Error fetching ownership:', error.response ? error.response.data : error.message);
+        throw new Error('Failed to fetch ownership');
+    }
+};
+
+
+const API_SearchOwner = 'http://13.250.12.56/picture/search';
+
+export const SearchOwner = async (imageUri) => {
+    try {
+        const response = await axios.post(
+            API_SearchOwner,
+            { imageUrl: imageUri }, // Ensure the image URL is correctly passed in the body
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+        return response.data; 
+    } catch (error) {
+        console.error('Error fetching ownership:', error.response ? error.response.data : error.message);
+        throw new Error('Failed to fetch ownership');
     }
 };

@@ -1,41 +1,28 @@
-import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from "react-native";
 
 const BuyingScreen = ({ route, navigation }) => {
-    console.log("Route Params:", route.params); // ✅ Debugging: Check what is passed
-
-    // ✅ Default fallback in case `item` is missing
-    const defaultItem = {
+    // Ensure that item is passed via route.params
+    const item = route.params?.item || {
         title: "Unknown Artwork",
         username: "Unknown Artist",
         price: "0 VND",
-        imageUrl: "https://via.placeholder.com/300", // ✅ Placeholder image
-        userAvatar: "https://via.placeholder.com/50", // ✅ Placeholder avatar
+        imageUrl: "https://via.placeholder.com/400x300", // Placeholder image URL
+        userAvatar: "https://via.placeholder.com/50", // Placeholder avatar URL
         location: "Unknown Location",
     };
-
-    // ✅ Use `route.params.item` if available, otherwise use `defaultItem`
-    const item = route.params?.item || defaultItem;
 
     const [isBuyPressed, setIsBuyPressed] = useState(false);
     const [isDrawPressed, setIsDrawPressed] = useState(false);
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.headerText}></Text>
-
-            {/* ✅ Image with proper check */}
-            <Image 
-                source={{ uri: item.imageUrl }} 
-                style={styles.artImage} 
-            />
+            {/* Image with proper check */}
+            <Image source={{ uri: item.imageUrl }} style={styles.artImage} />
 
             <View style={styles.infoContainer}>
                 <View style={styles.userDetails}>
-                    <Image 
-                        source={{ uri: item.userAvatar }} 
-                        style={styles.userAvatar} 
-                    />
+                    <Image source={{ uri: item.userAvatar }} style={styles.userAvatar} />
                     <View style={styles.textContainer}>
                         <Text style={styles.artTitle}>{item.title}</Text>
                         <Text style={styles.locationText}>{item.location}</Text>
@@ -50,13 +37,11 @@ const BuyingScreen = ({ route, navigation }) => {
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.buyButton, isBuyPressed && styles.buttonPressed]} 
                     onPressIn={() => setIsBuyPressed(true)}
-                    onPressOut={() => {
-                        setIsBuyPressed(false);
-                        navigation.push("Checkout", { item });
-                    }}  
+                    onPressOut={() => setIsBuyPressed(false)}
+                    onPress={() => navigation.push("CheckoutScreen", { item })}  
                 >
                     <Text style={styles.buttonText}>Buy now</Text>
                 </TouchableOpacity>
@@ -78,13 +63,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         paddingHorizontal: 16,
         paddingTop: 10,
-    },
-    headerText: {
-        fontSize: 1,
-        fontWeight: "bold",
-        textAlign: "center",
-        marginVertical: 10,
-        color: "black",
     },
     artImage: {
         width: "100%",

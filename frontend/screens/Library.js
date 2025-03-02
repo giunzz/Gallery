@@ -61,6 +61,7 @@ const LibraryScreen = ({ navigation }) => {
                 url: item.url,
                 visibility: item.visibility,
             }));
+            print(token);
             setUserPictures(pictures);
         } catch (err) {
             setError(err.message);

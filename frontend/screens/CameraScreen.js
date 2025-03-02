@@ -14,7 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { SearchOwner } from '../services/apiService'; // Import correct API function
 
 
-const CameraScreen = () => {
+const SearchOwnership = () => {
     const [imageUri, setImageUri] = useState(null);
     const [searchResults, setSearchResults] = useState([]); // Store search results (artworks)
     const [loading, setLoading] = useState(false); // Loading state
@@ -117,7 +117,7 @@ const CameraScreen = () => {
 
             {/* Footer */}
             <View style={styles.footer}>
-                <Text style={styles.footerText}>Artwork Ownership Finder</Text>
+                <Text style={styles.footerText}></Text>
             </View>
         </SafeAreaView>
     );
@@ -230,4 +230,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CameraScreen;
+export default SearchOwnership;

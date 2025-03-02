@@ -138,19 +138,28 @@ export const Ownership = async (user_token, art_token) => {
 };
 
 
+
 const API_SearchOwner = 'http://13.250.12.56/picture/search';
 
 export const SearchOwner = async (imageUri) => {
     try {
+        const formData = new FormData();
+        formData.append('picture', {
+            uri: imageUri,
+            type: 'image/jpeg', // Adjust type based on image format
+            name: 'upload.jpg',
+        });
+
         const response = await axios.post(
             API_SearchOwner,
-            { imageUrl: imageUri }, // Ensure the image URL is correctly passed in the body
+            formData,
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data', // Important for file uploads
                 }
             }
         );
+
         return response.data; 
     } catch (error) {
         console.error('Error fetching ownership:', error.response ? error.response.data : error.message);

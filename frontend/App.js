@@ -14,15 +14,19 @@ import CameraScreen from './screens/CameraScreen';
 import ArtworkDetailScreen from './screens/ArtworkDetailScreen';
 import Publish_buy from './screens/PublishScreen_buy';
 import GenerateArtScreen from './screens/GenerateArtScreen';
-import CanvasSizeScreen from './screens/CanvasSizeScreen'; // ✅ Added Canvas Size Screen
-
+import LoadingGenArt from './screens/LoadingGenArt'; 
+import ResultGenArt from './screens/ResultGenArt';
+import CanvasSizeScreen from './screens/CanvasSizeScreen';
+import ReportScreen from './screens/ReportScreen';
+import SearchResultsScreen from './screens/SearchResultsScreen';
+import NoResultsScreen from './screens/NotFound';
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';
 import MarketIcon from './assets/home/add_business.png';
 import LibraryIcon from './assets/home/Library.png';
 import CameraIcon from './assets/home/scan.png';
 
-import { LibraryProvider } from './screens/LibraryContext';
+import { LibraryProvider } from './components/LibraryContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -61,7 +65,7 @@ const LibraryStack = () => (
   </Stack.Navigator>
 );
 
-//  **Main Tab Navigator**
+// **Main Tab Navigator**
 const MainTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -91,8 +95,21 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {/* Main Tabs */}
           <Stack.Screen name="MainTabs" component={MainTabs} />
-
+          <Stack.Screen name="Market" component={MarketStack} />
           {/* Additional Screens */}
+          <Stack.Screen 
+            name="ExploreScreen" 
+            component={ExploreScreen}
+          />
+          <Stack.Screen 
+            name="Publish_buy" 
+            component={Publish_buy} 
+            options={{ title: 'Publish Artwork', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
+          />
+          
+          <Stack.Screen name="Library" component={LibraryScreen} options={{ headerShown: false }} />
+    
+          <Stack.Screen name="NotFound" component={NoResultsScreen} />
           <Stack.Screen 
             name="GenerateArtScreen" 
             component={GenerateArtScreen} 
@@ -105,6 +122,10 @@ export default function App() {
             }} 
           />
           <Stack.Screen 
+            name="LoadingGenArt" 
+            component={LoadingGenArt} 
+          />
+          <Stack.Screen 
             name="CanvasSizeScreen" 
             component={CanvasSizeScreen} 
             options={{ 
@@ -114,6 +135,39 @@ export default function App() {
               headerTintColor: "black",
               headerTitleAlign: "center",
             }} 
+          />
+          <Stack.Screen 
+            name="ReportScreen" 
+            component={ReportScreen} 
+            options={{ 
+              headerShown: true, 
+              title: "Report Artwork", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: 'black', 
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen 
+            name="SearchResultsScreen" 
+            component={SearchResultsScreen} 
+            options={{ 
+              headerShown: true, 
+              title: "Search Results", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: 'black', 
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen 
+            name="ResultGenArt" 
+            component={ResultGenArt} 
+            options={{ 
+              headerShown: true, 
+              title: "Generated Artwork", 
+              headerStyle: { backgroundColor: '#79D7BE' }, 
+              headerTintColor: 'black', 
+              headerTitleAlign: 'center'
+            }}
           />
         </Stack.Navigator>
         <StatusBar style="auto" />

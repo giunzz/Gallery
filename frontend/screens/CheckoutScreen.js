@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LibraryContext } from '../screens/LibraryContext'; 
+import { LibraryContext } from '../components//LibraryContext'; 
 
 const CheckoutScreen = ({ route, navigation }) => {
     const { item } = route.params;

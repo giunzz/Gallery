@@ -1,0 +1,1 @@
+{"version":3,"names":["Platform","UIManager","OS","setLayoutAnimationEnabledExperimental"],"sourceRoot":"../../../src","sources":["config/animations.ts"],"mappings":"AAAA,SAASA,QAAQ,EAAEC,SAAS,QAAQ,cAAc;AAElD,IAAID,QAAQ,CAACE,EAAE,KAAK,SAAS,EAAE;EAC7B,IAAID,SAAS,CAACE,qCAAqC,EAAE;IACnDF,SAAS,CAACE,qCAAqC,CAAC,IAAI,CAAC;EACvD;AACF"}

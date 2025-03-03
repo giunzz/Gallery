@@ -1,0 +1,1 @@
+{"version":3,"names":["_reactNative","require","Platform","OS","UIManager","setLayoutAnimationEnabledExperimental"],"sourceRoot":"../../../src","sources":["config/animations.ts"],"mappings":";;AAAA,IAAAA,YAAA,GAAAC,OAAA;AAEA,IAAIC,qBAAQ,CAACC,EAAE,KAAK,SAAS,EAAE;EAC7B,IAAIC,sBAAS,CAACC,qCAAqC,EAAE;IACnDD,sBAAS,CAACC,qCAAqC,CAAC,IAAI,CAAC;EACvD;AACF"}

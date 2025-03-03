@@ -1,43 +1,42 @@
-import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from "react-native";
 
 const BuyingScreen = ({ route, navigation }) => {
-    const { item } = route.params;
+    const { item } = route.params; // Retrieve item from route.params
+
     const [isBuyPressed, setIsBuyPressed] = useState(false);
     const [isDrawPressed, setIsDrawPressed] = useState(false);
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.headerText}></Text>
-
-            <Image source={item.image} style={styles.artImage} />
+            {/* Image with proper check */}
+            <Image source={item.imageUrl} style={styles.artImage} /> {/* Use item.imageUrl */}
 
             <View style={styles.infoContainer}>
                 <View style={styles.userDetails}>
-                    <Image source={item.userAvatar} style={styles.userAvatar} />
+                    <Image source={require('../assets/market/buy.png')} style={styles.userAvatar} />
                     <View style={styles.textContainer}>
                         <Text style={styles.artTitle}>{item.title}</Text>
                         <Text style={styles.locationText}>{item.location}</Text>
                     </View>
-                    <Text style={styles.price}>{item.price}</Text>
+                    <Text style={styles.price}>{item.price} VND</Text>
                 </View>
 
                 <Text style={styles.description}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    This is a beautiful piece of artwork created by {item.username}. 
+                    A perfect addition to your collection.
                 </Text>
             </View>
 
             <View style={styles.buttonContainer}>
-            <TouchableOpacity 
-                style={[styles.buyButton, isBuyPressed && styles.buttonPressed]} 
-                onPressIn={() => setIsBuyPressed(true)}
-                onPressOut={() => setIsBuyPressed(false)}
-                onPress={() => navigation.push("Checkout", { item })}  
-            >
-                <Text style={styles.buttonText}>Buy now</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.buyButton, isBuyPressed && styles.buttonPressed]} 
+                    onPressIn={() => setIsBuyPressed(true)}
+                    onPressOut={() => setIsBuyPressed(false)}
+                    onPress={() => navigation.push("CheckoutScreen", { item })}  
+                >
+                    <Text style={styles.buttonText}>Buy now</Text>
+                </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.drawButton, isDrawPressed && styles.buttonPressed]} 
                     onPressIn={() => setIsDrawPressed(true)}
@@ -56,13 +55,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         paddingHorizontal: 16,
         paddingTop: 10,
-    },
-    headerText: {
-        fontSize: 1,
-        fontWeight: "bold",
-        textAlign: "center",
-        marginVertical: 10,
-        color: "black",
     },
     artImage: {
         width: "100%",

@@ -1,12 +1,10 @@
-import React, { useState, useContext } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LibraryContext } from '../components//LibraryContext'; 
-
+import { getToken, addPicture } from "../services/apiService";
 const CheckoutScreen = ({ route, navigation }) => {
-    const { item } = route.params;
-    const [selectedPayment, setSelectedPayment] = useState("Mastercard");
-    const { addItemToLibrary } = useContext(LibraryContext); 
+    const { item } = route.params; 
+    const [selectedPayment, setSelectedPayment] = useState(null);  
 
     const paymentMethods = [
         { id: "Mastercard", name: "Master Card", image: require("../assets/payments/mastercard.png") },
@@ -15,12 +13,36 @@ const CheckoutScreen = ({ route, navigation }) => {
     ];
 
     const handleCheckout = async () => {
+        if (!selectedPayment) {
+            Alert.alert("Please select a payment method");
+            return;
+        }
+    
         const paymentSuccessful = true; 
         if (paymentSuccessful) {
-            addItemToLibrary(item); 
-            navigation.navigate("Library"); 
+            try {
+                const imageUri = 'https://drive.google.com/file/d/1oJ14bTNfkA7RTW3zIKFAqF1VwDBruxPo/view?usp=sharing' //item.imageUrl; 
+                const token = await getToken(); 
+                console.log("Token user", token);
+                console.log("imageUri: ", imageUri);
+                if (!token) {
+                    Alert.alert("Authorization token is missing");
+                    return;
+                }
+                const response = await addPicture(imageUri, token); 
+                console.log("Response", response);
+                if (response) {
+                    Alert.alert("Checkout successful and picture added!");
+                    navigation.navigate('MainTabs', { screen: 'Library' });
+                } else {
+                    Alert.alert("Failed to add picture");
+                }
+            } catch (error) {
+                console.error("Error during checkout:", error);
+                Alert.alert("An error occurred. Please try again.");
+            }
         } else {
-            alert("Payment failed. Please try again.");
+            Alert.alert("Payment failed. Please try again.");
         }
     };
 
@@ -28,16 +50,16 @@ const CheckoutScreen = ({ route, navigation }) => {
         <SafeAreaView style={styles.container}>
             {/* Artwork Info */}
             <View style={styles.artworkContainer}>
-                <Image source={typeof item.image === "string" ? { uri: item.image } : item.image} style={styles.artImage} />
+            <Image source={item.imageUrl} style={styles.artImage} /> 
                 <View>
                     <Text style={styles.artTitle}>{item.title}</Text>
                     <Text style={styles.artist}>By {item.username}</Text>
                 </View>
-                <Text style={styles.price}>{item.price}</Text>
+                <Text style={styles.price}>{item.price} VND</Text>
             </View>
 
             {/* Payment Section */}
-            <Text style={styles.paymentTitle}>Payment</Text>
+            <Text style={styles.paymentTitle}>Select Payment Method</Text>
             {paymentMethods.map((method) => (
                 <TouchableOpacity 
                     key={method.id} 
@@ -57,15 +79,15 @@ const CheckoutScreen = ({ route, navigation }) => {
             {/* Total Section */}
             <View style={styles.totalContainer}>
                 <Text style={styles.totalText}>Total</Text>
-                <Text style={styles.totalPrice}>{item.price}</Text>
+                <Text style={styles.totalPrice}>{item.price} VND</Text>
             </View>
-            <Text style={styles.taxText}>Tax incl.</Text>
+            <Text style={styles.taxText}>Tax included</Text>
 
             {/* Checkout Button */}
             <TouchableOpacity 
                 style={[styles.checkoutButton, { backgroundColor: selectedPayment ? "#2A9D8F" : "#ccc" }]} 
                 disabled={!selectedPayment}
-                onPress={handleCheckout} // ✅ Trigger checkout process
+                onPress={handleCheckout} 
             >
                 <Text style={styles.checkoutText}>Checkout</Text>
             </TouchableOpacity>
@@ -117,11 +139,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         paddingVertical: 12,
+        borderRadius: 10,
+        marginVertical: 8,
+        backgroundColor: "#f9f9f9",  // Light gray background for options
+        paddingHorizontal: 10,
     },
     selectedPayment: {
-        backgroundColor: "#D1F0E8",
-        borderRadius: 10,
-        paddingHorizontal: 10,
+        backgroundColor: "#D1F0E8",  // Highlight selected payment method
     },
     paymentIcon: {
         width: 40,

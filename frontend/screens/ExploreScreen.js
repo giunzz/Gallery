@@ -1,23 +1,20 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ScrollView, SafeAreaView, View, Text, TouchableOpacity,
-    Image, TextInput, StyleSheet, FlatList
+    Image, TextInput, StyleSheet, FlatList, Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Card from '../components/Card';
 import Header from '../components/Header';
 
-import { LibraryContext } from '../components//LibraryContext'; 
-
 import ColorImage from '../assets/home/Color.png';
 import ShopImage from '../assets/home/Shop.png';
 import GenArt from '../assets/home/Gallery Add.png';
 import UpgradeIcon from '../assets/home/Ellipse.png';
 import ProfilePic from '../assets/home/ava.png';
-import ArtImage from '../assets/home/art.png';
+import { NewsExplore, getToken } from "../services/apiService";
 
-// User Header Component
 const UserHeader = () => {
     return (
         <View style={styles.container}>
@@ -39,7 +36,7 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
 
     return (
         <View style={styles.newfeedCard}>
-            <Image source={imageSource} style={styles.cardImage} resizeMode="cover" />
+            <Image source={{ uri: imageSource }} style={styles.cardImage} resizeMode="cover" />
             <Text style={styles.artTitle}>{title}</Text>
             <Text style={styles.artistName}>{artistName}</Text>
             <View style={styles.cardActions}>
@@ -51,7 +48,15 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.reportButton}
-                    onPress={() => navigation.navigate('ReportScreen', { artwork: { title, imageSource } })}
+                    onPress={() =>
+                        navigation.navigate('ReportScreen', {
+                            artwork: { 
+                                title, 
+                                artistName, 
+                                imageUrl: imageSource // ✅ Ensure the correct image property is sent
+                            }
+                        })
+                    }
                 >
                     <Text style={styles.reportText}>Report</Text>
                 </TouchableOpacity>
@@ -60,17 +65,44 @@ const NewfeedArt = ({ imageSource, title, artistName }) => {
     );
 };
 
+
 const ExploreScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
-    const { clearLibrary } = useContext(LibraryContext); // Access clearLibrary function from context
+    const [newsData, setNewsData] = useState([]);  
+    const [token, setToken] = useState(null);
 
-    const artworks = Array.from({ length: 5 }, (_, i) => ({
-        id: i + 1,
-        title: `Artwork ${i + 1}`,
-        artistName: `Artist ${i + 1}`, // Add artist names
-        imageSource: ArtImage,
-    }));
+    useEffect(() => {
+        const fetchTokenAndPictures = async () => {
+            try {
+                const storedToken = await getToken();
+                if (storedToken) {
+                    setToken(storedToken);
+                    await loadNewsData(storedToken);
+                } else {
+                    Alert.alert('Error', 'No token found. Please log in again.');
+                }
+            } catch (error) {
+                Alert.alert('Error', 'Failed to retrieve token.');
+            }
+        };
+        fetchTokenAndPictures();
+    }, []);
+
+    const loadNewsData = async (token) => {
+        try {
+            const response = await NewsExplore(token);
+            const pictures = response.pictures.map((item) => ({
+                id: item.token, 
+                title: item.token.slice(0, 6), // Display first 6 characters of token
+                artistName: item.address, // Use `address` as artist name
+                image: item.url, // Use `url` for the image
+            }));
+            setNewsData(pictures);
+        } catch (error) {
+            console.error("Error fetching news data:", error);
+        }
+    };
 
     const handleSearch = () => {
         if (searchQuery.trim()) {
@@ -86,7 +118,7 @@ const ExploreScreen = () => {
             <ScrollView contentContainerStyle={{ padding: 20 }}>
                 {/* Top Card */}
                 <View style={styles.topCardContainer}>
-                    <TouchableOpacity onPress={() => navigation.navigate('NewArtScreen')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('NewArt')}>
                         <Card title="New Art" imageSource={ColorImage} style={styles.topCard} visual={require('../assets/home/guitar.png')}>
                             <Text style={styles.cardSubtitle}>Let's see what can I do for you?</Text>
                         </Card>
@@ -96,12 +128,10 @@ const ExploreScreen = () => {
                 {/* Middle Cards */}
                 <View style={styles.middleCardContainer}>
                     <TouchableOpacity onPress={() => navigation.navigate('GenerateArtScreen')} style={styles.middleCard}>
-                        <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard} visualsmal= {require('../assets/home/chat.png')}>
-                        </Card>
+                        <Card title="Generate Picture" imageSource={GenArt} style={styles.generateCard} visualsmal={require('../assets/home/chat.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Market')} style={styles.middleCard} >
-                        <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard} visualsmal = {require('../assets/home/megaphone.png')}>
-                        </Card>
+                    <TouchableOpacity onPress={() => navigation.navigate('Market')} style={styles.middleCard}>
+                        <Card title="Exploring Market" imageSource={ShopImage} style={styles.marketCard} visualsmal={require('../assets/home/megaphone.png')} />
                     </TouchableOpacity>
                 </View>
 
@@ -121,24 +151,18 @@ const ExploreScreen = () => {
                 {/* Newfeed Art Loop */}
                 <Text style={styles.sectionTitle}>Newfeed Art</Text>
                 <FlatList
-                    data={artworks}
-                    keyExtractor={(item) => item.id.toString()}
+                    data={newsData}
+                    keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
-                        <NewfeedArt imageSource={item.imageSource} title={item.title} artistName={item.artistName} />
+                        <NewfeedArt imageSource={item.image} title={item.title} artistName={item.artistName} />
                     )}
                     showsVerticalScrollIndicator={false}
                 />
-
-                {/* Clear Library Button */}
-                <TouchableOpacity style={styles.clearButton} onPress={clearLibrary}>
-                    <Text style={styles.clearButtonText}>Clear Library</Text>
-                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );
 };
 
-// Styles
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
@@ -308,6 +332,66 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         fontSize: 16,
         fontWeight: "bold",
+    },
+    newfeedCard: {
+        backgroundColor: '#F8F8F8',
+        borderRadius: 10,
+        padding: 15,
+        marginBottom: 15,
+    },
+    cardImage: {
+        width: '100%',
+        height: 200,
+        borderRadius: 10,
+    },
+    artTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 10,
+    },
+    artistName: {
+        fontSize: 16,
+        color: 'gray',
+    },
+    cardActions: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        paddingHorizontal: 10,
+        marginTop: 10,
+    },
+    iconButton: {
+        padding: 10,
+    },
+    reportButton: {
+        backgroundColor: '#E57373',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        borderRadius: 5,
+    },
+    reportText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+    },
+    searchInput: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        backgroundColor: '#FFFFFF',
+        flex: 1,
+    },
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginVertical: 15,
     },
 });
 

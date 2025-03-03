@@ -1,95 +1,88 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, ActivityIndicator, ScrollView } from 'react-native';
-import { LibraryContext } from '../components/LibraryContext'; // Import the context to manage library items
-import { CommonActions } from '@react-navigation/native'; // Import CommonActions
-import { setNonce } from 'viem/actions';
+import {
+    View,
+    Text,
+    Image,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Modal,
+    ActivityIndicator,
+    Alert
+} from 'react-native';
+import { LibraryContext } from '../components/LibraryContext'; 
+import { CommonActions } from '@react-navigation/native';
 
 const PublishScreen = ({ route, navigation }) => {
-    const { artwork } = route.params;  
+    const { artwork } = route.params || {}; 
+    const { addItemToLibrary } = useContext(LibraryContext); 
+
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [price, setPrice] = useState(artwork.price || ''); 
-    const [username, setUsername] = useState('Jane'); 
-    const [modalVisible, setModalVisible] = useState(false); // Modal visibility for verification phase
-    const [loading, setLoading] = useState(false); // Loading spinner for checking phase
-    const [verificationStatus, setVerificationStatus] = useState([]); // To hold the verification status for each item
-    const { addItemToLibrary } = useContext(LibraryContext); 
+    const [title, setTitle] = useState(artwork.title || ''); 
+    const [modalVisible, setModalVisible] = useState(false); 
+    const [loading, setLoading] = useState(false); 
 
     const handlePlanSelect = (plan) => {
         setSelectedPlan(plan);
     };
 
-    const verificationItems = [
-        { id: 1, title: "Copyright and Ownership Rights", isChecked: null }, 
-        { id: 2, title: "Lorem ipsum", isChecked: null },
-        { id: 3, title: "Lorem ipsum", isChecked: null },
-        { id: 4, title: "Lorem ipsum", isChecked: null },
-        { id: 5, title: "Lorem ipsum", isChecked: null }
-    ];
-
-    // Start verification process
     const handleVerifyAndPublish = () => {
-        setModalVisible(true); // Show the modal during verification
-        setLoading(true); // Start loading
+        setModalVisible(true); 
+        setLoading(true); 
 
         setTimeout(() => {
-            const updatedStatus = verificationItems.map((item, index) => ({
-                ...item,
-                // isChecked: index % 2 === 0 ? 'success' : 'fail',
-                //isChecked: 'success',
-                isChecked: 'fail',
-            }));
-            setVerificationStatus(updatedStatus);
-            setLoading(false); // Stop loading
+            setLoading(false);
 
-            // Check verification results
-            if (!updatedStatus.some(item => item.isChecked === 'fail')) {
-                const artworkWithDetails = {
-                    ...artwork,
-                    price: price || '0 VND',
-                    username: username,
-                };
-                addItemToLibrary(artworkWithDetails);
+            const artworkWithDetails = {
+                ...artwork,
+                price: price || '0 VND',
+                title: title,
+                plan: selectedPlan || 'No Plan Selected',
+            };
 
-                Alert.alert("Success", "Artwork has been successfully published!", [
-                    {
-                        text: "OK",
-                        onPress: () => {
-                            navigation.dispatch(
-                                CommonActions.reset({
-                                    index: 0,
-                                    routes: [{ name: 'Market' }],
-                                })
-                            );
-                        }
+            addItemToLibrary(artworkWithDetails);
+
+            Alert.alert("Success", "Artwork has been successfully published!", [
+                {
+                    text: "OK",
+                    onPress: () => {
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Market' }], // ✅ Move back to Library after publishing
+                            })
+                        );
                     }
-                ]);
-            } else {
-                Alert.alert('Warning', 'There were issues with the artwork verification.');
-            }
-            setModalVisible(false); // Close the modal
-        }, 3000); // Simulate a 3 second verification time
+                }
+            ]);
+            setModalVisible(false);
+        }, 3000);
     };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
+            {/* Artwork Image */}
             <Image 
-                source={artwork.image}  
+                source={{ uri: artwork.imageUrl || 'https://via.placeholder.com/300' }}  
                 style={styles.artworkImage}
                 resizeMode="contain"
             />
 
-            <Text style={styles.leftAlignedTitle}>Title</Text>
+            {/* Title Input */}
+            <Text style={styles.label}>Title</Text>
             <TextInput
-                style={styles.priceInput}
-                value={username}
-                onChangeText={setUsername}
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
                 placeholder="Enter title"
             />
 
-            {/* Price */}
-            <Text style={styles.leftAlignedTitle}>Price</Text>
+            {/* Price Input */}
+            <Text style={styles.label}>Price</Text>
             <TextInput
-                style={styles.priceInput}
+                style={styles.input}
                 value={price}
                 onChangeText={setPrice}
                 placeholder="Enter price in VND"
@@ -97,6 +90,7 @@ const PublishScreen = ({ route, navigation }) => {
             />
 
             {/* Pricing Options */}
+            <Text style={styles.label}>Select Pricing Plan</Text>
             <View style={styles.pricingContainer}>
                 <TouchableOpacity 
                     style={[styles.card, selectedPlan === 'monthly' && styles.selectedCard]}
@@ -118,15 +112,12 @@ const PublishScreen = ({ route, navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            {/* Try Free Button */}
-            <TouchableOpacity 
-                style={styles.button} 
-                onPress={handleVerifyAndPublish} 
-            >
-                <Text style={styles.buttonText}>Try free for 7 days</Text>
+            {/* Confirm Button */}
+            <TouchableOpacity style={styles.button} onPress={handleVerifyAndPublish}>
+                <Text style={styles.buttonText}>Confirm</Text>
             </TouchableOpacity>
 
-            {/* Modal for Checking */}
+            {/* Verification Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -161,7 +152,13 @@ const styles = StyleSheet.create({
         height: 200,
         marginBottom: 20,
     },
-    priceInput: {
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: '#2E5077',
+    },
+    input: {
         height: 40,
         borderColor: '#ccc',
         borderWidth: 1,
@@ -183,38 +180,35 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '48%',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.3,
-        shadowRadius: 1.5,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
         elevation: 3,
     },
     selectedCard: {
-        borderWidth: 2,
+        borderWidth: 3,
         borderColor: '#79D7BE',
-    },
-    leftAlignedTitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        textAlign: 'left',
-        width: '100%',
-        marginBottom: 5,
-        color: '#2E5077',
+        backgroundColor: '#E8F5E9',
     },
     price: {
         fontSize: 22,
         fontWeight: 'bold',
+        color: '#333',
     },
     billing: {
         fontSize: 14,
+        color: '#666',
     },
     yearly: {
-        fontSize: 12,
-        color: '#666',
+        fontSize: 14,
+        color: '#333',
+        fontWeight: 'bold',
     },
     discount: {
         fontSize: 16,
         color: '#FF5722',
         fontWeight: 'bold',
+        marginTop: 5,
     },
     button: {
         backgroundColor: '#79D7BE',
@@ -222,14 +216,13 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         paddingHorizontal: 30,
         alignItems: 'center',
-        marginTop: 30,
+        marginTop: 20,
     },
     buttonText: {
         color: '#FFFFFF',
         fontSize: 16,
         fontWeight: 'bold',
     },
-    // Modal styles
     modalOverlay: {
         flex: 1,
         justifyContent: 'center',
@@ -241,9 +234,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         width: 250,
-        alignItems: 'center',
-    },
-    modalInnerContent: {
         alignItems: 'center',
     },
     modalText: {

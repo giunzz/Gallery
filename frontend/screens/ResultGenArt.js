@@ -96,7 +96,7 @@ const ResultGenArt = ({ route, navigation }) => {
         if (buttonName === 'Library') {
             saveToLibrary();
         } else if (buttonName === 'Draw') {
-            navigation.navigate('Draw');
+            navigation.navigate('New_Draw');
         } else if (buttonName === 'Explore') {
             navigation.navigate('MainTabs', { screen: 'Explore' });        }
     };    

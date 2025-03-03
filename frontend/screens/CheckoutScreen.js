@@ -12,19 +12,6 @@ const CheckoutScreen = ({ route, navigation }) => {
         { id: "VNPay", name: "VNPay", image: require("../assets/payments/vnpay.png") },
     ];
 
-    // const handleCheckout = async () => {
-    //     if (!selectedPayment) {
-    //         Alert.alert("Please select a payment method");
-    //         return;
-    //     }
-
-    //     const paymentSuccessful = true; 
-    //     if (paymentSuccessful) {
-    //         navigation.navigate('MainTabs', { screen: 'Library' });  
-    //     } else {
-    //         Alert.alert("Payment failed. Please try again.");
-    //     }
-    // };
     const handleCheckout = async () => {
         if (!selectedPayment) {
             Alert.alert("Please select a payment method");

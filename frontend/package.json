@@ -19,6 +19,7 @@
     "@react-navigation/material-top-tabs": "^7.1.0",
     "@react-navigation/native": "^7.0.15",
     "@react-navigation/stack": "^7.1.2",
+    "@shopify/react-native-skia": "1.5.0",
     "@terrylinla/react-native-sketch-canvas": "^0.8.0",
     "@wagmi/core": "^2.16.4",
     "@walletconnect/modal-react-native": "^1.1.0",
@@ -28,6 +29,7 @@
     "dotenv": "^16.4.7",
     "ethers": "^6.13.5",
     "expo": "~52.0.28",
+    "expo-av": "~15.0.2",
     "expo-camera": "^16.0.16",
     "expo-clipboard": "^7.0.1",
     "expo-image-picker": "^16.0.6",
@@ -51,10 +53,10 @@
     "react-native-sound": "^0.11.2",
     "react-native-tab-view": "^4.0.5",
     "react-native-vector-icons": "^10.2.0",
+    "react-native-view-shot": "^4.0.3",
     "react-native-vision-camera": "^4.6.3",
     "viem": "^2.23.2",
-    "wagmi": "^2.14.11",
-    "expo-av": "~15.0.2"
+    "wagmi": "^2.14.11"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

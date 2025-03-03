@@ -29,6 +29,15 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
         });
     };
     
+    const handleDrawPress = () => {
+        navigation.navigate('NewArt', { 
+            artwork: { 
+                token: artwork.token, 
+                artistName: artwork.address, 
+                imageUrl: artwork.url 
+            } 
+        });
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -46,7 +55,10 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
                 <TouchableOpacity 
                     style={[styles.drawButton, isDrawPressed && styles.buttonPressed]} 
                     onPressIn={() => setIsDrawPressed(true)}
-                    onPressOut={() => setIsDrawPressed(false)}
+                    onPressOut={() => {
+                        setIsDrawPressed(false);
+                        handleDrawPress();
+                    }}
                 >
                     <Text style={styles.buttonText}>Draw</Text>
                 </TouchableOpacity>

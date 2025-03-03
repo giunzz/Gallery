@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native'; // Import useNavigatio
 const MusicArt = ({ route }) => {
     const navigation = useNavigation(); // Hook for navigation
 
-    const { pictureUrl = 'https://via.placeholder.com/250' } = route.params || {};
+    const {item} = route.params || {};
     const [musicDetails, setMusicDetails] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -181,7 +181,7 @@ const MusicArt = ({ route }) => {
             </View> */}
 
             <View style={styles.artworkContainer}>
-                <Image source={{ uri: pictureUrl }} style={styles.image} />
+                <Image source={{ uri: item.url}} style={styles.image} />
                 <View style={styles.dotsContainer}>
                     <Ionicons name="ellipsis-horizontal" size={24} color="#333" />
                 </View>

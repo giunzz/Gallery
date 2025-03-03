@@ -19,6 +19,7 @@ import ResultGenArt from './screens/ResultGenArt';
 import CanvasSizeScreen from './screens/CanvasSizeScreen';
 import ReportScreen from './screens/ReportScreen';
 import NewArt from './screens/NewArt';
+import ResultDraw from './screens/Result_Draw';
 import SearchResultsScreen from './screens/SearchResultsScreen';
 import NoResultsScreen from './screens/NotFound';
 import Uploading from './screens/UploadScreen';
@@ -182,7 +183,7 @@ export default function App() {
           component={NewArt}
           options={{ 
             headerShown: true, 
-            title: '', 
+            title: 'Drawing', 
             headerStyle: { backgroundColor: '#79D7BE' }, 
             headerTintColor: 'black', 
             headerTitleAlign: 'center' }} 
@@ -194,6 +195,17 @@ export default function App() {
               options={{ 
                     headerShown: true, 
                     title: 'Playing Now', 
+                    headerStyle: { backgroundColor: '#79D7BE' }, 
+                    headerTintColor: 'black', 
+                    headerTitleAlign: 'center' }} 
+          />
+
+          <Stack.Screen
+              name="ResultDraw"
+              component={ResultDraw}
+              options={{ 
+                    headerShown: true, 
+                    title: '', 
                     headerStyle: { backgroundColor: '#79D7BE' }, 
                     headerTintColor: 'black', 
                     headerTitleAlign: 'center' }} 

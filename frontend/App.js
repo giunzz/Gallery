@@ -161,7 +161,7 @@ export default function App() {
             component={Uploading}
             options={{ 
               headerShown: true, 
-              title: "Upload", // Added title for clarity
+              title: "", 
               headerStyle: { backgroundColor: '#79D7BE' }, 
               headerTintColor: 'black', 
               headerTitleAlign: 'center'

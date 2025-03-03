@@ -53,9 +53,9 @@ const LibraryScreen = ({ navigation }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await getUserPicture(token); // Fetch data
+            const response = await getUserPicture(token); 
             const pictures = response.pictures.map((item, index) => ({
-                id: index.toString(), // Convert index to string for keyExtractor
+                id: index.toString(), 
                 address: item.address,
                 token: item.token,
                 url: item.url,

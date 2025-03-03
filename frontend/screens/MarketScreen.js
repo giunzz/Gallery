@@ -5,9 +5,8 @@ import {
 import { Ionicons } from "@expo/vector-icons"; 
 import Header from '../components/Header';
 import CategoryFilter from '../components/FilterButtons'; 
-import { useNavigation } from "@react-navigation/native";
 
-import ArtImage from '../assets/home/art.png'; // Placeholder image
+import ArtImage from '../assets/home/art.png'; 
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
 
@@ -45,18 +44,17 @@ const MarketScreen = ({ navigation }) => {
         selectedCategory === "All" || item.category === selectedCategory
     );
 
-    // ✅ Render artwork card
     const renderItem = ({ item }) => (
         <TouchableOpacity 
             style={styles.card} 
-            onPress={() => navigation.navigate("BuyingScreen", { artwork: item })} // ✅ Pass artwork details
+            onPress={() => navigation.navigate("BuyingScreen", { item })} // Pass item data
         >
             {/* Artwork Image */}
             <Image 
                 source={item.imageUrl} 
                 style={styles.cardImage} 
             />
-
+    
             {/* Title & Cart Icon */}
             <View style={styles.titleContainer}>
                 <Text style={styles.itemTitle}>{item.title}</Text>
@@ -64,7 +62,7 @@ const MarketScreen = ({ navigation }) => {
                     <Ionicons name="cart-outline" size={20} color="black" />
                 </TouchableOpacity>
             </View>
-
+    
             {/* User Info & Price */}
             <View style={styles.userPriceContainer}>
                 {/* User Info */}
@@ -75,13 +73,13 @@ const MarketScreen = ({ navigation }) => {
                     />
                     <Text style={styles.username}>{item.username}</Text>
                 </View>
-
+    
                 {/* Price */}
                 <Text style={styles.itemPrice}>{item.price} VND</Text>
             </View>
         </TouchableOpacity>
     );
-
+    
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header navigation={navigation} />

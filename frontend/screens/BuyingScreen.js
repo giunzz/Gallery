@@ -2,15 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from "react-native";
 
 const BuyingScreen = ({ route, navigation }) => {
-    // Ensure that item is passed via route.params
-    const item = route.params?.item || {
-        title: "Unknown Artwork",
-        username: "Unknown Artist",
-        price: "0 VND",
-        imageUrl: "https://via.placeholder.com/400x300", // Placeholder image URL
-        userAvatar: "https://via.placeholder.com/50", // Placeholder avatar URL
-        location: "Unknown Location",
-    };
+    const { item } = route.params; // Retrieve item from route.params
 
     const [isBuyPressed, setIsBuyPressed] = useState(false);
     const [isDrawPressed, setIsDrawPressed] = useState(false);
@@ -18,16 +10,16 @@ const BuyingScreen = ({ route, navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             {/* Image with proper check */}
-            <Image source={{ uri: item.imageUrl }} style={styles.artImage} />
+            <Image source={item.imageUrl} style={styles.artImage} /> {/* Use item.imageUrl */}
 
             <View style={styles.infoContainer}>
                 <View style={styles.userDetails}>
-                    <Image source={{ uri: item.userAvatar }} style={styles.userAvatar} />
+                    <Image source={require('../assets/market/buy.png')} style={styles.userAvatar} />
                     <View style={styles.textContainer}>
                         <Text style={styles.artTitle}>{item.title}</Text>
                         <Text style={styles.locationText}>{item.location}</Text>
                     </View>
-                    <Text style={styles.price}>{item.price}</Text>
+                    <Text style={styles.price}>{item.price} VND</Text>
                 </View>
 
                 <Text style={styles.description}>

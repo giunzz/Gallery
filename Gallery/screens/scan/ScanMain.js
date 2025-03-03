@@ -1,5 +1,6 @@
 import {useRef, useState, useEffect} from 'react';
 import {View, Button, Image} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
 
 const ScanMain = ({navigation}) => {
@@ -22,18 +23,20 @@ const ScanMain = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       {device && (
-        <Camera
-          ref={cameraRef}
-          style={{flex: 1}}
-          device={device}
-          isActive
-          photo={true}
-        />
+        <View style={{flex: 1}}>
+          <Camera
+            ref={cameraRef}
+            style={{flex: 1}}
+            device={device}
+            isActive
+            photo={true}
+          />
+          <Button title="Take Picture" onPress={takePicture} />
+        </View>
       )}
-      <Button title="Take Picture" onPress={takePicture} />
-    </View>
+    </SafeAreaView>
   );
 };
 

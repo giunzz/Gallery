@@ -7,7 +7,13 @@ import {
   Alert,
   SafeAreaView,
 } from 'react-native';
-import {Canvas, Path, Skia} from '@shopify/react-native-skia';
+import {
+  Canvas,
+  Path,
+  Skia,
+  useImage,
+  Image as SkiaImage,
+} from '@shopify/react-native-skia';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -17,13 +23,18 @@ import Header from '../../components/AccountFlow/Header';
 
 const COLORS = ['black', 'red', 'blue', 'green', 'orange'];
 
-const Drawing = ({navigation}) => {
+const Drawing = ({navigation, route}) => {
+  const {artwork} = route.params;
   const [paths, setPaths] = useState([]);
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
   const [isErasing, setIsErasing] = useState(false);
   const [showColorTable, setShowColorTable] = useState(false);
   const [isDrawingEnabled, setIsDrawingEnabled] = useState(true);
+  const [canvasSize, setCanvasSize] = useState({width: 0, height: 0});
   const canvasRef = useRef(null);
+
+  // Load artwork image if available; otherwise, use null.
+  const loadedImage = useImage(artwork ? artwork.image : null);
 
   // Shared values for pinch-to-zoom.
   const baseScale = useSharedValue(1);
@@ -176,12 +187,28 @@ const Drawing = ({navigation}) => {
 
   const clearCanvas = () => setPaths([]);
 
+  // Updated saveImage function: capture the canvas snapshot and replace artwork.image.
   const saveImage = () => {
     if (canvasRef.current) {
-      const image = canvasRef.current.makeImageSnapshot();
-      console.log('Snapshot image:', image);
-      Alert.alert('Image Saved!', 'Your drawing has been saved successfully.');
+      const snapshot = canvasRef.current.makeImageSnapshot();
+      console.log('Snapshot image:', snapshot);
+
+      if (artwork) {
+        // Create a new object instead of modifying artwork directly
+        const updatedArtwork = {...artwork, image: snapshot};
+
+        // Navigate with the updated object
+        navigation.navigate('ArtworkDetail', {artwork: updatedArtwork});
+
+        Alert.alert(
+          'Image Saved!',
+          'The artwork has been updated with your drawing.',
+        );
+      } else {
+        Alert.alert('No Artwork', 'There is no artwork to update.');
+      }
     }
+    navigation.navigate('Library');
   };
 
   return (
@@ -201,7 +228,23 @@ const Drawing = ({navigation}) => {
         {/* GestureDetector wraps the canvas with active gestures */}
         <GestureDetector gesture={activeGesture}>
           <Animated.View style={[styles.canvasContainer, animatedStyle]}>
-            <Canvas ref={canvasRef} style={styles.canvas}>
+            <Canvas
+              ref={canvasRef}
+              style={styles.canvas}
+              onLayout={event => {
+                const {width, height} = event.nativeEvent.layout;
+                setCanvasSize({width, height});
+              }}>
+              {/* If artwork exists and the image is loaded, render it as the background */}
+              {loadedImage && canvasSize.width && canvasSize.height && (
+                <SkiaImage
+                  image={loadedImage}
+                  x={0}
+                  y={0}
+                  width={canvasSize.width}
+                  height={canvasSize.height}
+                />
+              )}
               {paths.map((p, index) => (
                 <Path
                   key={`path-${index}`}

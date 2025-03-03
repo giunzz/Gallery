@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#E0FFFF',
+        backgroundColor: '#FFFF',
         padding: 20,
     },
     image: {

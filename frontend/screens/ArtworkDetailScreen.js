@@ -30,13 +30,7 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
     };
     
     const handleDrawPress = () => {
-        navigation.navigate('NewArt', { 
-            artwork: { 
-                token: artwork.token, 
-                artistName: artwork.address, 
-                imageUrl: artwork.url 
-            } 
-        });
+        navigation.navigate('NewArt', { artwork: artwork.url});
     };
 
     return (

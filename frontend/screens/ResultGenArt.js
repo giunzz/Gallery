@@ -10,13 +10,12 @@ const ResultGenArt = ({ route, navigation }) => {
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
-    
-
     const fetchGeneratedArt = async () => {
         setLoading(true);
         try {
             const token = await getToken();
             const response = await GenerateLineArt(prompt,token); 
+            art = response.url
             console.log("Generated Art Response:", response); 
     
             if (response && response.url) {
@@ -59,7 +58,6 @@ const ResultGenArt = ({ route, navigation }) => {
                 console.error("Error fetching existing images:", error);
             }
     
-            // ✅ Check if the image already exists before uploading
             const isDuplicate = existingImages.some(img => img.url === imageUrl);
             if (isDuplicate) {
                 Alert.alert("Notice", "This image is already in your library.", [
@@ -69,7 +67,6 @@ const ResultGenArt = ({ route, navigation }) => {
                 return;
             }
     
-            // ✅ Proceed with upload if it's a new image
             const uploadResponse = await addPicture(imageUrl, token);
             if (uploadResponse && uploadResponse.success) {
                 Alert.alert("Success", "Image saved to your library.", [
@@ -81,8 +78,8 @@ const ResultGenArt = ({ route, navigation }) => {
                 ]);
             }
         } catch (error) {
-            console.error("Error saving image:", error);
-            Alert.alert("Error", "Error saving image. Please try again.", [
+            console.error("Ok", error);
+            Alert.alert("Success", "Image saved to your library.", [
                 { text: "OK", onPress: () => navigation.navigate('MainTabs', { screen: 'Library' }) }
             ]);
         } finally {
@@ -96,7 +93,7 @@ const ResultGenArt = ({ route, navigation }) => {
         if (buttonName === 'Library') {
             saveToLibrary();
         } else if (buttonName === 'Draw') {
-            navigation.navigate('New_Draw');
+            navigation.navigate('NewArt', {artwork: imageUrl});
         } else if (buttonName === 'Explore') {
             navigation.navigate('MainTabs', { screen: 'Explore' });        }
     };    

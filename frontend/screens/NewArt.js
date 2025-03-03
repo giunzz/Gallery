@@ -25,17 +25,18 @@ import { captureRef } from 'react-native-view-shot';
 const COLORS = ['black', 'red', 'blue', 'green', 'orange'];
 
 const Drawing = ({ navigation, route }) => {
-    const artwork = route?.params?.artwork ?? { image: null };
+    const artwork = route.params;
+    console.log("Artwork:", artwork);
     const [paths, setPaths] = useState([]);
     const [selectedColor, setSelectedColor] = useState(COLORS[0]);
     const [isErasing, setIsErasing] = useState(false);
     const [showColorTable, setShowColorTable] = useState(false);
     const [isDrawingEnabled, setIsDrawingEnabled] = useState(true);
     const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
-    const canvasRef = useRef(null);
     const [imageUrl, setImageUrl] = useState(null);
     const [uploading, setUploading] = useState(false);
-    const loadedImage = useImage(artwork ? artwork.image : null);
+    const loadedImage = useImage(artwork?.artwork || null); 
+    console.log(loadedImage);
     const canvasContainerRef = useRef(null);
 
 
@@ -235,7 +236,7 @@ const Drawing = ({ navigation, route }) => {
                 </TouchableOpacity>
 
                 <GestureDetector gesture={activeGesture}>
-                                <View ref={canvasContainerRef} style={styles.canvasContainer}>
+                    <Animated.View ref={canvasContainerRef} style={[styles.canvasContainer,animatedStyle]}>
                     <Canvas
                         style={styles.canvas}
                         onLayout={(event) => {
@@ -261,7 +262,7 @@ const Drawing = ({ navigation, route }) => {
                             />
                         ))}
                     </Canvas>
-                </View>
+                </Animated.View>
 
                 </GestureDetector>
                 

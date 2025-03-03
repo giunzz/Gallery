@@ -31,6 +31,9 @@ import MarketIcon from './assets/home/add_business.png';
 import LibraryIcon from './assets/home/Library.png';
 import CameraIcon from './assets/home/scan.png';
 
+import VerifyArtist from './screens/account/EditAccount';
+import UserAgreement from './screens/account/UserAgreement';
+import ConnectWallet from './screens/account/ConnectWallet';
 import { LibraryProvider } from './components/LibraryContext';
 
 const Tab = createBottomTabNavigator();
@@ -69,6 +72,31 @@ const LibraryStack = () => (
   </Stack.Navigator>
 );
 
+const AccountNav = () => {
+  const AccountStack = createStackNavigator();
+  return (
+    <AccountStack.Navigator>
+      <AccountStack.Screen 
+          name="Account" 
+          component={AccountScreen} 
+          options={{ headerShown: false}}
+      />
+      <AccountStack.Screen 
+          name="VerifyArtist" 
+          component={VerifyArtist} 
+          options={{ headerShown: true, title: 'Basic Detail', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
+      
+      />
+      <AccountStack.Screen name="UserAgreement" component={UserAgreement} />
+      <AccountStack.Screen name="ConnectWallet" component={ConnectWallet} />
+    </AccountStack.Navigator>
+  );
+};
+
+
+
+
+
 const MainTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -81,12 +109,8 @@ const MainTabs = () => (
     <Tab.Screen name="Explore" component={ExploreScreen} options={{ headerShown: false }} />
     <Tab.Screen name="Market" component={MarketStack} options={{ headerShown: false }} />
     <Tab.Screen name="Library" component={LibraryStack} options={{ headerShown: false }} />
-    <Tab.Screen 
-      name="CameraScreen" 
-      component={CameraScreen} 
-      options={{ title: 'Search Ownership', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} 
-    />
-    <Tab.Screen name="Account" component={AccountScreen} options={{ headerShown: false }} />
+    <Tab.Screen name="CameraScreen" component={CameraScreen} options={{ title: 'Search Ownership', headerStyle: { backgroundColor: '#79D7BE' }, headerTintColor: 'black', headerTitleAlign: 'center' }} />
+    <Tab.Screen name="Account" component={AccountNav} options={{ headerShown: false }} />
   </Tab.Navigator>
 );
 

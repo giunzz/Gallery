@@ -12,29 +12,29 @@ import {
     Clipboard,
     ToastAndroid,
     Platform,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import {
+    } from "react-native";
+    import { Ionicons } from "@expo/vector-icons";
+    import {
     WalletConnectModal,
     useWalletConnectModal,
-} from "@walletconnect/modal-react-native";
-import config from "../../config.js";
-import { getMessageFromServer, getAuthorizationToken } from "../../services/apiService";
+    } from "@walletconnect/modal-react-native";
+    import config from "../../config.js";  
+    import { getMessageFromServer, getAuthorizationToken } from "../../services/apiService"; // and this one
 
-const projectId = config.PROJECT_ID;
+    const projectId = config.PROJECT_ID;
 
-const providerMetadata = {
+    const providerMetadata = {
     name: "Gallery",
-    description: "YOUR_PROJECT_DESCRIPTION",
-    url: "https://your-project-website.com/",
-    icons: ["https://your-project-logo.com/"],
+    description: "Art creation and sharing platform", 
+    url: "https://gallery-app.com", //  example URL
+    icons: ["https://gallery-app.com/logo.png"], // example URL
     redirect: {
-        native: "YOUR_APP_SCHEME://",
-        universal: "YOUR_APP_UNIVERSAL_LINK.com",
+        native: "galleryapp://", //  app scheme
+        universal: "https://gallery-app.com", //  universal link
     },
-};
+    };
 
-const ConnectWallet = ({ navigation }) => {
+    const ConnectWallet = ({ navigation }) => {
     const { open, isConnected, address, provider, close } = useWalletConnectModal();
     const [text, setText] = useState("");
     const [message, setMessage] = useState("");
@@ -45,14 +45,32 @@ const ConnectWallet = ({ navigation }) => {
         setText(inputText);
     };
 
-    const handleConnectWallet = useCallback(async () => {
+        const handleConnectWallet = useCallback(async () => {
         try {
-            if (!isConnected) {
-                await open();
-                return;
-            }
+        if (!isConnected) {
+            await open();
+            return;
+        }
+
+        // We move the logic *after* the connection check.
+        const userAddress = address;
+        const serverMessage = await getMessageFromServer(userAddress);
+        setMessage(serverMessage);
+
+        } catch (error) {
+        console.error("Error in wallet connection flow:", error);
+        Alert.alert("Error", "Failed to connect wallet or obtain message."); // More specific error
+        }
+    }, [isConnected, open, address]);  // Correct dependencies
+
+    const handleSignMessage = useCallback(async () => {
+        if (!isConnected || !address) {
+            Alert.alert("Error", "Wallet not connected.");
+            return;
+        }
+            try {
             const userAddress = address;
-            const serverMessage = await getMessageFromServer(userAddress);
+            const serverMessage = await getMessageFromServer(userAddress); // Fetching Message from server
             setMessage(serverMessage);
             const signature = await provider.request({
                 method: "personal_sign",
@@ -60,230 +78,275 @@ const ConnectWallet = ({ navigation }) => {
             });
             const authToken = await getAuthorizationToken(userAddress, serverMessage, signature);
             setToken(authToken);
+            console.log("Token received:", authToken);
             Alert.alert("Success", "Wallet connected and token received!");
-        } catch (error) {
-            console.error("Error in wallet connection flow:", error);
-            Alert.alert("Error", "Failed to connect wallet or obtain token.");
-        }
-    }, [isConnected, open, address, provider]);
+            } catch (e) {
+                console.log(e);
+                Alert.alert("Error", "Failed to connect wallet or obtain token.");
+            }
+    },[isConnected, address, provider]);
 
-    const signText = async (text) => {
+    const signText = async (textToSign) => {
         try {
-            if (text === "") throw new Error("Text is empty");
-            if (!isConnected) throw new Error("Wallet is not connected");
+        if (textToSign === "") throw new Error("Text is empty");
+        if (!isConnected || !address) throw new Error("Wallet is not connected");
 
-            const message = text;
-            const signature = await provider.request({
-                method: "personal_sign",
-                params: [message, address],
-            });
-            Alert.alert("Success", "Text signed successfully!");
-            setSigned(true);
-            return signature;
+        const signature = await provider.request({
+            method: "personal_sign",
+            params: [textToSign, address],
+        });
+        Alert.alert("Success", "Text signed successfully!");
+        setSigned(true);
+        return signature;
         } catch (error) {
-            console.error("Signing failed:", error);
-            Alert.alert("Error", "Signing failed: " + error.message);
-            return null;
+        console.error("Signing failed:", error);
+        Alert.alert("Error", "Signing failed: " + error.message);
+        return null;
         }
     };
 
     useEffect(() => {
+        //  don't automatically connect, wait for user interaction
         if (isConnected) {
-            handleConnectWallet();
+            handleSignMessage();
         }
-    }, [isConnected, handleConnectWallet]);
+    }, [isConnected, handleSignMessage]);
 
     const copyToClipboard = async (textToCopy) => {
         await Clipboard.setString(textToCopy);
-        if (Platform.OS === 'android') {
-            ToastAndroid.show('Copied to clipboard!', ToastAndroid.SHORT);
+        if (Platform.OS === "android") {
+        ToastAndroid.show("Copied to clipboard!", ToastAndroid.SHORT);
         } else {
-            Alert.alert("Copied", "Text copied to clipboard!");
+        Alert.alert("Copied", "Text copied to clipboard!");
         }
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="chevron-back" size={24} color="black" />
-                </TouchableOpacity>
-                <View style={styles.headerIcons}>
-                    <Ionicons name="notifications-outline" size={24} color="black" />
-                    <Ionicons name="cart-outline" size={24} color="black" />
+        <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={24} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Connect Wallet</Text>
+            <Ionicons name="notifications-outline" size={24} color="black" />
+        </View>
+
+        <ScrollView contentContainerStyle={styles.scrollView}>
+            <View style={styles.profileCard}>
+            <Image
+                source={require("../../assets/home/ava.png")} // Corrected path, make sure the image exists
+                style={styles.profileImage}
+            />
+            <Text style={styles.titleText}>Create your art, create your story</Text>
+            {/*  MetaMask Button *always* present */}
+            <TouchableOpacity style={styles.connectButton} onPress={handleConnectWallet}>
+                <View style={styles.buttonContent}>
+                <Image source={require('../../assets/metamask.png')} style={styles.metamaskLogo}/>
+                    <Text style={styles.connectButtonText}>
+                        {isConnected ? `Connected: ${address.substring(0, 6)}...${address.substring(address.length - 4)}` : "Metamask"}
+                    </Text>
                 </View>
+            </TouchableOpacity>
+
+                {message && (
+                <View style={styles.copyContainer}>
+                <Text style={styles.messageText}>Message: {message}</Text>
+                <TouchableOpacity onPress={() => copyToClipboard(message)}>
+                    <Ionicons name="copy-outline" size={24} color="blue" />
+                </TouchableOpacity>
+                </View>
+            )}
+
+            {token && (
+                <View style={styles.copyContainer}>
+                <Text style={styles.tokenText}>
+                    Authorization Token: {token.substring(0, 20)}...
+                </Text>
+                <TouchableOpacity onPress={() => copyToClipboard(token)}>
+                    <Ionicons name="copy-outline" size={24} color="blue" />
+                </TouchableOpacity>
+                </View>
+            )}
+
+            <Text style={styles.inputLabel}>Let sign your text here:</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Enter text"
+                onChangeText={handleTextChange}
+                value={text}
+            />
+            <TouchableOpacity style={styles.signButton} onPress={() => signText(text)}>
+                <Text style={styles.signButtonText}>Sign Text</Text>
+            </TouchableOpacity>
+            {signed && (
+                <Text style={styles.messageText}>Text signed successfully!</Text>
+            )}
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollView}>
-                <View style={styles.profileCard}>
-                    <Image
-                        source={require("../../assets/home/ava.png")}
-                        style={styles.profileImage}
-                    />
-                    <Text style={styles.username}>@Jane</Text>
-                    <Ionicons name="shield-checkmark" size={16} color="gold" />
 
-                    <TouchableOpacity style={styles.connectButton} onPress={handleConnectWallet}>
-                        <Text style={styles.connectButtonText}>
-                            {isConnected ? `Connected: ${address.substring(0, 6)}...${address.substring(address.length - 4)}` : "Connect Wallet"}
-                        </Text>
-                    </TouchableOpacity>
+        </ScrollView>
 
-                    {message && (
-                        <View style={styles.copyContainer}>
-                            <Text style={styles.messageText}>Message: {message}</Text>
-                            <TouchableOpacity onPress={() => copyToClipboard(message)}>
-                                <Ionicons name="copy-outline" size={24} color="blue" />
-                            </TouchableOpacity>
-                        </View>
-                    )}
-
-                    {token && (
-                        <View style={styles.copyContainer}>
-                            <Text style={styles.tokenText}>
-                                Authorization Token: {token.substring(0, 20)}...
-                            </Text>
-                            <TouchableOpacity onPress={() => copyToClipboard(token)}>
-                                <Ionicons name="copy-outline" size={24} color="blue" />
-                            </TouchableOpacity>
-                        </View>
-                    )}
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter text"
-                        onChangeText={handleTextChange}
-                        value={text}
-                    />
-                    <TouchableOpacity
-                        style={styles.signButton}
-                        onPress={() => signText(text)}
-                    >
-                        <Text style={styles.signButtonText}>Sign Text</Text>
-                    </TouchableOpacity>
-                    {signed && <Text style={styles.messageText}>Text signed successfully!</Text>}
-                </View>
-            </ScrollView>
-
-            <WalletConnectModal
-                explorerRecommendedWalletIds={[
-                    "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96",
-                ]}
-                explorerExcludedWalletIds={"ALL"}
-                projectId={projectId}
-                providerMetadata={providerMetadata}
-            />
+        <WalletConnectModal
+            explorerRecommendedWalletIds={[
+            "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96",
+            ]}
+            explorerExcludedWalletIds={"ALL"}
+            projectId={projectId}
+            providerMetadata={providerMetadata}
+        />
         </SafeAreaView>
     );
-};
+    };
 
-const styles = StyleSheet.create({
+    const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F8F8F8",
+        backgroundColor: "#f9f9f9", 
     },
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
-        padding: 20,
-        backgroundColor: "#79D7BE"
+        alignItems: "center",
+        padding: 30,
+        backgroundColor: "#79D7BE", // Header background
+        borderBottomWidth: 1,
+        borderBottomColor: "#ddd",
     },
-    headerIcons: {
-        flexDirection: "row",
-        top: 8,
-    },
+    headerTitle: {
+            fontSize: 20,
+            fontWeight: 'bold',
+        },
     scrollView: {
-        paddingBottom: 80,
+    flexGrow: 1, 
+        justifyContent: 'center', 
+        paddingBottom: 80
     },
     profileCard: {
         alignItems: "center",
-        padding: 16,
+        padding: 32,
+        backgroundColor: "#4DA1A9", 
+        margin: 20,
+        borderRadius: 20, 
+        shadowColor: "#000", 
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        gap: 8
     },
     profileImage: {
         width: 80,
         height: 80,
         borderRadius: 40,
+        marginBottom: 16
     },
-    username: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginVertical: 8,
+    titleText: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            marginBottom: 8,
+            color: '#F8F8F8',
     },
-    buttonGroup: {
-        flexDirection: "row",
-        marginTop: 8,
+    connectButton: {
+        backgroundColor: "#F8F8F8", // Blue button
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 10,
+        marginTop: 20,
+        flexDirection: 'row', // Align items horizontally
+        alignItems: 'center', // Center items vertically
+        justifyContent: 'center' // Center items horizontally in the button
     },
-    smallButton: {
-        backgroundColor: "#1B5E20",
-        padding: 6,
-        margin: 5,
-        borderRadius: 8,
+    connectButtonText: {
+        color: "black",
+        textAlign: "center",
+        marginLeft: 8
     },
-    buttonText: {
-        color: "white",
-        fontSize: 12,
-    },
-    statsContainer: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-        width: "80%",
-        marginTop: 16,
-    },
-    stat: {
-        alignItems: "center",
-    },
-    statNumber: {
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    statLabel: {
-        fontSize: 12,
-        color: "gray",
-    },
+        metamaskLogo: {
+            width: 24,
+            height: 24,
+            marginRight: 8,
+            color: "#E0FFFF",
+        },
+        buttonContent: {
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
     input: {
         height: 40,
         borderColor: "gray",
         borderWidth: 1,
-        marginTop: 20,
-        width: "80%",
+        marginTop: 8,
+        width: "90%",
         paddingHorizontal: 10,
+        borderRadius: 8, // Rounded corners
+        backgroundColor: "#fff", // White input background
     },
+    inputLabel: {
+            alignSelf: 'flex-start',
+            marginLeft: 20,
+            marginTop: 16,
+            fontWeight: 'bold',
+            color: '#ffff',
+        },
     signButton: {
-        backgroundColor: "#79D7BE",
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 10,
+        backgroundColor: "#000000",
+        padding: 12,
+        borderRadius: 10,
+        marginTop: 12,
+        width: '90%',
+        alignItems: 'center'
     },
     signButtonText: {
         color: "white",
         textAlign: "center",
     },
     copyContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         marginTop: 10,
-        width: '80%',
+        padding: 10,
+        backgroundColor: "#f0f0f0", // Light gray background for the message/token area
+        borderRadius: 8,
+        width: '90%',
     },
     messageText: {
-        marginTop: 10,
-        color: "black",
+        color: "black", 
         marginRight: 10,
+        flex: 1,  // Let the text take up available space
+        flexWrap: 'wrap',
     },
     tokenText: {
-        marginTop: 10,
-        color: "black",
         marginRight: 10,
+        flex: 1,  
+        flexWrap: 'wrap',
     },
-    connectButton: {
-        backgroundColor: "#79D7BE",
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    connectButtonText: {
-        color: "white",
-        textAlign: "center",
-    },
-});
+        bottomNavigation: {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            backgroundColor: 'white',
+            borderTopWidth: 1,
+            borderTopColor: '#ddd',
+            paddingVertical: 10,
+        },
+        navItem: {
+            alignItems: 'center',
+        },
+        navText: {
+            fontSize: 12,
+            color: 'gray',
+        },
+        activeNavText: {
+            color: 'black', // Different color for active tab
+            fontWeight: 'bold',
+        },
+    });
 
 export default ConnectWallet;

@@ -14,7 +14,7 @@ const GenerateArtScreen = ({ navigation, route }) => {
     useLayoutEffect(() => {
         navigation.setOptions({
             headerLeft: () => (
-                <TouchableOpacity onPress={() => navigation.navigate("ExploreScreen")}>
+                <TouchableOpacity onPress={() => navigation.navigate('MainTabs', { screen: 'Explore' })}>
                     <Ionicons name="arrow-back" size={24} color="black" style={{ marginLeft: 10 }} />
                 </TouchableOpacity>
             ),
@@ -24,7 +24,6 @@ const GenerateArtScreen = ({ navigation, route }) => {
 
     const handleGenerate = () => {
         if (prompt.trim() === "") {
-            // Show an alert if the prompt is empty
             Alert.alert("No Prompt Entered", "Please enter a prompt before generating art.", [
                 { text: "OK" },
             ]);

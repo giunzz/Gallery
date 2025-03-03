@@ -98,13 +98,15 @@ export const NewsExplore = async (token) => {
     }
 };
 
-export const GenerateLineArt = async (prompt) => {
+export const GenerateLineArt = async (prompt, user_token) => {
     try {
         const response = await axios.post('http://13.250.12.56/ai/art', {
             prompt: prompt || "Default prompt",  // Ensures input is always valid
         }, {
             headers: {
+                Authorization: `Bearer ${user_token}`,
                 "Content-Type": "application/json",
+                
             }
         });
 
@@ -163,5 +165,19 @@ export const SearchOwner = async (imageUri) => {
     } catch (error) {
         console.error('Error fetching ownership:', error.response ? error.response.data : error.message);
         throw new Error('Failed to fetch ownership');
+    }
+};
+
+
+export const getMusic = async () => {
+    try {
+        const response = await axios.get('http://13.250.12.56/picture/music', {
+            headers: { "Content-Type": "application/json" }    
+        });
+
+        return response.data; 
+    } catch (error) {
+        console.error('Error fetching get music:', error.response ? error.response.data : error);
+        throw new Error('Failed to fetch get music:');
     }
 };

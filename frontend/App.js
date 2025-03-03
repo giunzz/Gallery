@@ -18,9 +18,11 @@ import LoadingGenArt from './screens/LoadingGenArt';
 import ResultGenArt from './screens/ResultGenArt';
 import CanvasSizeScreen from './screens/CanvasSizeScreen';
 import ReportScreen from './screens/ReportScreen';
+import NewArt from './screens/NewArt';
 import SearchResultsScreen from './screens/SearchResultsScreen';
 import NoResultsScreen from './screens/NotFound';
 import Uploading from './screens/UploadScreen';
+import MusicArt from './screens/MusicArt';
 import OwnershipScreen from './screens/OwnershipScreen';
 import ExploreIcon from './assets/home/explore.png';
 import AccountIcon from './assets/home/person_2.png';
@@ -50,7 +52,6 @@ const MarketStack = () => (
   </Stack.Navigator>
 );
 
-// **Library Stack**
 const LibraryStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="LibraryOverview" component={LibraryScreen} options={{ headerShown: false }} />
@@ -67,7 +68,6 @@ const LibraryStack = () => (
   </Stack.Navigator>
 );
 
-// **Main Tab Navigator**
 const MainTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -97,7 +97,6 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {/* Main Tabs */}
           <Stack.Screen name="MainTabs" component={MainTabs} />
-          {/* Additional Screens */}
           <Stack.Screen 
           name="Ownership" 
           component={OwnershipScreen} 
@@ -178,6 +177,28 @@ export default function App() {
               headerTitleAlign: 'center'
             }}
           />
+        <Stack.Screen
+          name="NewArt"
+          component={NewArt}
+          options={{ 
+            headerShown: true, 
+            title: '', 
+            headerStyle: { backgroundColor: '#79D7BE' }, 
+            headerTintColor: 'black', 
+            headerTitleAlign: 'center' }} 
+            />
+
+          <Stack.Screen
+              name="MusicArt"
+              component={MusicArt}
+              options={{ 
+                    headerShown: true, 
+                    title: 'Playing Now', 
+                    headerStyle: { backgroundColor: '#79D7BE' }, 
+                    headerTintColor: 'black', 
+                    headerTitleAlign: 'center' }} 
+          />
+
         </Stack.Navigator>
         <StatusBar style="auto" />
       </NavigationContainer>

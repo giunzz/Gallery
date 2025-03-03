@@ -118,7 +118,7 @@ const ExploreScreen = () => {
             <ScrollView contentContainerStyle={{ padding: 20 }}>
                 {/* Top Card */}
                 <View style={styles.topCardContainer}>
-                    <TouchableOpacity onPress={() => navigation.navigate('NewArtScreen')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('NewArt')}>
                         <Card title="New Art" imageSource={ColorImage} style={styles.topCard} visual={require('../assets/home/guitar.png')}>
                             <Text style={styles.cardSubtitle}>Let's see what can I do for you?</Text>
                         </Card>

@@ -10,16 +10,17 @@ const ResultGenArt = ({ route, navigation }) => {
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
+    
 
     const fetchGeneratedArt = async () => {
         setLoading(true);
         try {
-            const response = await GenerateLineArt(prompt); // Call API
-            console.log("Generated Art Response:", response); // Debugging output
+            const token = await getToken();
+            const response = await GenerateLineArt(prompt,token); 
+            console.log("Generated Art Response:", response); 
     
-            // ✅ Correct way to update state
             if (response && response.url) {
-                setImageUrl(response.url);  // ✅ Use setState function
+                setImageUrl(response.url);  
             } else {
                 console.warn("Invalid response structure:", response);
                 Alert.alert("Error", "Failed to fetch generated artwork.");
@@ -31,13 +32,11 @@ const ResultGenArt = ({ route, navigation }) => {
             setLoading(false);
         }
     };
-    
-    
 
     useEffect(() => {
         fetchGeneratedArt();
     }, []);
-
+    
     const saveToLibrary = async () => {
         if (!imageUrl) {
             Alert.alert("Error", "No image to save.");

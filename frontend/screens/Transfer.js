@@ -99,7 +99,7 @@ const TransferArtScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Transfer Artwork</Text>
+            <Text style={styles.title}></Text>
 
             {/* Artwork Image */}
             <Image

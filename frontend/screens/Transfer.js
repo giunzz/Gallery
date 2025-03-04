@@ -9,20 +9,29 @@ import {
     Alert,
     ActivityIndicator,
 } from 'react-native';
-import { getToken, transferArt } from '../services/apiService'; // Assuming this exists
+import { getToken, transferArt, signText as signTextFromWallet } from '../services/apiService'; // Assuming signText exists
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useWalletConnectModal } from '@walletconnect/modal-react-native'; // Ensure WalletConnect hook is imported
 
 const TransferArtScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const { item } = route.params || {}; 
-    console.log(item);
     const imageUrl = item?.imageUrl;
+
+    // WalletConnect hooks
+    const { open, isConnected, address, provider } = useWalletConnectModal();
 
     const [recipientAddress, setRecipientAddress] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState(''); // Message to display after signing
 
     const handleTransfer = async () => {
+        if (!imageUrl) {
+            Alert.alert('Error', 'No image found for this artwork.');
+            return;
+        }
+
         setIsLoading(true);
         try {
             const token = await getToken();
@@ -35,19 +44,52 @@ const TransferArtScreen = () => {
                 Alert.alert('Error', 'Invalid recipient address.');
                 return;
             }
+            console.log("Item: ", item);
+            const response = await transferArt(token, item.token, recipientAddress);
+            console.log(response);
 
-            const response = await transferArt(token, item.id, recipientAddress);
-            if (response.success) {
-                Alert.alert('Success', 'Art transferred successfully!');
-                navigation.goBack();
+            if (response.msg === "Completed") {
+                // Step 1: Sign the message after successful transfer
+                const signedMessage = await signText(`Transfer of ${item.token} to ${recipientAddress}`, provider, address);
+                if (signedMessage) {
+                    setMessage("Artwork transfer and signing successful!");
+                } else {
+                    setMessage("Failed to sign the message.");
+                }
+
+                // Step 2: Display success message
+                Alert.alert('Success', 'Art transferred and signed successfully!');
+                
+                // Navigate to the Library screen after success
+                navigation.navigate('MainTabs', { screen: 'Library' });
             } else {
+                console.error('Error transferring art:', error);
                 Alert.alert('Error', response.message || 'Failed to transfer art.');
             }
         } catch (error) {
             console.error('Error transferring art:', error);
-            Alert.alert('Error', 'An error occurred while transferring the art.');
+            Alert.alert('Error', error?.message || 'An error occurred while transferring the art.');
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    // Signing text
+    const signText = async (textToSign, provider, address) => {
+        try {
+            if (textToSign === "") throw new Error("Text is empty");
+            if (!isConnected || !address) throw new Error("Wallet is not connected");
+
+            const signature = await provider.request({
+                method: "personal_sign",
+                params: [textToSign, address],
+            });
+            Alert.alert("Success", "Text signed successfully!");
+            return signature;
+        } catch (error) {
+            console.error("Signing failed:", error);
+            Alert.alert("Error", "Signing failed: " + error.message);
+            return null;
         }
     };
 
@@ -57,11 +99,11 @@ const TransferArtScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}></Text>
+            <Text style={styles.title}>Transfer Artwork</Text>
 
             {/* Artwork Image */}
             <Image
-                source={{ uri: imageUrl }} 
+                source={{ uri: imageUrl}} // Fallback image
                 style={styles.image}
             />
 
@@ -97,6 +139,9 @@ const TransferArtScreen = () => {
                     <Text style={styles.buttonText}>Confirm</Text>
                 )}
             </TouchableOpacity>
+
+            {/* Display the result message */}
+            {message && <Text style={styles.resultMessage}>{message}</Text>}
         </View>
     );
 };
@@ -162,20 +207,25 @@ const styles = StyleSheet.create({
     clearButtonText: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 16,
     },
     button: {
-        backgroundColor: '#79D7BE',
-        padding: 15,
+        backgroundColor: '#2A9D8F',
+        paddingVertical: 12,
         borderRadius: 10,
         alignItems: 'center',
     },
     buttonDisabled: {
-        backgroundColor: '#99c8d6',
+        backgroundColor: '#B0B0B0',
     },
     buttonText: {
         color: '#fff',
+        fontSize: 18,
         fontWeight: 'bold',
+    },
+    resultMessage: {
+        marginTop: 20,
+        textAlign: 'center',
+        color: '#333',
         fontSize: 16,
     },
 });

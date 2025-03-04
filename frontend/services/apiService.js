@@ -181,3 +181,83 @@ export const getMusic = async () => {
         throw new Error('Failed to fetch get music:');
     }
 };
+
+const API_Sell = 'http://13.250.12.56/picture/sell'
+
+export const sellArt = async (user_token, art_token, price) => {
+    try {
+        const response = await axios.post(
+            API_Sell,
+            { token: art_token, price },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user_token}`,
+                }
+            }
+        );
+
+        return response.data; 
+    } catch (error) {
+        console.error('Error selling art:', error.response ? error.response.data : error.message);
+        throw new Error('Failed to sell art');
+    }
+};
+
+const API_buy = 'http://13.250.12.56/picture/buy'
+export const buyArt = async (user_token, art_token) => {
+    try {
+        const response = await axios.post(
+            API_buy,
+            { token: art_token },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user_token}`,
+                }
+            }
+        );
+
+        return response.data; 
+    } catch (error) {
+        console.error('Error buying art:', error.response ? error.response.data : error.message);
+        throw new Error('Failed to buy art');
+    }
+};
+
+
+const API_Tranfer = 'http://13.250.12.56/picture/transfer'
+export const transferArt = async (user_token, art_token, address) => {
+    try {
+        const response = await axios.post(
+            API_Tranfer,
+            { token: art_token, address },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user_token}`,
+                }
+            }
+        );
+
+        return response.data; 
+    } catch (error) {
+        console.error('Error transferring art:', error.response ? error.response.data : error.message);
+        throw new Error('Failed to transfer art');
+    }
+}
+
+
+const API_market = 'http://13.250.12.56/picture/market'
+export const getMarket = async () => {
+    try {
+        const response = await axios.get(API_market, {
+            headers: { "Content-Type": "application/json" }
+        });
+
+        return response.data; 
+    } catch (error) {
+        console.error('Error fetching market:', error.response ? error.response.data : error);
+        throw new Error('Failed to fetch market');
+    }
+}

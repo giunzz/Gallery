@@ -1,24 +1,13 @@
-import React, { useState } from "react";
-import { 
-    View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView 
+import React, { useState, useEffect } from "react";
+import {
+    View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; 
+import { Ionicons } from "@expo/vector-icons";
 import Header from '../components/Header';
-import CategoryFilter from '../components/FilterButtons'; 
-
-import ArtImage from '../assets/home/art.png'; 
+import CategoryFilter from '../components/FilterButtons';
+import { getMarket } from "../services/apiService";
 
 const categories = ["All", "Special", "Natural", "Mandalas", "Wildlife"];
-
-// ✅ Sample artworks data
-const artworks = Array.from({ length: 10 }, (_, i) => ({
-    id: i + 1,
-    title: `Artwork ${i + 1}`,
-    imageUrl: ArtImage, // ✅ Using placeholder image
-    price: (i + 1) * 10000, // Fake price in VND
-    username: `User ${i + 1}`, // Fake username
-    category: categories[i % categories.length], // Assign random categories
-}));
 
 const UserHeader = ({ navigation }) => {
     return (
@@ -38,67 +27,78 @@ const UserHeader = ({ navigation }) => {
 
 const MarketScreen = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = useState("All");
+    const [marketData, setMarketData] = useState([]);
 
-    // ✅ Filter artworks based on selected category
-    const filteredItems = artworks.filter(item => 
+    useEffect(() => {
+        const fetchMarketData = async () => {
+            try {
+                const response = await getMarket();
+                //console.log("Market Data:", response);
+                if (response && response.pictures) {
+                    const formattedData = response.pictures.map((item) => ({
+                        id: item.token,
+                        title: item.token.slice(0, 6),
+                        artistName: item.address.slice(0, 6),
+                        image: item.url,
+                        price: item.price,
+                    }));
+                    setMarketData(formattedData);
+                }
+            } catch (error) {
+                console.error("Error fetching market data:", error);
+            }
+        };
+
+        fetchMarketData();
+    }, []);
+
+    const filteredItems = marketData.filter(item =>
         selectedCategory === "All" || item.category === selectedCategory
     );
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity 
-            style={styles.card} 
-            onPress={() => navigation.navigate("BuyingScreen", { item })} // Pass item data
+        <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate("BuyingScreen", { item })}
         >
-            {/* Artwork Image */}
-            <Image 
-                source={item.imageUrl} 
-                style={styles.cardImage} 
+            <Image
+                source={{ uri: item.image }}
+                style={styles.cardImage}
             />
-    
-            {/* Title & Cart Icon */}
             <View style={styles.titleContainer}>
                 <Text style={styles.itemTitle}>{item.title}</Text>
                 <TouchableOpacity>
                     <Ionicons name="cart-outline" size={20} color="black" />
                 </TouchableOpacity>
             </View>
-    
-            {/* User Info & Price */}
             <View style={styles.userPriceContainer}>
-                {/* User Info */}
                 <View style={styles.userContainer}>
-                    <Image 
-                        source={require('../assets/market/buy.png')} 
-                        style={styles.userAvatar} 
+                    <Image
+                        source={require('../assets/market/buy.png')}
+                        style={styles.userAvatar}
                     />
-                    <Text style={styles.username}>{item.username}</Text>
+                    <Text style={styles.username}>{item.artistName}</Text>
                 </View>
-    
-                {/* Price */}
                 <Text style={styles.itemPrice}>{item.price} VND</Text>
             </View>
         </TouchableOpacity>
     );
-    
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Header navigation={navigation} />
-            <UserHeader navigation={navigation} /> 
-
-            {/* Category Filter */}
-            <CategoryFilter 
-                categories={categories} 
-                selectedCategory={selectedCategory} 
-                onSelectCategory={setSelectedCategory} 
+            <UserHeader navigation={navigation} />
+            <CategoryFilter
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
             />
-
-            {/* Market Items */}
             <View style={styles.container}>
                 <FlatList
                     data={filteredItems}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id.toString()}
-                    numColumns={2} 
+                    numColumns={2}
                     contentContainerStyle={styles.listContainer}
                 />
             </View>

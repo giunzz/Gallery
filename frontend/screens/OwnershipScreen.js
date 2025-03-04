@@ -16,11 +16,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { Ownership, getToken } from '../services/apiService';
 
 const OwnershipScreen = ({ route, navigation }) => {
-    const { artwork } = route.params || {}; 
-    const [isChecked, setIsChecked] = useState(false); 
-    const [price, setPrice] = useState(''); 
-    const [modalVisible, setModalVisible] = useState(false); 
-    const [ownershipData, setOwnershipData] = useState(null); 
+    const { artwork } = route.params || {};
+    console.log(artwork);
+    const [isChecked, setIsChecked] = useState(false);
+    const [price, setPrice] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [ownershipData, setOwnershipData] = useState(null);
     const [token_user, setToken] = useState(null);
     const [isLoading, setIsLoading] = useState(false); // Loading state
 
@@ -28,14 +29,12 @@ const OwnershipScreen = ({ route, navigation }) => {
         const fetchToken = async () => {
             try {
                 const storedToken = await getToken();
-                console.log("Retrieved Token:", storedToken);
                 if (storedToken) {
                     setToken(storedToken);
                 } else {
                     Alert.alert('Error', 'No token found. Please log in again.');
                 }
             } catch (error) {
-                console.error("Error retrieving token:", error);
                 Alert.alert('Error', 'Failed to retrieve token.');
             }
         };
@@ -43,29 +42,30 @@ const OwnershipScreen = ({ route, navigation }) => {
     }, []);
 
     const handleContinue = async () => {
-        console.log('Price:', price);
-        console.log('Artwork Token:', artwork.token);
-
         if (artwork.token && token_user) {
-            setIsLoading(true); // Show loading indicator
-
+            setIsLoading(true);
             try {
-                const own = await Ownership(token_user, artwork.token); // Pass the user and artwork tokens
-                setOwnershipData(own);  
-                setModalVisible(true);  
+                const own = await Ownership(token_user, artwork.token);
+                setOwnershipData(own);
+                setModalVisible(true);
             } catch (error) {
                 Alert.alert("Error", "Failed to fetch ownership data");
             } finally {
-                setIsLoading(false); // Hide loading indicator
+                setIsLoading(false);
             }
         } else {
             Alert.alert("Error", "Artwork token or User token is missing");
         }
     };
 
+    const handleTrasfer = async () => {
+        console.log(artwork)
+        navigation.navigate("Transfer", { item: artwork });
+    };
+
     const handleModalClose = () => {
         setModalVisible(false);
-        navigation.navigate('MainTabs', { screen: 'Library' }); // Navigate to Library on modal close
+        navigation.navigate('MainTabs', { screen: 'Library' });
     };
 
     return (
@@ -74,7 +74,7 @@ const OwnershipScreen = ({ route, navigation }) => {
                 <View style={styles.imageContainer}>
                     <View style={styles.frame}>
                         <Image
-                            source={{ uri: artwork.imageUrl }} 
+                            source={{ uri: artwork.imageUrl }}
                             style={styles.image}
                         />
                     </View>
@@ -84,7 +84,7 @@ const OwnershipScreen = ({ route, navigation }) => {
 
                 <TouchableOpacity
                     style={styles.checkboxContainer}
-                    onPress={() => setIsChecked(!isChecked)} 
+                    onPress={() => setIsChecked(!isChecked)}
                 >
                     <Ionicons
                         name={isChecked ? 'checkmark-circle' : 'ellipse-outline'}
@@ -104,8 +104,19 @@ const OwnershipScreen = ({ route, navigation }) => {
                     />
                 )}
 
-                <TouchableOpacity style={styles.continueButton} onPress={handleContinue} disabled={isLoading}>
-                    <Text style={styles.buttonText}>Continue</Text>
+                <TouchableOpacity
+                    style={[styles.continueButton, isLoading && styles.disabledButton]}
+                    onPress={handleContinue}
+                    disabled={isLoading}
+                >
+                    <Text style={styles.buttonText}>Finish Resigning</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.continueButton, isLoading && styles.disabledButton]}
+                    onPress={handleTrasfer}
+                    disabled={isLoading}
+                >
+                    <Text style={styles.buttonText}>Transfer Ownership</Text>
                 </TouchableOpacity>
 
                 {isLoading && <ActivityIndicator size="large" color="#79D7BE" style={styles.loadingIndicator} />}
@@ -191,17 +202,18 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         width: '100%',
         alignItems: 'center',
+        marginBottom: 15,
+    },
+    disabledButton: {
+        backgroundColor: '#D3D3D3',
     },
     buttonText: {
         color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 16,
     },
     loadingIndicator: {
         marginTop: 20,
     },
-
-    // Modal Styles
     modalOverlay: {
         flex: 1,
         justifyContent: 'center',
@@ -209,7 +221,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        width: '80%',
+        width: 300,
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 10,
@@ -220,8 +232,8 @@ const styles = StyleSheet.create({
     },
     modalText: {
         fontSize: 18,
-        textAlign: 'center',
         marginBottom: 20,
+        textAlign: 'center',
     },
     okButton: {
         backgroundColor: '#79D7BE',

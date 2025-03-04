@@ -22,6 +22,7 @@ import ResultGenArt from './screens/ResultGenArt';
 import CanvasSizeScreen from './screens/CanvasSizeScreen';
 import ReportScreen from './screens/ReportScreen';
 import NewArt from './screens/NewArt';
+import Transfer from './screens/Transfer';
 import ResultDraw from './screens/Result_Draw';
 import SearchResultsScreen from './screens/SearchResultsScreen';
 import NoResultsScreen from './screens/NotFound';
@@ -235,6 +236,17 @@ export default function App() {
             options={{
               headerShown: true,
               title: 'Playing Now',
+              headerStyle: { backgroundColor: '#79D7BE' },
+              headerTintColor: 'black',
+              headerTitleAlign: 'center',
+            }}
+          />
+          <Stack.Screen
+            name="Transfer"
+            component={Transfer}
+            options={{
+              headerShown: true,
+              title: 'Transfer Ownership',
               headerStyle: { backgroundColor: '#79D7BE' },
               headerTintColor: 'black',
               headerTitleAlign: 'center',

@@ -11,15 +11,12 @@ import {
     ActivityIndicator,
     Alert
 } from 'react-native';
-import { LibraryContext } from '../components/LibraryContext'; 
-import { CommonActions } from '@react-navigation/native';
+import { getToken, sellArt } from '../services/apiService';
 
 const PublishScreen = ({ route, navigation }) => {
     const { artwork } = route.params || {}; 
-    const { addItemToLibrary } = useContext(LibraryContext); 
-
     const [selectedPlan, setSelectedPlan] = useState(null);
-    const [price, setPrice] = useState(artwork.price || ''); 
+    const [price, setPrice] = useState(artwork.price || 0); 
     const [title, setTitle] = useState(artwork.title || ''); 
     const [modalVisible, setModalVisible] = useState(false); 
     const [loading, setLoading] = useState(false); 
@@ -28,44 +25,55 @@ const PublishScreen = ({ route, navigation }) => {
         setSelectedPlan(plan);
     };
 
-    const handleVerifyAndPublish = () => {
-        setModalVisible(true); 
-        setLoading(true); 
+    const handleVerifyAndPublish = async () => {
+        try {
+            const token = await getToken();
+            console.log("Token:", token);
+            setModalVisible(true); 
+            setLoading(true); 
+            
+            const sanitizedPrice = price.replace(/[^0-9.]/g, '');
 
-        setTimeout(() => {
+            const numericPrice = parseFloat(sanitizedPrice);
+
+            if (isNaN(numericPrice) || numericPrice <= 0) {
+                Alert.alert("Error", "Please enter a valid price.");
+                setLoading(false);
+                setModalVisible(false);
+                return;
+            }
+        
+            const response = await sellArt(token, title, numericPrice); // Send the full object to the API
             setLoading(false);
+            console.log("Response:", response);
 
-            const artworkWithDetails = {
-                ...artwork,
-                price: price || '0 VND',
-                title: title,
-                plan: selectedPlan || 'No Plan Selected',
-            };
-
-            addItemToLibrary(artworkWithDetails);
-
-            Alert.alert("Success", "Artwork has been successfully published!", [
-                {
-                    text: "OK",
-                    onPress: () => {
-                        navigation.dispatch(
-                            CommonActions.reset({
-                                index: 0,
-                                routes: [{ name: 'Market' }], // ✅ Move back to Library after publishing
-                            })
-                        );
+            if (response.msg === "Completed") {
+                Alert.alert("Success", "Artwork has been successfully published!", [
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            navigation.navigate('MainTabs', { screen: 'Market' });}
                     }
-                }
-            ]);
-            setModalVisible(false);
-        }, 3000);
+                ]);
+            }
+        } catch (error) {
+            setLoading(false);
+            if (response.msg === "Picture not owned") {
+                Alert.alert("Ownership Required", "You do not own this picture. Please register ownership first.", [
+                    { text: "OK", onPress: () => { /* Perhaps navigate to ownership registration */ } }
+                ]);            
+            } else {
+                console.error("Error selling artwork:", error);
+                Alert.alert("Error", "An error occurred while publishing the artwork.");
+            }
+        }
     };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
             {/* Artwork Image */}
             <Image 
-                source={{ uri: artwork.imageUrl || 'https://via.placeholder.com/300' }}  
+                source={{ uri: artwork.imageUrl }}  
                 style={styles.artworkImage}
                 resizeMode="contain"
             />

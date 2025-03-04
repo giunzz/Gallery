@@ -74,7 +74,7 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
                         handlePublishPress();  
                     }}
                 >
-                    <Text style={styles.buttonText}>Publish</Text>
+                    <Text style={styles.buttonText}>Sell Art</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

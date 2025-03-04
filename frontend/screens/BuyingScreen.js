@@ -2,22 +2,21 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from "react-native";
 
 const BuyingScreen = ({ route, navigation }) => {
-    const { item } = route.params; // Retrieve item from route.params
-
+    const { item } = route.params; 
+    console.log(item.image);
     const [isBuyPressed, setIsBuyPressed] = useState(false);
     const [isDrawPressed, setIsDrawPressed] = useState(false);
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Image with proper check */}
-            <Image source={item.imageUrl} style={styles.artImage} /> {/* Use item.imageUrl */}
+        <Image source={{ uri: item.image }} style={styles.artImage} />
 
             <View style={styles.infoContainer}>
                 <View style={styles.userDetails}>
                     <Image source={require('../assets/market/buy.png')} style={styles.userAvatar} />
                     <View style={styles.textContainer}>
-                        <Text style={styles.artTitle}>{item.title}</Text>
-                        <Text style={styles.locationText}>{item.location}</Text>
+                        <Text style={styles.artTitle}>{item.artistName}</Text>
+                        <Text style={styles.locationText}>{item.id.slice(0,15)}..</Text>
                     </View>
                     <Text style={styles.price}>{item.price} VND</Text>
                 </View>
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#FFFFFF",
         paddingHorizontal: 16,
-        paddingTop: 10,
+        paddingTop: 20,
     },
     artImage: {
         width: "100%",

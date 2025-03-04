@@ -70,6 +70,10 @@ const LibraryScreen = ({ navigation }) => {
         }
     };
 
+    const handleDrawPress = () => {
+        navigation.navigate('NewArt');
+    };
+
     const toggleSelection = (id) => {
         setSelectedItems((prev) =>
             prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -145,7 +149,7 @@ const LibraryScreen = ({ navigation }) => {
 
             {/* Bottom Navigation */}
             <View style={styles.bottomBar}>
-                <TouchableOpacity style={styles.bottomButton}>
+                <TouchableOpacity style={styles.bottomButton} onPress={handleDrawPress}>
                     <Text style={styles.bottomText}>New art</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />

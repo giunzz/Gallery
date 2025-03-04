@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { getToken, addPicture } from "../services/apiService";
+import { getToken, buyArt } from "../services/apiService";
+
 const CheckoutScreen = ({ route, navigation }) => {
-    const { item } = route.params; 
-    const [selectedPayment, setSelectedPayment] = useState(null);  
+    const { item } = route.params;
+    console.log(item);
+    const [selectedPayment, setSelectedPayment] = useState(null);
 
     const paymentMethods = [
         { id: "Mastercard", name: "Master Card", image: require("../assets/payments/mastercard.png") },
@@ -17,25 +19,22 @@ const CheckoutScreen = ({ route, navigation }) => {
             Alert.alert("Please select a payment method");
             return;
         }
-    
-        const paymentSuccessful = true; 
+
+        const paymentSuccessful = true; // Replace with actual payment logic
         if (paymentSuccessful) {
             try {
-                const imageUri = 'https://drive.google.com/file/d/1oJ14bTNfkA7RTW3zIKFAqF1VwDBruxPo/view?usp=sharing' //item.imageUrl; 
-                const token = await getToken(); 
-                console.log("Token user", token);
-                console.log("imageUri: ", imageUri);
+                const token = await getToken();
                 if (!token) {
                     Alert.alert("Authorization token is missing");
                     return;
                 }
-                const response = await addPicture(imageUri, token); 
-                console.log("Response", response);
+
+                const response = await buyArt(token, item.id);
                 if (response) {
-                    Alert.alert("Checkout successful and picture added!");
-                    navigation.navigate('MainTabs', { screen: 'Library' });
+                    Alert.alert("Buying successful!");
+                    navigation.navigate('MainTabs', { screen: 'Library' }); // Ensure this navigation structure exists
                 } else {
-                    Alert.alert("Failed to add picture");
+                    Alert.alert("Failed to purchase art");
                 }
             } catch (error) {
                 console.error("Error during checkout:", error);
@@ -50,10 +49,10 @@ const CheckoutScreen = ({ route, navigation }) => {
         <SafeAreaView style={styles.container}>
             {/* Artwork Info */}
             <View style={styles.artworkContainer}>
-            <Image source={item.imageUrl} style={styles.artImage} /> 
+                <Image source={{ uri: item.image }} style={styles.artImage} />
                 <View>
                     <Text style={styles.artTitle}>{item.title}</Text>
-                    <Text style={styles.artist}>By {item.username}</Text>
+                    <Text style={styles.artist}>By {item.artistName}</Text> {/* Use artistName instead of username */}
                 </View>
                 <Text style={styles.price}>{item.price} VND</Text>
             </View>
@@ -61,17 +60,17 @@ const CheckoutScreen = ({ route, navigation }) => {
             {/* Payment Section */}
             <Text style={styles.paymentTitle}>Select Payment Method</Text>
             {paymentMethods.map((method) => (
-                <TouchableOpacity 
-                    key={method.id} 
-                    style={[styles.paymentOption, selectedPayment === method.id && styles.selectedPayment]} 
+                <TouchableOpacity
+                    key={method.id}
+                    style={[styles.paymentOption, selectedPayment === method.id && styles.selectedPayment]}
                     onPress={() => setSelectedPayment(method.id)}
                 >
                     <Image source={method.image} style={styles.paymentIcon} />
                     <Text style={styles.paymentText}>{method.name}</Text>
-                    <Ionicons 
-                        name={selectedPayment === method.id ? "radio-button-on" : "radio-button-off"} 
-                        size={20} 
-                        color="#2A9D8F" 
+                    <Ionicons
+                        name={selectedPayment === method.id ? "radio-button-on" : "radio-button-off"}
+                        size={20}
+                        color="#2A9D8F"
                     />
                 </TouchableOpacity>
             ))}
@@ -84,10 +83,10 @@ const CheckoutScreen = ({ route, navigation }) => {
             <Text style={styles.taxText}>Tax included</Text>
 
             {/* Checkout Button */}
-            <TouchableOpacity 
-                style={[styles.checkoutButton, { backgroundColor: selectedPayment ? "#2A9D8F" : "#ccc" }]} 
+            <TouchableOpacity
+                style={[styles.checkoutButton, { backgroundColor: selectedPayment ? "#2A9D8F" : "#ccc" }]}
                 disabled={!selectedPayment}
-                onPress={handleCheckout} 
+                onPress={handleCheckout}
             >
                 <Text style={styles.checkoutText}>Checkout</Text>
             </TouchableOpacity>

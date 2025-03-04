@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -12,17 +12,37 @@ import {
     Alert
 } from 'react-native';
 import { getToken, sellArt } from '../services/apiService';
+import { useWalletConnectModal } from '@walletconnect/modal-react-native'; // Assuming WalletConnect is set up
 
 const PublishScreen = ({ route, navigation }) => {
     const { artwork } = route.params || {}; 
+    const { isConnected, address, provider } = useWalletConnectModal();  // WalletConnect hooks
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [price, setPrice] = useState(artwork.price || 0); 
     const [title, setTitle] = useState(artwork.title || ''); 
     const [modalVisible, setModalVisible] = useState(false); 
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
 
     const handlePlanSelect = (plan) => {
         setSelectedPlan(plan);
+    };
+
+    const signText = async (textToSign) => {
+        try {
+            if (textToSign === "") throw new Error("Text is empty");
+            if (!isConnected || !address) throw new Error("Wallet is not connected");
+
+            const signature = await provider.request({
+                method: "personal_sign",
+                params: [textToSign, address],
+            });
+            Alert.alert("Success", "Text signed successfully!");
+            return signature;
+        } catch (error) {
+            console.error("Signing failed:", error);
+            Alert.alert("Error", "Signing failed: " + error.message);
+            return null;
+        }
     };
 
     const handleVerifyAndPublish = async () => {
@@ -33,7 +53,6 @@ const PublishScreen = ({ route, navigation }) => {
             setLoading(true); 
             
             const sanitizedPrice = price.replace(/[^0-9.]/g, '');
-
             const numericPrice = parseFloat(sanitizedPrice);
 
             if (isNaN(numericPrice) || numericPrice <= 0) {
@@ -43,29 +62,35 @@ const PublishScreen = ({ route, navigation }) => {
                 return;
             }
         
-            const response = await sellArt(token, title, numericPrice); // Send the full object to the API
-            setLoading(false);
-            console.log("Response:", response);
+            // Sign the title and price before publishing the artwork
+            const textToSign = `${title} - ${numericPrice} VND`;  // Example text to sign
+            const signedText = await signText(textToSign);  // Sign the text
 
-            if (response.msg === "Completed") {
-                Alert.alert("Success", "Artwork has been successfully published!", [
-                    {
-                        text: "OK",
-                        onPress: () => {
-                            navigation.navigate('MainTabs', { screen: 'Market' });}
-                    }
-                ]);
+            if (signedText) {
+                // Proceed with the artwork publication
+                const response = await sellArt(token, title, numericPrice, signedText); // Send the signed text to the API
+                setLoading(false);
+                console.log("Response:", response);
+
+                if (response.msg === "Completed") {
+                    Alert.alert("Success", "Artwork has been successfully published!", [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                navigation.navigate('MainTabs', { screen: 'Market' });
+                            }
+                        }
+                    ]);
+                }
+            } else {
+                setLoading(false);
+                setModalVisible(false);
+                Alert.alert("Error", "Failed to sign the text.");
             }
         } catch (error) {
             setLoading(false);
-            if (response.msg === "Picture not owned") {
-                Alert.alert("Ownership Required", "You do not own this picture. Please register ownership first.", [
-                    { text: "OK", onPress: () => { /* Perhaps navigate to ownership registration */ } }
-                ]);            
-            } else {
-                console.error("Error selling artwork:", error);
-                Alert.alert("Error", "An error occurred while publishing the artwork.");
-            }
+            console.error("Error during publication:", error);
+            Alert.alert("Error", "An error occurred while publishing the artwork.");
         }
     };
 
@@ -127,24 +152,37 @@ const PublishScreen = ({ route, navigation }) => {
 
             {/* Verification Modal */}
             <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        {loading ? (
-                            <View style={styles.modalInnerContent}>
-                                <Text style={styles.modalText}>Checking...</Text>
-                                <ActivityIndicator size="large" color="#79D7BE" />
-                            </View>
-                        ) : (
-                            <Text style={styles.modalText}>Artwork verification complete!</Text>
-                        )}
-                    </View>
+    animationType="slide"
+    transparent={true}
+    visible={modalVisible}
+    onRequestClose={() => setModalVisible(false)}
+>
+    <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+            {loading ? (
+                <View style={styles.modalInnerContent}>
+                    <Text style={styles.modalText}>Checking...</Text>
+                    <ActivityIndicator size="large" color="#79D7BE" />
                 </View>
-            </Modal>
+            ) : (
+                <View>
+                    <Text style={styles.modalText}>Artwork verification complete!</Text>
+                    {/* OK Button */}
+                    <TouchableOpacity
+                        style={styles.okButton}
+                        onPress={() => {
+                            setModalVisible(false);  // Close the modal
+                            navigation.navigate('MainTabs', { screen: 'Market' }); // Navigate to Market (or any other screen)
+                        }}
+                    >
+                        <Text style={styles.okButtonText}>OK</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+        </View>
+    </View>
+</Modal>
+
         </ScrollView>
     );
 };
@@ -194,42 +232,44 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     selectedCard: {
-        borderWidth: 3,
+        backgroundColor: '#F0F8FF',
+        borderWidth: 1,
         borderColor: '#79D7BE',
-        backgroundColor: '#E8F5E9',
     },
     price: {
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
     },
     billing: {
-        fontSize: 14,
-        color: '#666',
+        fontSize: 12,
+    },
+    okButton: {
+        backgroundColor: "#79D7BE", // Button color
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 20,
+    },
+    okButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
     yearly: {
-        fontSize: 14,
-        color: '#333',
-        fontWeight: 'bold',
+        color: '#F6A800',
     },
     discount: {
-        fontSize: 16,
-        color: '#FF5722',
-        fontWeight: 'bold',
-        marginTop: 5,
+        fontSize: 12,
+        color: '#FF6347',
     },
     button: {
         backgroundColor: '#79D7BE',
-        borderRadius: 10,
-        paddingVertical: 15,
-        paddingHorizontal: 30,
+        padding: 15,
+        borderRadius: 5,
         alignItems: 'center',
-        marginTop: 20,
     },
     buttonText: {
-        color: '#FFFFFF',
+        color: 'white',
         fontSize: 16,
-        fontWeight: 'bold',
     },
     modalOverlay: {
         flex: 1,
@@ -239,15 +279,17 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: 'white',
-        borderRadius: 10,
         padding: 20,
-        width: 250,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+    },
+    modalInnerContent: {
         alignItems: 'center',
     },
     modalText: {
-        fontSize: 18,
+        fontSize: 16,
         color: '#333',
-        marginBottom: 20,
     },
 });
 

@@ -37,7 +37,8 @@ const TransferArtScreen = () => {
             }
 
             const response = await transferArt(token, item.id, recipientAddress);
-            if (response.success) {
+            console.log(response);
+            if (response.msg == "Completed") {
                 Alert.alert('Success', 'Art transferred successfully!');
                 navigation.goBack();
             } else {
@@ -177,6 +178,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 16,
+        alignItems: 'center',
     },
 });
 

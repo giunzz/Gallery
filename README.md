@@ -1,44 +1,13 @@
-# Gallery
+# Gallery | Enjoy your creativity own your story
 
-figma : https://www.figma.com/design/aFQzPyVQKqF8aCgwWPCkkl/Ideathon?node-id=3-40&t=jSEdIJqwIMR9VwRh-1 
+This README provides an overview of the Bara project and its design, which is based on the Figma design available
+[here](https://www.figma.com/design/aFQzPyVQKqF8aCgwWPCkkl/Ideathon?node-id=3-40&t=jSEdIJqwIMR9VwRh-1)
 
-```
-│── /frontend (React Native app)
-│   ├── /src
-│   │   ├── /components  # Reusable components
-│   │   ├── /screens     # App screens
-│   │   ├── /navigation  # Navigation setup
-│   │   ├── /redux (or /context)  # State management
-│   │   ├── /services    # API calls
-│   │   ├── /assets      # Images, fonts, etc.
-│   │   ├── App.js       # Main entry point
-│   │   ├── index.js     # Entry file
-│   ├── .env            # Environment variables
-│   ├── package.json     # Dependencies
-│   ├── babel.config.js  # Babel configuration
-│   ├── metro.config.js  # Metro bundler config
-│   ├── tsconfig.json    # If using TypeScript
-│   ├── README.md        # Frontend docs
-│
-│── /backend (Node.js + Express API)
-│   ├── /src
-│   │   ├── /controllers  # Route handlers
-│   │   ├── /routes       # API routes
-│   │   ├── /models       # Database models (if using MongoDB, Sequelize, etc.)
-│   │   ├── /middlewares  # Auth, logging, etc.
-│   │   ├── /config       # Config files
-│   │   ├── /utils        # Helper functions
-│   │   ├── /tests        # Unit tests
-│   │   ├── server.js     # Main entry point
-│   ├── .env             # Environment variables
-│   ├── package.json     # Dependencies
-│   ├── README.md        # Backend docs
-│
-│── .gitignore           # Ignore unnecessary files
-│── README.md            # Project overview
-│── package.json         # Root dependencies (optional, if needed)
-│── docker-compose.yml   # If using Docker
-│── .github              # GitHub workflows (CI/CD)
-│── docs                 # Additional documentation"
+![alt text](image.png)
+## Installation
+To install and run the Bara project, follow these steps:
 
-```
+1. Clone the repository: `git clone https://github.com/giunzz/Gallery`
+2. Navigate to the project directory:  `cd Gallery`
+3. Install expo 
+4. Start the development server: `npm start`

@@ -275,13 +275,7 @@ export default function App() {
               <Stack.Screen
                 name="NewArt"
                 component={NewArt}
-                options={{
-                  headerShown: true,
-                  title: "Drawing",
-                  headerStyle: { backgroundColor: "#79D7BE" },
-                  headerTintColor: "black",
-                  headerTitleAlign: "center",
-                }}
+                options={{ headerShown: false }}
               />
 
               <Stack.Screen
@@ -290,7 +284,6 @@ export default function App() {
                 options={{
                   headerShown: true,
                   title: "Playing Now",
-                  headerStyle: { backgroundColor: "#79D7BE" },
                   headerTintColor: "black",
                   headerTitleAlign: "center",
                 }}

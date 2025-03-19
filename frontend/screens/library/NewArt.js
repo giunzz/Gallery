@@ -21,12 +21,12 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { getToken, addPicture } from "../../services/apiService";
 import { captureRef } from "react-native-view-shot";
+import Header from "../../components/AccountFlow/Header";
 
 const COLORS = ["black", "red", "blue", "green", "orange"];
 
 const Drawing = ({ navigation, route }) => {
   const artwork = route.params;
-  console.log("Artwork:", artwork);
   const [paths, setPaths] = useState([]);
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
   const [isErasing, setIsErasing] = useState(false);
@@ -36,7 +36,6 @@ const Drawing = ({ navigation, route }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
   const loadedImage = useImage(artwork?.artwork || null);
-  console.log(loadedImage);
   const canvasContainerRef = useRef(null);
 
   const baseScale = useSharedValue(1);
@@ -233,6 +232,7 @@ const Drawing = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Header goBack={true} title="Drawing" navigation={navigation} />
       <View style={styles.container}>
         <TouchableOpacity style={styles.saveButton} onPress={saveImage}>
           <Text style={styles.saveButtonText}>Save</Text>

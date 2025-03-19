@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getUserPicture, getToken } from "../../services/apiService";
+import Header from "../../components/AccountFlow/Header";
 
 const LibraryScreen = ({ navigation }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -125,24 +126,7 @@ const LibraryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Library</Text>
-        <Text style={styles.headerTitle}>|</Text>
-        <Text style={styles.headerTitle}>Settings</Text>
-        <View style={styles.headerIcons}>
-          <Ionicons
-            name="notifications-outline"
-            size={24}
-            color="black"
-            style={styles.icon}
-          />
-          <Ionicons name="cart-outline" size={24} color="black" />
-        </View>
-      </View>
+      <Header title="Library | Setting" />
 
       {/* Artwork Grid */}
       <FlatList

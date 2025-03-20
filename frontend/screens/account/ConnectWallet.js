@@ -181,11 +181,11 @@ const ConnectWallet = ({ navigation }) => {
             style={styles.input}
             placeholder="Enter text"
             onChangeText={handleTextChange}
-            value={text}
+            value={message}
           />
           <TouchableOpacity
             style={styles.signButton}
-            onPress={() => signText(text)}>
+            onPress={() => signText(message)}>
             <Text style={styles.signButtonText}>Sign Text</Text>
           </TouchableOpacity>
           {signed && (

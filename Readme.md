@@ -4,6 +4,7 @@ This README provides an overview of the Bara project and its design, which is ba
 [here](https://www.figma.com/design/aFQzPyVQKqF8aCgwWPCkkl/Ideathon?node-id=3-40&t=jSEdIJqwIMR9VwRh-1)
 
 ![alt text](image.png)
+
 ## Installation
 To install and run the Bara project, follow these steps:
 

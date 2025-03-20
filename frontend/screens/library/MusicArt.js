@@ -52,6 +52,7 @@ const MusicArt = ({ route }) => {
     const fetchMusicData = async () => {
       try {
         const musicData = await getMusic();
+        console.log(musicData);
         if (musicData && musicData.url && musicData.end) {
           setMusicDetails({
             url: musicData.url,

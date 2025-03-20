@@ -56,8 +56,8 @@ const MusicArt = ({ route }) => {
         if (musicData && musicData.url && musicData.end) {
           setMusicDetails({
             url: musicData.url,
-            title: musicData.title || "Unknown Title",
-            artist: musicData.artist || "Unknown Artist",
+            title: musicData.token || "Unknown Title",
+            artist: musicData.address || "Unknown Artist",
             duration: parseFloat(musicData.end),
             start: parseFloat(musicData.start),
           });

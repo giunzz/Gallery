@@ -9,6 +9,6 @@ This README provides an overview of the Bara project and its design, which is ba
 To install and run the Bara project, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/giunzz/Gallery`
-2. Navigate to the project directory:  `cd Gallery`
-3. Install expo 
-4. Start the development server: `npm start`
+2. Navigate to the project directory:  `cd frontend`
+3. Run ```npm install```
+4. Start the development server: ```npm start```

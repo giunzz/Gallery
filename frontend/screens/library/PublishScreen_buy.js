@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { getToken, sellArt } from "../../services/apiService";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native"; // Assuming WalletConnect is set up
+import Header from "../../components/AccountFlow/Header";
 
 const PublishScreen = ({ route, navigation }) => {
   const { artwork } = route.params || {};
@@ -95,98 +96,108 @@ const PublishScreen = ({ route, navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Artwork Image */}
-      <Image
-        source={{ uri: artwork.imageUrl }}
-        style={styles.artworkImage}
-        resizeMode="contain"
+    <View style={{ flex: 1 }}>
+      <Header
+        goBack={true}
+        title="Publish Artwork"
+        navigation={navigation}
+        icon={false}
       />
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Artwork Image */}
+        <Image
+          source={{ uri: artwork.imageUrl }}
+          style={styles.artworkImage}
+          resizeMode="contain"
+        />
 
-      {/* Title Input */}
-      <Text style={styles.label}>Title</Text>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={setTitle}
-        placeholder="Enter title"
-      />
+        {/* Title Input */}
+        <Text style={styles.label}>Title</Text>
+        <TextInput
+          style={styles.input}
+          value={title}
+          onChangeText={setTitle}
+          placeholder="Enter title"
+        />
 
-      {/* Price Input */}
-      <Text style={styles.label}>Price</Text>
-      <TextInput
-        style={styles.input}
-        value={price}
-        onChangeText={setPrice}
-        placeholder="Enter price in VND"
-        keyboardType="numeric"
-      />
+        {/* Price Input */}
+        <Text style={styles.label}>Price</Text>
+        <TextInput
+          style={styles.input}
+          value={price}
+          onChangeText={setPrice}
+          placeholder="Enter price in VND"
+          keyboardType="numeric"
+        />
 
-      {/* Pricing Options */}
-      <Text style={styles.label}>Select Pricing Plan</Text>
-      <View style={styles.pricingContainer}>
-        <TouchableOpacity
-          style={[
-            styles.card,
-            selectedPlan === "monthly" && styles.selectedCard,
-          ]}
-          onPress={() => handlePlanSelect("monthly")}>
-          <Text style={styles.price}>50.000 VND</Text>
-          <Text style={styles.billing}>/month</Text>
-          <Text style={styles.billing}>Normal customers</Text>
-        </TouchableOpacity>
+        {/* Pricing Options */}
+        <Text style={styles.label}>Select Pricing Plan</Text>
+        <View style={styles.pricingContainer}>
+          <TouchableOpacity
+            style={[
+              styles.card,
+              selectedPlan === "monthly" && styles.selectedCard,
+            ]}
+            onPress={() => handlePlanSelect("monthly")}>
+            <Text style={styles.price}>50.000 VND</Text>
+            <Text style={styles.billing}>/month</Text>
+            <Text style={styles.billing}>Normal customers</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[
-            styles.card,
-            selectedPlan === "yearly" && styles.selectedCard,
-          ]}
-          onPress={() => handlePlanSelect("yearly")}>
-          <Text style={styles.price}>100.000 VND</Text>
-          <Text style={styles.billing}>/month</Text>
-          <Text style={styles.yearly}>Premium</Text>
-          <Text style={styles.discount}>56% off</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Confirm Button */}
-      <TouchableOpacity style={styles.button} onPress={handleVerifyAndPublish}>
-        <Text style={styles.buttonText}>Confirm</Text>
-      </TouchableOpacity>
-
-      {/* Verification Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            {loading ? (
-              <View style={styles.modalInnerContent}>
-                <Text style={styles.modalText}>Checking...</Text>
-                <ActivityIndicator size="large" color="#79D7BE" />
-              </View>
-            ) : (
-              <View>
-                <Text style={styles.modalText}>
-                  Artwork verification complete!
-                </Text>
-                {/* OK Button */}
-                <TouchableOpacity
-                  style={styles.okButton}
-                  onPress={() => {
-                    setModalVisible(false); // Close the modal
-                    navigation.navigate("MainTabs", { screen: "Market" }); // Navigate to Market (or any other screen)
-                  }}>
-                  <Text style={styles.okButtonText}>OK</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+          <TouchableOpacity
+            style={[
+              styles.card,
+              selectedPlan === "yearly" && styles.selectedCard,
+            ]}
+            onPress={() => handlePlanSelect("yearly")}>
+            <Text style={styles.price}>100.000 VND</Text>
+            <Text style={styles.billing}>/month</Text>
+            <Text style={styles.yearly}>Premium</Text>
+            <Text style={styles.discount}>56% off</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
-    </ScrollView>
+
+        {/* Confirm Button */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleVerifyAndPublish}>
+          <Text style={styles.buttonText}>Confirm</Text>
+        </TouchableOpacity>
+
+        {/* Verification Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              {loading ? (
+                <View style={styles.modalInnerContent}>
+                  <Text style={styles.modalText}>Checking...</Text>
+                  <ActivityIndicator size="large" color="#79D7BE" />
+                </View>
+              ) : (
+                <View>
+                  <Text style={styles.modalText}>
+                    Artwork verification complete!
+                  </Text>
+                  {/* OK Button */}
+                  <TouchableOpacity
+                    style={styles.okButton}
+                    onPress={() => {
+                      setModalVisible(false); // Close the modal
+                      navigation.navigate("MainTabs", { screen: "Market" }); // Navigate to Market (or any other screen)
+                    }}>
+                    <Text style={styles.okButtonText}>OK</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
+    </View>
   );
 };
 

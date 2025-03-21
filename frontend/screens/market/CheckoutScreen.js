@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getToken, buyArt } from "../../services/apiService";
+import Header from "../../components/AccountFlow/Header";
 
 const CheckoutScreen = ({ route, navigation }) => {
   const { item } = route.params;
@@ -66,60 +67,63 @@ const CheckoutScreen = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Artwork Info */}
-      <View style={styles.artworkContainer}>
-        <Image source={{ uri: item.image }} style={styles.artImage} />
-        <View>
-          <Text style={styles.artTitle}>{item.title}</Text>
-          <Text style={styles.artist}>By {item.artistName}</Text>{" "}
-          {/* Use artistName instead of username */}
+    <View style={{ flex: 1 }}>
+      <Header goBack={true} title={"Checkout"} navigation={navigation} />
+      <View style={styles.container}>
+        {/* Artwork Info */}
+        <View style={styles.artworkContainer}>
+          <Image source={{ uri: item.image }} style={styles.artImage} />
+          <View>
+            <Text style={styles.artTitle}>{item.title}</Text>
+            <Text style={styles.artist}>By {item.artistName}</Text>
+            {/* Use artistName instead of username */}
+          </View>
+          <Text style={styles.price}>{item.price} VND</Text>
         </View>
-        <Text style={styles.price}>{item.price} VND</Text>
-      </View>
 
-      {/* Payment Section */}
-      <Text style={styles.paymentTitle}>Select Payment Method</Text>
-      {paymentMethods.map((method) => (
+        {/* Payment Section */}
+        <Text style={styles.paymentTitle}>Select Payment Method</Text>
+        {paymentMethods.map((method) => (
+          <TouchableOpacity
+            key={method.id}
+            style={[
+              styles.paymentOption,
+              selectedPayment === method.id && styles.selectedPayment,
+            ]}
+            onPress={() => setSelectedPayment(method.id)}>
+            <Image source={method.image} style={styles.paymentIcon} />
+            <Text style={styles.paymentText}>{method.name}</Text>
+            <Ionicons
+              name={
+                selectedPayment === method.id
+                  ? "radio-button-on"
+                  : "radio-button-off"
+              }
+              size={20}
+              color="#2A9D8F"
+            />
+          </TouchableOpacity>
+        ))}
+
+        {/* Total Section */}
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>Total</Text>
+          <Text style={styles.totalPrice}>{item.price} VND</Text>
+        </View>
+        <Text style={styles.taxText}>Tax included</Text>
+
+        {/* Checkout Button */}
         <TouchableOpacity
-          key={method.id}
           style={[
-            styles.paymentOption,
-            selectedPayment === method.id && styles.selectedPayment,
+            styles.checkoutButton,
+            { backgroundColor: selectedPayment ? "#2A9D8F" : "#ccc" },
           ]}
-          onPress={() => setSelectedPayment(method.id)}>
-          <Image source={method.image} style={styles.paymentIcon} />
-          <Text style={styles.paymentText}>{method.name}</Text>
-          <Ionicons
-            name={
-              selectedPayment === method.id
-                ? "radio-button-on"
-                : "radio-button-off"
-            }
-            size={20}
-            color="#2A9D8F"
-          />
+          disabled={!selectedPayment}
+          onPress={handleCheckout}>
+          <Text style={styles.checkoutText}>Checkout</Text>
         </TouchableOpacity>
-      ))}
-
-      {/* Total Section */}
-      <View style={styles.totalContainer}>
-        <Text style={styles.totalText}>Total</Text>
-        <Text style={styles.totalPrice}>{item.price} VND</Text>
       </View>
-      <Text style={styles.taxText}>Tax included</Text>
-
-      {/* Checkout Button */}
-      <TouchableOpacity
-        style={[
-          styles.checkoutButton,
-          { backgroundColor: selectedPayment ? "#2A9D8F" : "#ccc" },
-        ]}
-        disabled={!selectedPayment}
-        onPress={handleCheckout}>
-        <Text style={styles.checkoutText}>Checkout</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -128,7 +132,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
-    paddingTop: 10,
   },
   artworkContainer: {
     flexDirection: "row",

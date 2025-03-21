@@ -9,7 +9,6 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Header from "../../components/Header";
 import CategoryFilter from "../../components/FilterButtons";
 import { getMarket } from "../../services/apiService";
 
@@ -96,7 +95,6 @@ const MarketScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Header navigation={navigation} />
       <UserHeader navigation={navigation} />
       <CategoryFilter
         categories={categories}

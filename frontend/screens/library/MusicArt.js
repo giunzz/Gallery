@@ -14,6 +14,7 @@ import { Audio } from "expo-av";
 import { getMusic } from "../../services/apiService";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native"; // Import useNavigation
+import Header from "../../components/AccountFlow/Header";
 
 const MusicArt = ({ route }) => {
   const navigation = useNavigation(); // Hook for navigation
@@ -32,27 +33,14 @@ const MusicArt = ({ route }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("MainTabs", { screen: "Explore" })
-          }>
-          <Ionicons
-            name="arrow-back"
-            size={24}
-            color="black"
-            style={{ marginLeft: 10 }}
-          />
-        </TouchableOpacity>
-      ),
-      title: "MusicArt",
+      headerShown: false, // Hide the default header
     });
   }, [navigation]);
 
   useEffect(() => {
     const fetchMusicData = async () => {
       try {
-        console.log('Token:', item.token);
+        console.log("Token:", item.token);
         const musicData = await getMusic(item.token);
         console.log(musicData);
         if (musicData && musicData.url && musicData.end) {
@@ -100,10 +88,10 @@ const MusicArt = ({ route }) => {
             },
             updateScreenForSoundStatus
           );
-  
+
           // Set the starting position based on the `start` time
-          await newSound.setPositionAsync(musicDetails.start * 1000);  // This line sets the start time
-  
+          await newSound.setPositionAsync(musicDetails.start * 1000); // This line sets the start time
+
           setSound(newSound);
           setDuration(status.durationMillis / 1000);
         } catch (error) {
@@ -190,7 +178,15 @@ const MusicArt = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <Header
+        goBack={true}
+        title="Playing Now"
+        navigation={navigation}
+        icon={false}
+        onBackPress={() =>
+          navigation.navigate("MainTabs", { screen: "Explore" })
+        }
+      />
       {/* <View style={styles.header}>
                 <TouchableOpacity onPress={handleHome}>
                     <Text style={styles.homeButton}>Home</Text>
@@ -269,8 +265,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f0f8ff",
-    paddingTop: 50,
-    paddingHorizontal: 20,
   },
   loadingContainer: {
     flex: 1,

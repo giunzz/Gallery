@@ -7,13 +7,19 @@ import {
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Header = ({ goBack, title, navigation, icon = true }) => {
+const Header = ({ goBack, title, navigation, icon = true, onBackPress }) => {
+  const handleBackPress = () => {
+    if (onBackPress) {
+      onBackPress();
+    } else {
+      navigation.goBack();
+    }
+  };
+
   return (
     <View style={styles.header}>
       {goBack && (
-        <TouchableOpacity
-          style={styles.goBack}
-          onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.goBack} onPress={handleBackPress}>
           <FontAwesomeIcon icon={faChevronLeft} size={24} color="black" />
         </TouchableOpacity>
       )}
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     color: "#2E5077",
   },

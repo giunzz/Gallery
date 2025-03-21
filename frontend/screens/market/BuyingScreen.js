@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Alert,
 } from "react-native";
+import Header from "../../components/AccountFlow/Header";
 
 const BuyingScreen = ({ route, navigation }) => {
   const { item } = route.params;
@@ -16,44 +17,47 @@ const BuyingScreen = ({ route, navigation }) => {
   const [isDrawPressed, setIsDrawPressed] = useState(false);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image source={{ uri: item.image }} style={styles.artImage} />
+    <View style={{ flex: 1 }}>
+      <Header goBack={true} title="Buy Art" navigation={navigation} />
+      <View style={styles.container}>
+        <Image source={{ uri: item.image }} style={styles.artImage} />
 
-      <View style={styles.infoContainer}>
-        <View style={styles.userDetails}>
-          <Image
-            source={require("../../assets/market/buy.png")}
-            style={styles.userAvatar}
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.artTitle}>{item.artistName}</Text>
-            <Text style={styles.locationText}>{item.id.slice(0, 15)}..</Text>
+        <View style={styles.infoContainer}>
+          <View style={styles.userDetails}>
+            <Image
+              source={require("../../assets/market/buy.png")}
+              style={styles.userAvatar}
+            />
+            <View style={styles.textContainer}>
+              <Text style={styles.artTitle}>{item.artistName}</Text>
+              <Text style={styles.locationText}>{item.id.slice(0, 15)}..</Text>
+            </View>
+            <Text style={styles.price}>{item.price} VND</Text>
           </View>
-          <Text style={styles.price}>{item.price} VND</Text>
+
+          <Text style={styles.description}>
+            This is a beautiful piece of artwork created by {item.username}. A
+            perfect addition to your collection.
+          </Text>
         </View>
 
-        <Text style={styles.description}>
-          This is a beautiful piece of artwork created by {item.username}. A
-          perfect addition to your collection.
-        </Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.buyButton, isBuyPressed && styles.buttonPressed]}
+            onPressIn={() => setIsBuyPressed(true)}
+            onPressOut={() => setIsBuyPressed(false)}
+            onPress={() => navigation.push("CheckoutScreen", { item })}>
+            <Text style={styles.buttonText}>Buy now</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.drawButton, isDrawPressed && styles.buttonPressed]}
+            onPressIn={() => setIsDrawPressed(true)}
+            onPressOut={() => setIsDrawPressed(false)}>
+            <Text style={styles.buttonText}>New Draw</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.buyButton, isBuyPressed && styles.buttonPressed]}
-          onPressIn={() => setIsBuyPressed(true)}
-          onPressOut={() => setIsBuyPressed(false)}
-          onPress={() => navigation.push("CheckoutScreen", { item })}>
-          <Text style={styles.buttonText}>Buy now</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.drawButton, isDrawPressed && styles.buttonPressed]}
-          onPressIn={() => setIsDrawPressed(true)}
-          onPressOut={() => setIsDrawPressed(false)}>
-          <Text style={styles.buttonText}>New Draw</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -62,7 +66,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
-    paddingTop: 20,
   },
   artImage: {
     width: "100%",

@@ -77,9 +77,7 @@ const SearchOwnership = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Search Ownership" icon={false} />
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <Text style={styles.title}></Text>
-
+      <View style={styles.scrollView}>
         {/* Selected Image */}
         <View style={styles.imageContainer}>
           {imageUri ? (
@@ -116,6 +114,7 @@ const SearchOwnership = () => {
           <View style={styles.resultsContainer}>
             <Text style={styles.resultsTitle}>Result :</Text>
             <FlatList
+              showsVerticalScrollIndicator={false}
               data={searchResults}
               numColumns={2}
               keyExtractor={(item, index) => index.toString()}
@@ -146,7 +145,7 @@ const SearchOwnership = () => {
             />
           </View>
         )}
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -159,7 +158,6 @@ const styles = StyleSheet.create({
   scrollView: {
     alignItems: "center",
     width: "100%",
-    paddingVertical: 20,
   },
   title: {
     fontSize: 22,

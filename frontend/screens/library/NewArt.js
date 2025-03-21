@@ -232,7 +232,12 @@ const Drawing = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Header goBack={true} title="Drawing" navigation={navigation} />
+      <Header
+        goBack={true}
+        title="Drawing"
+        navigation={navigation}
+        icon={false}
+      />
       <View style={styles.container}>
         <TouchableOpacity style={styles.saveButton} onPress={saveImage}>
           <Text style={styles.saveButtonText}>Save</Text>

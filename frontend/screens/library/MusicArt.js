@@ -19,6 +19,7 @@ const MusicArt = ({ route }) => {
   const navigation = useNavigation(); // Hook for navigation
 
   const { item } = route.params || {};
+  console.log(item);
   const [musicDetails, setMusicDetails] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -51,7 +52,8 @@ const MusicArt = ({ route }) => {
   useEffect(() => {
     const fetchMusicData = async () => {
       try {
-        const musicData = await getMusic();
+        console.log('Token:', item.token);
+        const musicData = await getMusic(item.token);
         console.log(musicData);
         if (musicData && musicData.url && musicData.end) {
           setMusicDetails({

@@ -51,9 +51,10 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
                 
                 <Image source={{ uri: artwork.url }} style={styles.image} />
 
-                <Text style={styles.title}>Token: {artwork.token}</Text>
-                <Text style={styles.subtext}>Address: {artwork.address}</Text>
+                <Text style={styles.title}>{artwork.token.slice(0,30)}...</Text>
+                <Text style={styles.subtext}>Artist: {artwork.address}</Text>
                 <Text style={styles.subtext}>Visibility: {artwork.visibility}</Text>
+                {artwork.price && <Text style={styles.price}>Price: {artwork.price}</Text>}
             </View>
             
             <View style={styles.buttonContainer}>
@@ -65,7 +66,7 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
                         handleDrawPress();
                     }}
                 >
-                <Text style={styles.buttonText}>Draw</Text>
+                    <Text style={styles.buttonText}>Draw</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -105,52 +106,55 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
     );
 };
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFF',
-        padding: 20,
+        padding: 1,
     },
     detailsContainer: {
         alignItems: 'center',
         marginBottom: 20,
-    },
-    backButton: {
-        position: "absolute",
-        top: 50,
-        left: 20,
-        zIndex: 10,
     },
     image: {
         width: "100%",
         height: 300,
         borderRadius: 10,
         marginTop: 60,
+        resizeMode: 'cover',
     },
     title: {
         fontSize: 20,
         fontWeight: "bold",
         marginTop: 20,
+        textAlign: 'center',
     },
     subtext: {
         fontSize: 16,
         color: "#666",
         marginTop: 5,
+        textAlign: 'center',
+    },
+    price: {
+        fontSize: 18,
+        color: "#000",
+        fontWeight: 'bold',
+        marginTop: 10,
+        textAlign: 'center',
     },
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: 20,
-        paddingBottom: 20,
+        flexWrap: 'wrap', // Ensures buttons wrap to the next line if necessary
     },
     drawButton: {
         backgroundColor: "#777",
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 10,
-        flex: 1,
-        marginRight: 10,
+        flexBasis: '48%', // Adjust width to fit within the screen
+        marginVertical: 5,
         alignItems: "center",
     },
     colorButton: {
@@ -158,8 +162,8 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 10,
-        flex: 1,
-        marginRight: 10,
+        flexBasis: '48%',
+        marginVertical: 5,
         alignItems: "center",
     },
     MusicButton: {
@@ -167,8 +171,8 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 10,
-        flex: 1,
-        marginRight: 10,
+        flexBasis: '48%',
+        marginVertical: 5,
         alignItems: "center",
     },
     publishButton: {
@@ -176,7 +180,8 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 10,
-        flex: 1,
+        flexBasis: '48%',
+        marginVertical: 5,
         alignItems: "center",
     },
     buttonText: {

@@ -163,25 +163,36 @@ export const SearchOwner = async (imageUri) => {
         );
         return response.data; 
     } catch (error) {
+        console.error(error)
         console.error('Error fetching ownership:', error.response ? error.response.data : error.message);
         throw new Error('Failed to fetch ownership');
     }
 };
 
 
-export const getMusic = async () => {
-    try {
-        const response = await axios.get('http://13.250.12.56/picture/music', {
-            headers: { "Content-Type": "application/json" }    
-        });
+const instance = axios.create({
+    baseURL: 'http://13.250.12.56/picture/music',
+    timeout: 1000,
+    headers: { "Content-Type": "application/json" }
+});
 
-        return response.data; 
+export const getMusic = async (art_token) => {
+    if (!art_token) {
+        throw new Error('No token provided.');
+    }
+
+    console.log("Using token:", art_token);
+
+    try {
+        const response = await instance.get('', {token: art_token });
+        console.log("API Response:", response);
+        return response.data;  
     } catch (error) {
-        console.error('Error fetching get music:', error.response ? error.response.data : error);
-        throw new Error('Failed to fetch get music:');
+        console.log(error);
+        console.error("Error fetching music:", error.response ? error.response.data : error.message);
+        throw new Error('Failed to fetch music data.');
     }
 };
-
 const API_Sell = 'http://13.250.12.56/picture/sell'
 
 export const sellArt = async (user_token, art_token, price) => {

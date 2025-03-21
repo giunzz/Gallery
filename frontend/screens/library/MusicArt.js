@@ -93,13 +93,17 @@ const MusicArt = ({ route }) => {
             { uri: musicDetails.url },
             {
               shouldPlay: isPlaying,
-              progressUpdateIntervalMillis: 50, //  Frequent updates
+              progressUpdateIntervalMillis: 50, // Frequent updates
               rate: 1.0,
               shouldCorrectPitch: true,
               volume: 1.0,
             },
             updateScreenForSoundStatus
           );
+  
+          // Set the starting position based on the `start` time
+          await newSound.setPositionAsync(musicDetails.start * 1000);  // This line sets the start time
+  
           setSound(newSound);
           setDuration(status.durationMillis / 1000);
         } catch (error) {

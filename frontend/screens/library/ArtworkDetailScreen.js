@@ -6,6 +6,7 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
     const [isDrawPressed, setIsDrawPressed] = useState(false);
     const [isOwnershipPressed, setIsOwnershipPressed] = useState(false);
     const [isPublishPressed, setIsPublishPressed] = useState(false);
+    const [isMusicPressed, setIsMusicPressed] = useState(false);
 
     const handlePublishPress = () => {
         navigation.navigate('PublishArtwork', { 
@@ -33,6 +34,16 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
         navigation.navigate('NewArt', { artwork: artwork.url});
     };
 
+    const handleMusicPress = () => {
+        navigation.navigate('MusicArt', { 
+            item: { 
+                token: artwork.token, 
+                artistName: artwork.address, 
+                url: artwork.url 
+            }  
+        });
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {/* Artwork Details */}
@@ -54,8 +65,9 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
                         handleDrawPress();
                     }}
                 >
-                    <Text style={styles.buttonText}>Draw</Text>
+                <Text style={styles.buttonText}>Draw</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity 
                     style={[styles.colorButton, isOwnershipPressed && styles.buttonPressed]} 
                     onPressIn={() => setIsOwnershipPressed(true)}
@@ -66,6 +78,7 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
                 >
                     <Text style={styles.buttonText}>Ownership</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity 
                     style={[styles.publishButton, isPublishPressed && styles.buttonPressed]} 
                     onPressIn={() => setIsPublishPressed(true)}
@@ -75,6 +88,17 @@ const ArtworkDetailScreen = ({ route, navigation }) => {
                     }}
                 >
                     <Text style={styles.buttonText}>Sell Art</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={[styles.MusicButton, isMusicPressed && styles.buttonPressed]} 
+                    onPressIn={() => setIsMusicPressed(true)}
+                    onPressOut={() => {
+                        setIsMusicPressed(false);
+                        handleMusicPress(); // Call the correct navigation function
+                    }}
+                >
+                    <Text style={styles.buttonText}>MusicArt</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
@@ -131,6 +155,15 @@ const styles = StyleSheet.create({
     },
     colorButton: {
         backgroundColor: "#E76F51",
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        flex: 1,
+        marginRight: 10,
+        alignItems: "center",
+    },
+    MusicButton: {
+        backgroundColor: "#F4A261",
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 10,

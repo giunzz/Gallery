@@ -8,11 +8,11 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import {
   getToken,
   transferArt,
-  signText as signTextFromWallet,
 } from "../../services/apiService";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native"; 
@@ -24,11 +24,11 @@ const TransferArtScreen = () => {
   const { item } = route.params || {};
   const imageUrl = item?.imageUrl;
 
-  const { open, isConnected, address, provider } = useWalletConnectModal();
+  const { isConnected, address, provider } = useWalletConnectModal();
 
   const [recipientAddress, setRecipientAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
 
   const handleTransfer = async () => {
     if (!imageUrl) {
@@ -60,10 +60,8 @@ const TransferArtScreen = () => {
         );
 
         if (signedMessage) {
-          setMessage("Artwork transfer and signing successful!");
-          Alert.alert("Success", "Art transferred and signed successfully!");
+          setModalVisible(true); // Show custom modal
         } else {
-          setMessage("Failed to sign the message.");
           Alert.alert("Error", "Failed to sign the message.");
         }
 
@@ -145,8 +143,24 @@ const TransferArtScreen = () => {
           )}
         </TouchableOpacity>
       </View>
-      {/* Display the result message */}
-      {message && <Text style={styles.resultMessage}>{message}</Text>}
+
+      {/* Custom Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalMessage}>✅ Transfer Success!</Text>
+            <TouchableOpacity
+              style={styles.okButton}
+              onPress={() => setModalVisible(false)}>
+              <Text style={styles.okButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -157,13 +171,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4FBF2",
     padding: 20,
     justifyContent: "flex-start",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#333",
   },
   image: {
     width: "100%",
@@ -227,11 +234,34 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  resultMessage: {
-    marginTop: 20,
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    alignItems: "center",
+    elevation: 5,
+  },
+  modalMessage: {
+    fontSize: 18,
+    marginBottom: 20,
     textAlign: "center",
-    color: "#333",
-    fontSize: 16,
+  },
+  okButton: {
+    backgroundColor: "#2A9D8F",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  okButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

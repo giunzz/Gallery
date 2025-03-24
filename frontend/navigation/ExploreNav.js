@@ -8,7 +8,7 @@ import LoadingGenArt from "../screens/explore/LoadingGenArt";
 import ReportScreen from "../screens/explore/ReportScreen";
 import SearchResultsScreen from "../screens/explore/SearchResultsScreen";
 import ResultGenArt from "../screens/explore/ResultGenArt";
-
+import DrawScreen from "../screens/library/NewArt";
 const ExploreNav = () => {
   const ExploreStack = createStackNavigator();
   return (
@@ -22,6 +22,8 @@ const ExploreNav = () => {
       />
       <ExploreStack.Screen name="LoadingGenArt" component={LoadingGenArt} />
       <ExploreStack.Screen name="ResultGenArt" component={ResultGenArt} />
+      <ExploreStack.Screen name="NewArt" component={DrawScreen} />
+
       <ExploreStack.Screen
         name="CanvasSizeScreen"
         component={CanvasSizeScreen}

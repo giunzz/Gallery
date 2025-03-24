@@ -13,10 +13,9 @@ import {
   getToken,
   transferArt,
   signText as signTextFromWallet,
-  Ownership,
-} from "../../services/apiService"; // Assuming signText exists
+} from "../../services/apiService";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native"; // Ensure WalletConnect hook is imported
+import { useWalletConnectModal } from "@walletconnect/modal-react-native"; 
 import Header from "../../components/AccountFlow/Header";
 
 const TransferArtScreen = () => {
@@ -25,12 +24,11 @@ const TransferArtScreen = () => {
   const { item } = route.params || {};
   const imageUrl = item?.imageUrl;
 
-  // WalletConnect hooks
   const { open, isConnected, address, provider } = useWalletConnectModal();
 
   const [recipientAddress, setRecipientAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState(""); // Message to display after signing
+  const [message, setMessage] = useState("");
 
   const handleTransfer = async () => {
     if (!imageUrl) {
@@ -50,30 +48,27 @@ const TransferArtScreen = () => {
         Alert.alert("Error", "Invalid recipient address.");
         return;
       }
-      console.log("Item: ", item);
+
       const response = await transferArt(token, item.token, recipientAddress);
       console.log(response);
 
       if (response.msg === "Completed") {
-        // Step 1: Sign the message after successful transfer
         const signedMessage = await signText(
           `Transfer of ${item.token} to ${recipientAddress}`,
           provider,
           address
         );
+
         if (signedMessage) {
           setMessage("Artwork transfer and signing successful!");
+          Alert.alert("Success", "Art transferred and signed successfully!");
         } else {
           setMessage("Failed to sign the message.");
+          Alert.alert("Error", "Failed to sign the message.");
         }
 
-        // Step 2: Display success message
-        Alert.alert("Success", "Art transferred and signed successfully!");
-
-        // Navigate to the Library screen after success
         navigation.navigate("MainTabs", { screen: "Library" });
       } else {
-        console.error("Error transferring art:", error);
         Alert.alert("Error", response.message || "Failed to transfer art.");
       }
     } catch (error) {
@@ -87,7 +82,6 @@ const TransferArtScreen = () => {
     }
   };
 
-  // Signing text
   const signText = async (textToSign, provider, address) => {
     try {
       if (textToSign === "") throw new Error("Text is empty");
@@ -97,7 +91,6 @@ const TransferArtScreen = () => {
         method: "personal_sign",
         params: [textToSign, address],
       });
-      Alert.alert("Success", "Text signed successfully!");
       return signature;
     } catch (error) {
       console.error("Signing failed:", error);
@@ -119,16 +112,11 @@ const TransferArtScreen = () => {
         icon={false}
       />
       <View style={styles.container}>
-        {/* Artwork Image */}
         <Image
-          source={{ uri: imageUrl }} // Fallback image
+          source={{ uri: imageUrl }} 
           style={styles.image}
         />
-
-        {/* Token Info */}
         <Text style={styles.tokenInfo}>Token: {item?.token}</Text>
-
-        {/* Recipient Address Input */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Enter recipient address</Text>
           <View style={styles.textInputWrapper}>
@@ -137,7 +125,7 @@ const TransferArtScreen = () => {
               value={recipientAddress}
               onChangeText={setRecipientAddress}
               placeholder="Enter recipient address"
-              editable={!isLoading} // Disable input while loading
+              editable={!isLoading}
             />
             <TouchableOpacity
               style={styles.clearButton}
@@ -146,14 +134,12 @@ const TransferArtScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Transfer Button */}
         <TouchableOpacity
-          style={[styles.button, isLoading && styles.buttonDisabled]} // Apply disabled style
+          style={[styles.button, isLoading && styles.buttonDisabled]}
           onPress={handleTransfer}
           disabled={isLoading}>
           {isLoading ? (
-            <ActivityIndicator size="small" color="#fff" /> // Show loading indicator
+            <ActivityIndicator size="small" color="#fff" />
           ) : (
             <Text style={styles.buttonText}>Confirm</Text>
           )}

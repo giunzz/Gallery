@@ -3,6 +3,9 @@
 This README provides an overview of the Bara project and its design, which is based on the Figma design available
 [here](https://www.figma.com/design/aFQzPyVQKqF8aCgwWPCkkl/Ideathon?node-id=3-40&t=jSEdIJqwIMR9VwRh-1)
 
+Link video demo: [here](https://drive.google.com/file/d/1ygQSKHsEIDcDTD_0dvdr6W0DNgduMNuI/view?usp=drive_link)
+Link on Youtube: [here](https://www.youtube.com/watch?v=dZymPz5YuUw&t=6s)
+
 ![alt text](image.png)
 
 ## Installation
